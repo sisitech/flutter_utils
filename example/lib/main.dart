@@ -56,6 +56,13 @@ class MyApp extends StatelessWidget {
                 icon: Icon(Icons.settings),
                 label: "Settings",
               ),
+            ),
+            BottomNavigationItem(
+              widget: const Text("Hello 4"),
+              barItem: const BottomNavigationBarItem(
+                icon: Icon(Icons.wifi),
+                label: "Wifi",
+              ),
             )
           ],
         ),

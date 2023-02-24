@@ -1,7 +1,7 @@
 name: flutter_utils
 description: A new Flutter package project.
 version: 0.0.1
-homepage:
+homepage: sisitech.com
 
 environment:
   sdk: ">=2.18.5 <3.0.0"
@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   get: ^4.6.5
+  intl: ^0.17.0
   flutter:
     sdk: flutter
 
