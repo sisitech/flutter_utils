@@ -70,7 +70,7 @@ class TextView extends StatelessWidget {
       },
       // (e) => e.,
     );
-    dprint(parsedMatches);
+    // dprint(parsedMatches);
 
     var parsedMessage = display_message;
     Map<String, dynamic> matchesMap = {};
