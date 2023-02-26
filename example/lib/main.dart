@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/bottom_navigation/bottom_navigation.dart';
 import 'package:flutter_utils/bottom_navigation/models.dart';
+import 'package:flutter_utils/graphs/pie.dart';
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/phone_call_launcher.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'internalization/translate.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 void main() async {
   Get.put<APIConfig>(APIConfig(
@@ -58,6 +60,22 @@ class MyApp extends StatelessWidget {
                         await triggerPhoneCall("0727290364");
                       },
                       icon: Icon(Icons.phone),
+                    ),
+                    UtilsPieChart(
+                      data: PieChartData(
+                        sections: [
+                          PieChartSectionData(
+                            value: 25,
+                            color: Colors.blue,
+                            title: '26% Present',
+                          ),
+                          PieChartSectionData(
+                            value: 75,
+                            color: Colors.green,
+                            title: '75%',
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),
