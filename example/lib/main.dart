@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_utils/bottom_navigation/bottom_navigation.dart';
 import 'package:flutter_utils/bottom_navigation/models.dart';
 import 'package:flutter_utils/models.dart';
+import 'package:flutter_utils/phone_call_launcher.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -46,7 +47,21 @@ class MyApp extends StatelessWidget {
           name: 'main',
           tabs: [
             BottomNavigationItem(
-              widget: const Text("Hello"),
+              widget: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text("Hello"),
+                    IconButton(
+                      onPressed: () async {
+                        await triggerPhoneCall("0727290364");
+                      },
+                      icon: Icon(Icons.phone),
+                    )
+                  ],
+                ),
+              ),
               barItem: const BottomNavigationBarItem(
                   icon: Icon(Icons.home), label: "Home"),
             ),
