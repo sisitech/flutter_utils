@@ -1,4 +1,4 @@
-library flutter_tables;
+library flutter_utils;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/flutter_utils.dart';
