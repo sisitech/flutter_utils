@@ -59,6 +59,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     titles = data.map((e) => e["value"].toString()).toList();
 
+    var textStyle = Get.textTheme.displayMedium;
+
     return GetMaterialApp(
       // initialBinding: ,
       title: 'Flutter Demo',
@@ -78,7 +80,6 @@ class MyApp extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text("Hello"),
                     IconButton(
                       onPressed: () async {
                         await triggerPhoneCall("0727290364");
@@ -128,7 +129,10 @@ class MyApp extends StatelessWidget {
               ),
             ),
             BottomNavigationItem(
-              widget: const Text("Hello 4"),
+              widget: Text(
+                "Hello 4",
+                style: textStyle,
+              ),
               barItem: const BottomNavigationBarItem(
                 icon: Icon(Icons.wifi),
                 label: "Wifi",

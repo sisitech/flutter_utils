@@ -22,7 +22,7 @@ class CustomBarGraph extends StatelessWidget {
 
   BarTooltipItem? Function(BarChartGroupData, int, BarChartRodData, int)?
       getTooltipItem;
-
+  var defaultTextStyle = Get.textTheme.titleSmall;
   CustomBarGraph({
     super.key,
     required this.xAxisField,
@@ -73,17 +73,19 @@ class CustomBarGraph extends StatelessWidget {
       "y": rod.toY.toInt().toString(),
       "label": titles[groupIndex] ?? "",
     };
-    return BarTooltipItem("@label#: @y#".tr.interpolate(data), textStyle);
+    return BarTooltipItem(
+        "@label#: @y#".tr.interpolate(data), defaultTextStyle ?? textStyle);
   }
 
   Widget getBottomTitles(double value, TitleMeta meta) {
     final Widget text = Text(
       titles[value.toInt()],
-      style: const TextStyle(
-        color: Color(0xff7589a2),
-        fontWeight: FontWeight.bold,
-        fontSize: 14,
-      ),
+      style: defaultTextStyle ??
+          const TextStyle(
+            color: Color(0xff7589a2),
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
     );
 
     return SideTitleWidget(
@@ -97,7 +99,6 @@ class CustomBarGraph extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text("Bar graph"),
         SizedBox(
           height: 10,
         ),
