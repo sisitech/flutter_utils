@@ -17,6 +17,7 @@ class CustomBarGraph extends StatelessWidget {
   late AxisTitles? topTitles;
   late BarTouchData? barTouchData;
   late FlGridData? gridData;
+  late double? maxY;
 
   BarTooltipItem? Function(BarChartGroupData, int, BarChartRodData, int)?
       getTooltipItem;
@@ -28,6 +29,7 @@ class CustomBarGraph extends StatelessWidget {
     required this.data,
     this.rightTitles,
     this.topTitles,
+    this.maxY,
     this.barTouchData,
     this.bottomTitles,
     this.gridData,
@@ -104,6 +106,7 @@ class CustomBarGraph extends StatelessWidget {
           aspectRatio: 1,
           child: BarChart(
             BarChartData(
+              maxY: maxY,
               barTouchData: barTouchData ??
                   BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
