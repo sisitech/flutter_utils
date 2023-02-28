@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/bottom_navigation/bottom_navigation.dart';
 import 'package:flutter_utils/bottom_navigation/models.dart';
+import 'package:flutter_utils/flutter_utils.dart';
+import 'package:flutter_utils/graphs/bar.dart';
+import 'package:flutter_utils/graphs/graphs_models.dart';
 import 'package:flutter_utils/graphs/pie.dart';
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/phone_call_launcher.dart';
@@ -20,7 +23,7 @@ void main() async {
       revokeTokenUrl: 'o/revoke_token/'));
   await GetStorage.init();
   // StoreBinding();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class StoreBinding implements Bindings {
@@ -30,11 +33,32 @@ class StoreBinding implements Bindings {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+  var data = [
+    {
+      "value": "June",
+      "present_males": 10,
+      "absent_males": 1,
+      "present_females": 10,
+      "absent_females": 1,
+    },
+    {
+      "value": "July",
+      "present_males": 110,
+      "absent_males": 11,
+      "present_females": 30,
+      "absent_females": 4,
+    }
+  ];
+  List<String> titles = []; //['Mn', 'Te', 'Wd', 'Tu', 'Fr', 'St', 'Su'];
+  // var titles;
+  List<BarChartGroupData> mybarGroups = [];
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    titles = data.map((e) => e["value"].toString()).toList();
+
     return GetMaterialApp(
       // initialBinding: ,
       title: 'Flutter Demo',
@@ -84,7 +108,20 @@ class MyApp extends StatelessWidget {
                   icon: Icon(Icons.home), label: "Home"),
             ),
             BottomNavigationItem(
-              widget: const Text("Hello 2"),
+              widget: Column(
+                children: [
+                  CustomBarGraph(
+                    data: data,
+                    xAxisField: "value",
+                    yAxisFields: [
+                      CustomBarChartRodData(field: 'present_males'),
+                      CustomBarChartRodData(field: 'absent_males'),
+                      CustomBarChartRodData(
+                          field: 'present_females', color: Colors.amber),
+                    ],
+                  ),
+                ],
+              ),
               barItem: const BottomNavigationBarItem(
                 icon: Icon(Icons.settings),
                 label: "Settings",
@@ -102,8 +139,7 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-} 
-
+}
 
 // class HomePage extends StatelessWidget {
 //   HomePage({super.key});
@@ -114,7 +150,7 @@ class MyApp extends StatelessWidget {
 //     return Column(
 //       children: [
 //         Text("Logged in"),
-        
+
 //       ],
 //     );
 //   }
