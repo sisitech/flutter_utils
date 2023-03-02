@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 import '../flutter_utils.dart';
 
@@ -12,31 +13,61 @@ class NetworkStatusController extends SuperController {
   Rx<ConnectivityResult> connectionStatus = Rx(ConnectivityResult.none);
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  var isDeviceConnected = false.obs;
+
+  var connectionSource = "".obs;
+
+  late StreamSubscription<InternetConnectionStatus> listener;
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    initConnectivity();
-    _connectivitySubscription =
-        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    setupCheckInterntet();
   }
 
-  Future<void> initConnectivity() async {
-    late ConnectivityResult result;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      result = await _connectivity.checkConnectivity();
-    } on PlatformException catch (e) {
-      dprint('Couldn\'t check connectivity status');
-      dprint(e);
-      return;
+  setupCheckInterntet() async {
+    _connectivitySubscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) async {
+      dprint(result);
+      connectionSource.value = getConnectivityName(result);
+    });
+
+    listener = InternetConnectionChecker().onStatusChange.listen(
+      (InternetConnectionStatus status) {
+        switch (status) {
+          case InternetConnectionStatus.connected:
+            dprint('Data connection is available.');
+            isDeviceConnected.value = true;
+            break;
+          case InternetConnectionStatus.disconnected:
+            isDeviceConnected.value = false;
+            dprint('You are disconnected from the internet.');
+            break;
+        }
+      },
+    );
+    final connectivityResult = await Connectivity().checkConnectivity();
+    connectionSource.value = getConnectivityName(connectivityResult);
+    dprint("Connection1 ${connectivityResult}");
+  }
+
+  getConnectivityName(connectivityResult) {
+    var connectivityString = connectivityResult.toString();
+    var name = connectivityString.replaceAll("ConnectivityResult.", "");
+    if (name == "none") {
+      isDeviceConnected.value = false;
     }
-    return _updateConnectionStatus(result);
+    return name == "none" ? "Disconnected" : name;
   }
 
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    connectionStatus.value = result;
+  @override
+  void onClose() {
+    // scroll.removeListener(_listener);
+    _connectivitySubscription?.cancel();
+    listener?.cancel();
+    super.onClose();
   }
 
   @override
