@@ -10,6 +10,7 @@ class NetworkStatusWidget extends StatelessWidget {
       this.internetConnectionInActiveLabel,
       this.internetConnectionInActiveLabelStyle,
       this.title,
+      this.connectionSourceStyle,
       this.titleStyle})
       : super(key: key);
 
