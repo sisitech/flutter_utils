@@ -17,6 +17,13 @@ class NetworkStatusController extends SuperController {
 
   var connectionSource = "".obs;
 
+  int checkTimeoutSeconds;
+  int checkIntervalSeconds;
+  NetworkStatusController({
+    this.checkIntervalSeconds = 6,
+    this.checkTimeoutSeconds = 6,
+  });
+
   late StreamSubscription<InternetConnectionStatus> listener;
 
   @override
@@ -24,6 +31,15 @@ class NetworkStatusController extends SuperController {
     // TODO: implement onInit
     super.onInit();
     setupCheckInterntet();
+  }
+
+  createCustomInternetChecker() {
+    final InternetConnectionChecker customInstance =
+        InternetConnectionChecker.createInstance(
+      checkTimeout: const Duration(seconds: 6),
+      checkInterval: const Duration(seconds: 6),
+    );
+    return customInstance;
   }
 
   setupCheckInterntet() async {
@@ -34,7 +50,7 @@ class NetworkStatusController extends SuperController {
       connectionSource.value = getConnectivityName(result);
     });
 
-    listener = InternetConnectionChecker().onStatusChange.listen(
+    listener = createCustomInternetChecker().onStatusChange.listen(
       (InternetConnectionStatus status) {
         switch (status) {
           case InternetConnectionStatus.connected:
