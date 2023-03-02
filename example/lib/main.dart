@@ -6,6 +6,7 @@ import 'package:flutter_utils/graphs/bar.dart';
 import 'package:flutter_utils/graphs/graphs_models.dart';
 import 'package:flutter_utils/graphs/pie.dart';
 import 'package:flutter_utils/models.dart';
+import 'package:flutter_utils/network_status/network_status.dart';
 import 'package:flutter_utils/network_status/network_status_controller.dart';
 import 'package:flutter_utils/phone_call_launcher.dart';
 import 'package:get/get.dart';
@@ -134,7 +135,7 @@ class MyApp extends StatelessWidget {
             ),
             BottomNavigationItem(
               widget: Center(
-                child: NetworkStatus(),
+                child: NetworkStatusWidget(),
               ),
               barItem: const BottomNavigationBarItem(
                 icon: Icon(Icons.wifi),
@@ -148,62 +149,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class NetworkStatus extends StatelessWidget {
-  NetworkStatus(
-      {Key? key,
-      this.internetConnectionActiveLabel,
-      this.internetConnectionActiveLabelStyle,
-      this.internetConnectionInActiveLabel,
-      this.internetConnectionInActiveLabelStyle,
-      this.title,
-      this.titleStyle})
-      : super(key: key);
-
-  String? title;
-  TextStyle? titleStyle;
-
-  String? internetConnectionActiveLabel;
-  String? internetConnectionInActiveLabel;
-
-  TextStyle? internetConnectionActiveLabelStyle;
-  TextStyle? internetConnectionInActiveLabelStyle;
-
-  @override
-  Widget build(BuildContext context) {
-    NetworkStatusController networkCont = Get.find<NetworkStatusController>();
-
-    return Obx(() {
-      TextStyle? style = networkCont.isDeviceConnected.value
-          ? internetConnectionActiveLabelStyle
-          : internetConnectionInActiveLabelStyle;
-      return ListTile(
-        title: Text(
-          title ?? "Internet Status".tr,
-          style: titleStyle ?? Get.theme.textTheme.titleSmall,
-        ),
-        subtitle: Text(networkCont.connectionSource.value.tr),
-        trailing: Card(
-          // color: "tile.trailingBackgroundColor",
-          child: Padding(
-            padding: const EdgeInsets.all(6.0),
-            child: Text(
-              networkCont.isDeviceConnected.value
-                  ? internetConnectionActiveLabel ?? "Connected".tr
-                  : internetConnectionInActiveLabel ?? "No internet".tr,
-              style: style ??
-                  Get.theme.textTheme.titleSmall?.copyWith(
-                    fontSize: 13,
-                    color: networkCont.isDeviceConnected.value
-                        ? Colors.green
-                        : Colors.red,
-                  ),
-            ),
-          ),
-        ),
-      );
-    });
-  }
-}
 
 // class HomePage extends StatelessWidget {
 //   HomePage({super.key});
