@@ -15,6 +15,7 @@ class NetworkStatusWidget extends StatelessWidget {
 
   String? title;
   TextStyle? titleStyle;
+  TextStyle? connectionSourceStyle;
 
   String? internetConnectionActiveLabel;
   String? internetConnectionInActiveLabel;
@@ -35,7 +36,10 @@ class NetworkStatusWidget extends StatelessWidget {
           title ?? "Internet Status".tr,
           style: titleStyle ?? Get.theme.textTheme.titleSmall,
         ),
-        subtitle: Text(networkCont.connectionSource.value.tr),
+        subtitle: Text(
+          networkCont.connectionSource.value.tr,
+          style: connectionSourceStyle ?? Get.theme.textTheme.titleSmall,
+        ),
         trailing: Card(
           // color: "tile.trailingBackgroundColor",
           child: Padding(
