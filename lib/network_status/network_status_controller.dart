@@ -72,6 +72,7 @@ class NetworkStatusController extends SuperController {
     );
     final connectivityResult = await Connectivity().checkConnectivity();
     connectionSource.value = getConnectivityName(connectivityResult);
+    isDeviceConnected.value = await checkIntenetConnection();
     dprint("Connection1 ${connectivityResult}");
   }
 
