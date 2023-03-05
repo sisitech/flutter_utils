@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 var charachtersToRemove = [" ", "@", "#"];
@@ -44,13 +45,21 @@ getFieldValue(Map<String, dynamic>? row, String? message) {
 
 getMatchValue(Map<String, dynamic>? row, String matchName) {
   if (row == null) {
-    return "@${matchName}# No Data";
+    if (kDebugMode) {
+      return "@${matchName}# No Data";
+    } else {
+      return "";
+    }
   }
+
   if (row!.containsKey(matchName)) {
     var value = row?[matchName];
     if (value == null) {
-      // dprint("Null value");
-      return "N/A";
+      if (kDebugMode) {
+        return "N/A";
+      } else {
+        return "";
+      }
     }
     // Apply formatting
     // dprint(value.runtimeType);
@@ -61,7 +70,11 @@ getMatchValue(Map<String, dynamic>? row, String matchName) {
     }
     return value;
   }
-  return "No Idea ${matchName}";
+  if (kDebugMode) {
+    return "No Idea ${matchName}";
+  } else {
+    return "";
+  }
 }
 
 extension MyStringExt on String {
