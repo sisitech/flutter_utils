@@ -9,12 +9,16 @@ class OfflineHttpCacheController extends SuperController {
   Future<void> saveOfflineCache(OfflineHttpCall offlineHttpCall,
       {String taskPrefix = ""}) async {
     dprint("Box is ${offlineHttpCall.storageContainer}");
+
+    // dprint(value)
     final box = GetStorage(offlineHttpCall.storageContainer);
     String id = offlineHttpCall.id;
     dprint("The id is $id");
-
     String taskName = "$taskPrefix.${offlineHttpCall.storageContainer}";
+
     await box.write(id, offlineHttpCall.toJson());
+
+    dprint(await box.read(id));
     return Workmanager().registerOneOffTask(
       taskName,
       taskName,
