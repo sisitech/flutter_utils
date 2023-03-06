@@ -8,6 +8,7 @@ import 'package:flutter_utils/graphs/pie.dart';
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/network_status/network_status.dart';
 import 'package:flutter_utils/network_status/network_status_controller.dart';
+import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
 import 'package:flutter_utils/phone_call_launcher.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -24,9 +25,10 @@ void main() async {
       tokenUrl: 'o/token/',
       grantType: "password",
       revokeTokenUrl: 'o/revoke_token/'));
-  await GetStorage.init();
-
+  await GetStorage.init('GetStorage');
+  Get.put(OfflineHttpCacheController());
   Get.put(NetworkStatusController());
+  Get.put(OfflineHttpCacheController());
   // StoreBinding();
   runApp(MyApp());
 }
@@ -38,7 +40,23 @@ class StoreBinding implements Bindings {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  OfflineHttpCacheController offlineCont =
+      Get.find<OfflineHttpCacheController>();
+  MyApp({super.key}) {
+    // OfflineHttpCall()
+    offlineCont
+        .saveOfflineCache(OfflineHttpCall(
+      name: "add friend",
+      httpMethod: "GET",
+      urlPath: "api/v1/users",
+    ))
+        .then((value) {
+      dprint("Saved recordss");
+    }, onError: (error) {
+      dprint("Fialed to saved offline redocrd");
+    });
+  }
+
   var data = [
     {
       "value": "June",

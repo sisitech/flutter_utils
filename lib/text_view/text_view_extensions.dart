@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+import 'package:slugify/slugify.dart';
 
 var charachtersToRemove = [" ", "@", "#"];
 
@@ -80,5 +81,9 @@ getMatchValue(Map<String, dynamic>? row, String matchName) {
 extension MyStringExt on String {
   String interpolate(Map<String, dynamic> row) {
     return getFieldValue(row, this);
+  }
+
+  String get slug {
+    return slugify(this, delimiter: '_');
   }
 }

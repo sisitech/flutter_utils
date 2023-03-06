@@ -1,5 +1,10 @@
 # This is a generated file; do not edit or check into version control.
 connectivity_plus=/Users/mac/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/connectivity_plus-3.0.3/
+path_provider=/Users/mac/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.13/
+path_provider_android=/Users/mac/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.23/
+path_provider_foundation=/Users/mac/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_foundation-2.1.2/
+path_provider_linux=/Users/mac/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.1.9/
+path_provider_windows=/Users/mac/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.1.4/
 url_launcher=/Users/mac/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-6.1.10/
 url_launcher_android=/Users/mac/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_android-6.0.24/
 url_launcher_ios=/Users/mac/Downloads/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher_ios-6.1.1/
