@@ -14,7 +14,7 @@ class OfflineHttpCacheController extends SuperController {
     dprint("The id is $id");
 
     String taskName = "$taskPrefix.${offlineHttpCall.storageContainer}";
-    await box.write(id, offlineHttpCall);
+    await box.write(id, offlineHttpCall.toJson());
     return Workmanager().registerOneOffTask(
       taskName,
       taskName,
@@ -33,9 +33,13 @@ class OfflineHttpCacheController extends SuperController {
     var keys = await getOfflineKeys(storageContainer);
     List<OfflineHttpCall> objs = [];
     for (var key in keys) {
-      OfflineHttpCall? value = await box.read<OfflineHttpCall>(key);
+      var value = await box.read<Map<String, dynamic>>(key);
       if (value != null) {
-        objs.add(value);
+        try {
+          objs.add(OfflineHttpCall.fromJson(value));
+        } catch (e) {
+          dprint(e);
+        }
       }
     }
     return Future.value(objs);
