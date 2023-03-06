@@ -19,6 +19,7 @@ dependencies:
   json_annotation: ^4.7.0
   get_storage: ^2.0.3
   slugify: ^2.0.0
+  workmanager: ^0.5.1
 
 dev_dependencies:
   flutter_test:

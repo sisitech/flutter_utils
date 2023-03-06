@@ -1,16 +1,30 @@
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:workmanager/workmanager.dart';
 
 import '../models.dart';
 
 class OfflineHttpCacheController extends SuperController {
-  Future<void> saveOfflineCache(OfflineHttpCall offlineHttpCall) async {
+  Future<void> saveOfflineCache(OfflineHttpCall offlineHttpCall,
+      {String taskPrefix = ""}) async {
     dprint("Box is ${offlineHttpCall.storageContainer}");
     final box = GetStorage(offlineHttpCall.storageContainer);
     String id = offlineHttpCall.id;
-    dprint("The id is ${id}");
-    return box.write(id, offlineHttpCall);
+    dprint("The id is $id");
+
+    String taskName = "$taskPrefix.${offlineHttpCall.storageContainer}";
+    await box.write(id, offlineHttpCall);
+    return Workmanager().registerOneOffTask(
+      taskName,
+      taskName,
+      constraints: Constraints(
+        networkType: NetworkType.connected,
+      ),
+      backoffPolicy: BackoffPolicy.linear,
+      backoffPolicyDelay: const Duration(minutes: 30),
+      existingWorkPolicy: ExistingWorkPolicy.replace,
+    );
   }
 
   Future<List<OfflineHttpCall>> getOfflineCaches(
@@ -27,7 +41,7 @@ class OfflineHttpCacheController extends SuperController {
     return Future.value(objs);
   }
 
-  getOfflineKeys(String storageContainer) async {
+  Future<List<String>> getOfflineKeys(String storageContainer) async {
     final box = GetStorage(storageContainer);
     var keys = await box.getKeys<Iterable<String>>();
     return keys
