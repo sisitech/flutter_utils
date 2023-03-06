@@ -15,9 +15,9 @@ class OfflineHttpCacheController extends SuperController {
     String id = offlineHttpCall.id;
     dprint("The id is $id");
     String taskName = "$taskPrefix.${offlineHttpCall.storageContainer}";
-
+    dprint("Saving...");
     await box.write(id, offlineHttpCall.toJson());
-
+    dprint("Saved the following");
     dprint(await box.read(id));
     return Workmanager().registerOneOffTask(
       taskName,
