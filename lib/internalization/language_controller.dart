@@ -5,14 +5,15 @@ import 'package:get_storage/get_storage.dart';
 import '../flutter_utils.dart';
 import 'models.dart';
 
-const languages_map = {"som": Locale('swa', 'KE'), "eng": Locale('en', 'US')};
 const locale_key = "current_locale";
 
 class LocaleController extends SuperController {
-  var current_local_name = "eng".obs;
   var box = GetStorage();
 
+  Rx<NameLocale?> selectedNameLocale = Rx(null);
+
   String defaultLocaleName;
+  String? selectorTitle;
   List<NameLocale> locales;
   Widget? header;
   Widget? footer;
@@ -22,6 +23,7 @@ class LocaleController extends SuperController {
   LocaleController(
       {required this.defaultLocaleName,
       required this.locales,
+      this.selectorTitle,
       this.localBuilder});
 
   @override
@@ -33,7 +35,7 @@ class LocaleController extends SuperController {
   setLocale(NameLocale nameLocale) async {
     if (nameLocale.locale != null) {
       await box.write(locale_key, nameLocale.name);
-      Get.updateLocale(nameLocale.locale!);
+      await udpateLocale();
     }
     Get.back();
   }
@@ -44,6 +46,7 @@ class LocaleController extends SuperController {
         locales.firstWhere((element) => element.name == selectedLocaleName);
     if (nameLocale != null) {
       dprint("Selecting language ${nameLocale.name}");
+      selectedNameLocale.value = nameLocale;
       Get.updateLocale(nameLocale.locale);
     }
   }
@@ -59,7 +62,7 @@ class LocaleController extends SuperController {
 
   selectLocale() async {
     var res = await Get.defaultDialog(
-      title: "Select Language".tr,
+      title: selectorTitle?.tr ?? "Select Language".tr,
       titleStyle: Get.textTheme.displayMedium,
       content: SingleChildScrollView(
         child: Column(
@@ -79,15 +82,21 @@ class LocaleController extends SuperController {
                     child: localBuilder!(context, int, nameLocale),
                   );
                 }
-                return ListTile(
-                  onTap: () {
-                    setLocale(nameLocale);
-                  },
-                  title: Text(
-                    nameLocale.name,
-                    style: Get.textTheme.displaySmall,
-                  ),
-                );
+                return Obx(() {
+                  dprint("Selected ${selectedNameLocale.value?.name}");
+                  return ListTile(
+                    onTap: () {
+                      setLocale(nameLocale);
+                    },
+                    title: Text(
+                      nameLocale.name,
+                      style: Get.textTheme.displaySmall,
+                    ),
+                    trailing: selectedNameLocale.value?.name == nameLocale.name
+                        ? const Icon(Icons.check_circle_sharp)
+                        : const Icon(Icons.circle_outlined),
+                  );
+                });
               },
               itemCount: locales.length,
             ),
