@@ -61,44 +61,54 @@ class LocaleController extends SuperController {
   }
 
   selectLocale() async {
-    var res = await Get.defaultDialog(
-      title: selectorTitle?.tr ?? "Select Language".tr,
-      titleStyle: Get.textTheme.displayMedium,
-      content: SingleChildScrollView(
+    var res = await Get.bottomSheet(
+      // title: selectorTitle?.tr ?? "Select Language".tr,
+      // titleStyle: Get.textTheme.displayMedium,
+      Card(
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
+            Text(
+              selectorTitle?.tr ?? "Select Language".tr,
+              style: Get.theme.textTheme.displayMedium,
+            ),
             if (header != null) header!,
-            ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemBuilder: (context, int) {
-                var nameLocale = locales[int];
+            SizedBox(
+              height: Get.height * .3,
+              child: ListView.builder(
+                // physics: NeverScrollableScrollPhysics(),
+                // shrinkWrap: true,
+                itemBuilder: (context, int) {
+                  var nameLocale = locales[int];
 
-                if (localBuilder != null) {
-                  return GestureDetector(
-                    onTap: () {
-                      setLocale(nameLocale);
-                    },
-                    child: localBuilder!(context, int, nameLocale),
-                  );
-                }
-                return Obx(() {
-                  dprint("Selected ${selectedNameLocale.value?.name}");
-                  return ListTile(
-                    onTap: () {
-                      setLocale(nameLocale);
-                    },
-                    title: Text(
-                      nameLocale.name,
-                      style: Get.textTheme.displaySmall,
-                    ),
-                    trailing: selectedNameLocale.value?.name == nameLocale.name
-                        ? const Icon(Icons.check_circle_sharp)
-                        : const Icon(Icons.circle_outlined),
-                  );
-                });
-              },
-              itemCount: locales.length,
+                  if (localBuilder != null) {
+                    return GestureDetector(
+                      onTap: () {
+                        setLocale(nameLocale);
+                      },
+                      child: localBuilder!(context, int, nameLocale),
+                    );
+                  }
+
+                  return Obx(() {
+                    dprint("Selected ${selectedNameLocale.value?.name}");
+                    return ListTile(
+                      onTap: () {
+                        setLocale(nameLocale);
+                      },
+                      title: Text(
+                        nameLocale.name,
+                        style: Get.textTheme.displaySmall,
+                      ),
+                      trailing:
+                          selectedNameLocale.value?.name == nameLocale.name
+                              ? const Icon(Icons.check_circle_sharp)
+                              : const Icon(Icons.circle_outlined),
+                    );
+                  });
+                },
+                itemCount: locales.length,
+              ),
             ),
             if (footer != null) footer!,
           ],
