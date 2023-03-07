@@ -5,6 +5,8 @@ import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/graphs/bar.dart';
 import 'package:flutter_utils/graphs/graphs_models.dart';
 import 'package:flutter_utils/graphs/pie.dart';
+import 'package:flutter_utils/internalization/language_controller.dart';
+import 'package:flutter_utils/internalization/models.dart';
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/network_status/network_status.dart';
 import 'package:flutter_utils/network_status/network_status_controller.dart';
@@ -15,7 +17,9 @@ import 'package:get_storage/get_storage.dart';
 
 import 'internalization/translate.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_utils/internalization/select_locale.dart';
 
+const default_local_name = "Kiswahili";
 // import 'package:flutter_utils/';
 void main() async {
   Get.put<APIConfig>(APIConfig(
@@ -25,10 +29,24 @@ void main() async {
       tokenUrl: 'o/token/',
       grantType: "password",
       revokeTokenUrl: 'o/revoke_token/'));
+  await GetStorage.init();
   await GetStorage.init('GetStorage');
   Get.put(OfflineHttpCacheController());
   Get.put(NetworkStatusController());
   Get.put(OfflineHttpCacheController());
+  Get.put(LocaleController(
+    defaultLocaleName: default_local_name,
+    locales: [
+      NameLocale(
+        name: default_local_name,
+        locale: Locale("swa", "KE"),
+      ),
+      NameLocale(
+        name: "English",
+        locale: Locale("en", "US"),
+      ),
+    ],
+  ));
   // StoreBinding();
   runApp(MyApp());
 }
@@ -88,7 +106,6 @@ class MyApp extends StatelessWidget {
       // initialBinding: ,
       title: 'Flutter Demo',
       translations: AppTranslations(),
-      locale: const Locale('swa', 'KE'),
       theme: ThemeData(
         useMaterial3: true,
         primarySwatch: Colors.blue,
@@ -152,8 +169,15 @@ class MyApp extends StatelessWidget {
               ),
             ),
             BottomNavigationItem(
-              widget: Center(
-                child: NetworkStatusWidget(),
+              widget: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  NetworkStatusWidget(),
+                  const LocaleSelectorWidget(
+                    child: Text("Select language / Chagua Lugha"),
+                  ),
+                  // LocaleSelectorWidget(child:)
+                ],
               ),
               barItem: const BottomNavigationBarItem(
                 icon: Icon(Icons.wifi),

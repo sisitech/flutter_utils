@@ -9,6 +9,7 @@ class AppTranslations extends Translations {
           'empty_field': "This field must not be empty"
         },
         'swa_KE': {
+          'Connected': "Imeunganishwa",
           'hello': 'Habari Yako',
           'Add': 'Ongeze',
           'Login': 'Ingia',
