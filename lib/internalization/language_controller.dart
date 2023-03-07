@@ -68,6 +68,9 @@ class LocaleController extends SuperController {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            SizedBox(
+              height: 10,
+            ),
             Text(
               selectorTitle?.tr ?? "Select Language".tr,
               style: Get.theme.textTheme.displayMedium,
