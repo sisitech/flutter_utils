@@ -101,7 +101,7 @@ class LocaleController extends SuperController {
                       },
                       title: Text(
                         nameLocale.name,
-                        style: Get.textTheme.displaySmall,
+                        style: Get.textTheme.titleSmall,
                       ),
                       trailing:
                           selectedNameLocale.value?.name == nameLocale.name
