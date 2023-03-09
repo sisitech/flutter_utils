@@ -20,6 +20,7 @@ dependencies:
   get_storage: ^2.0.3
   slugify: ^2.0.0
   workmanager: ^0.5.1
+  package_info_plus: ^3.0.3
 
 dev_dependencies:
   flutter_test:

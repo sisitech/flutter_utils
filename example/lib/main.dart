@@ -11,6 +11,7 @@ import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/network_status/network_status.dart';
 import 'package:flutter_utils/network_status/network_status_controller.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
+import 'package:flutter_utils/package_info/package_info_widget.dart';
 import 'package:flutter_utils/phone_call_launcher.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -126,6 +127,7 @@ class MyApp extends StatelessWidget {
                       },
                       icon: Icon(Icons.phone),
                     ),
+                    PackageInfoWidget(),
                     UtilsPieChart(
                       data: PieChartData(
                         sections: [
