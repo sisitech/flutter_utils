@@ -73,7 +73,6 @@ class LocaleController extends SuperController {
             ),
             Text(
               selectorTitle?.tr ?? "Select Language".tr,
-              style: Get.theme.textTheme.displayMedium,
             ),
             if (header != null) header!,
             SizedBox(
@@ -101,7 +100,6 @@ class LocaleController extends SuperController {
                       },
                       title: Text(
                         nameLocale.name,
-                        style: Get.textTheme.titleSmall,
                       ),
                       trailing:
                           selectedNameLocale.value?.name == nameLocale.name

@@ -101,8 +101,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     titles = data.map((e) => e["value"].toString()).toList();
 
-    var textStyle = Get.textTheme.displayMedium;
-
     return GetMaterialApp(
       // initialBinding: ,
       title: 'Flutter Demo',

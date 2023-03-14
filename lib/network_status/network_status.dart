@@ -35,11 +35,11 @@ class NetworkStatusWidget extends StatelessWidget {
       return ListTile(
         title: Text(
           title ?? "Internet Status".tr,
-          style: titleStyle ?? Get.theme.textTheme.titleSmall,
+          style: titleStyle,
         ),
         subtitle: Text(
           networkCont.connectionSource.value.tr,
-          style: connectionSourceStyle ?? Get.theme.textTheme.titleSmall,
+          style: connectionSourceStyle,
         ),
         trailing: Card(
           // color: "tile.trailingBackgroundColor",

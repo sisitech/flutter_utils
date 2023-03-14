@@ -21,7 +21,7 @@ class CustomBarGraph extends StatelessWidget {
 
   BarTooltipItem? Function(BarChartGroupData, int, BarChartRodData, int)?
       getTooltipItem;
-  var defaultTextStyle = Get.textTheme.titleSmall;
+  var defaultTextStyle;
   CustomBarGraph({
     super.key,
     required this.xAxisField,
