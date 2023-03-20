@@ -78,7 +78,7 @@ getMatchValue(dynamic? row, String matchName, {String listSeparator = ","}) {
         var index = int.tryParse(next_match);
 
         if ((currentValue as List<dynamic>).isEmpty) {
-          return kDebugMode ? "$matchName List empty" : "";
+          return "";
         }
 
         if (index == null) {

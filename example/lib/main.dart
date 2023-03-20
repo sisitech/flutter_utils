@@ -131,8 +131,8 @@ class MyApp extends StatelessWidget {
                             "\nSimple List: @details#"
                             "\nSimple List Index: @details.0#"
                             "\nMap: @map.name.year# "
-                            "\nMap: @map.name.names# "
-                            "\nMap: @map.name.details#"
+                            "\nMap - List: @map.name.names# "
+                            "\nMap - List: @map.name.details#"
                             "\n List<dynamic>: @studs.0.name#"
                             "\n List<dynamic>2 : @studs..name#"
                         .interpolate({
