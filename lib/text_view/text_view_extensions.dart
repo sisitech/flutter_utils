@@ -152,7 +152,7 @@ getMatchValue(dynamic? row, String matchName, {String listSeparator = ","}) {
 }
 
 extension MyStringExt on String {
-  String interpolate(Map<String, dynamic> row, {String listSeparator = ","}) {
+  String interpolate(Map<String, dynamic> row, {String listSeparator = ", "}) {
     return getFieldValue(row, this, listSeparator: listSeparator);
   }
 
