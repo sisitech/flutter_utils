@@ -1,10 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_utils/flutter_utils.dart';
 import 'package:intl/intl.dart';
 import 'package:slugify/slugify.dart';
 
 var charachtersToRemove = [" ", "@", "#"];
 
-getFieldValue(Map<String, dynamic>? row, String? message) {
+getFieldValue(Map<String, dynamic>? row, String? message,
+    {String listSeparator = ","}) {
   if (message == null) {
     return "Noa";
   }
@@ -18,7 +20,7 @@ getFieldValue(Map<String, dynamic>? row, String? message) {
   var mateches = regExp.allMatches(message);
   var parsedMatches = mateches.map(
     (e) {
-      var match = message.substring(e.start, e.end);
+      var match = message.substring(e.start, e.end).trim();
       var name = match
           .split("")
           .map((e) => charachtersToRemove.contains(e) ? "" : e)
@@ -26,7 +28,7 @@ getFieldValue(Map<String, dynamic>? row, String? message) {
       return {
         "match": match.trim(),
         "name": name,
-        "value": getMatchValue(row, name)
+        "value": getMatchValue(row, name, listSeparator: listSeparator)
       };
     },
     // (e) => e.,
@@ -44,7 +46,11 @@ getFieldValue(Map<String, dynamic>? row, String? message) {
   return parsedMessage;
 }
 
-getMatchValue(Map<String, dynamic>? row, String matchName) {
+getMapValue(
+  Map<String, dynamic>? row,
+) {}
+
+getMatchValue(dynamic? row, String matchName, {String listSeparator = ","}) {
   if (row == null) {
     if (kDebugMode) {
       return "@${matchName}# No Data";
@@ -52,14 +58,81 @@ getMatchValue(Map<String, dynamic>? row, String matchName) {
       return "";
     }
   }
+  dprint(matchName);
+  // Recursive checking
+  if (matchName.contains(".")) {
+    var matches = matchName.split(".");
+    if (matches.isNotEmpty) {
+      var currentMatch = matches[0]?.trim();
+      if (row.containsKey(currentMatch)) {
+        var currentValue = row[currentMatch];
+        bool isList = currentValue.runtimeType.toString().contains("List");
+        if (!isList) {
+          matches.remove(currentMatch);
+          return getMatchValue(currentValue, matches.join("."));
+        }
+        matches.remove(currentMatch);
+        var next_match = matches[0];
+        matches.remove(next_match);
+
+        var index = int.tryParse(next_match);
+
+        if ((currentValue as List<dynamic>).isEmpty) {
+          return kDebugMode ? "$matchName List empty" : "";
+        }
+
+        if (index == null) {
+          if (matches.isEmpty) {
+            return getMatchValue({"value": currentValue}, "value");
+          } else {
+            var nextMatch = matches.join(".").trim();
+            var instance = (currentValue as List<dynamic>)[0];
+            if (!instance.runtimeType.toString().contains("Map")) {
+              return kDebugMode ? "$matchName map not found" : "";
+            }
+            if (!instance.containsKey(nextMatch)) {
+              return kDebugMode
+                  ? "$matchName No $nextMatch found in instance"
+                  : "";
+            }
+            // dprint(instance);
+            // dprint(nextMatch);
+            return (currentValue as List<dynamic>)
+                .map((e) => e[nextMatch])
+                .toList()
+                .join(listSeparator);
+          }
+        } else {
+          // dprint("The set Index is $index");
+          if (index != null) {
+            var nextValue = (currentValue as List<dynamic>)[index];
+            // dprint("Index value $nextValue $matches");
+            if (matches.isEmpty) {
+              return getMatchValue({"value": nextValue}, "value");
+            }
+            return getMatchValue(nextValue, matches.join("."));
+          }
+        }
+      }
+    }
+
+    return kDebugMode ? "@${matchName}# No recursive" : "";
+  }
 
   if (row!.containsKey(matchName)) {
     var value = row?[matchName];
+
     if (value == null) {
       if (kDebugMode) {
         return "N/A";
       } else {
         return "";
+      }
+    }
+
+    if (value.runtimeType.toString().contains("List")) {
+      if (value.runtimeType == List<String>) {
+        return (value as List<String>).join(listSeparator);
       }
     }
     // Apply formatting
@@ -79,8 +152,8 @@ getMatchValue(Map<String, dynamic>? row, String matchName) {
 }
 
 extension MyStringExt on String {
-  String interpolate(Map<String, dynamic> row) {
-    return getFieldValue(row, this);
+  String interpolate(Map<String, dynamic> row, {String listSeparator = ","}) {
+    return getFieldValue(row, this, listSeparator: listSeparator);
   }
 
   String get slug {

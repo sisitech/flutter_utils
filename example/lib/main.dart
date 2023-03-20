@@ -13,6 +13,7 @@ import 'package:flutter_utils/network_status/network_status_controller.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
 import 'package:flutter_utils/package_info/package_info_widget.dart';
 import 'package:flutter_utils/phone_call_launcher.dart';
+import 'package:flutter_utils/text_view/text_view_extensions.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -126,6 +127,31 @@ class MyApp extends StatelessWidget {
                       icon: Icon(Icons.phone),
                     ),
                     PackageInfoWidget(),
+                    Text("@name of @you# "
+                            "\nSimple List: @details#"
+                            "\nSimple List Index: @details.0#"
+                            "\nMap: @map.name.year# "
+                            "\nMap: @map.name.names# "
+                            "\nMap: @map.name.details#"
+                            "\n List<dynamic>: @studs.0.name#"
+                            "\n List<dynamic>2 : @studs..name#"
+                        .interpolate({
+                      "name": "Micha",
+                      "you": "Iu",
+                      "details": ["Math", "Eng"],
+                      "map": {
+                        "name": {
+                          "age": 10,
+                          "names": [],
+                          "details": ["Math", "Eng"],
+                          "year": "1999",
+                        },
+                      },
+                      "studs": [
+                        {"name": "Mwash"},
+                        {"name": "Kev"},
+                      ]
+                    }, listSeparator: ", ")),
                     UtilsPieChart(
                       data: PieChartData(
                         sections: [
