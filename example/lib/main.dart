@@ -20,6 +20,7 @@ import 'package:get_storage/get_storage.dart';
 import 'internalization/translate.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_utils/internalization/select_locale.dart';
+import 'package:flutter_utils/extensions/date_extensions.dart';
 
 const default_local_name = "Kiswahili";
 // import 'package:flutter_utils/';
@@ -118,7 +119,7 @@ class MyApp extends StatelessWidget {
               widget: SafeArea(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     IconButton(
                       onPressed: () async {
@@ -127,31 +128,36 @@ class MyApp extends StatelessWidget {
                       icon: Icon(Icons.phone),
                     ),
                     PackageInfoWidget(),
-                    Text("@name of @you# "
-                            "\nSimple List: @details#"
-                            "\nSimple List Index: @details.0#"
-                            "\nMap: @map.name.year# "
-                            "\nMap - List: @map.name.names# "
-                            "\nMap - List: @map.name.details#"
-                            "\n List<dynamic>: @studs.0.name#"
-                            "\n List<dynamic>2 : @studs..name#"
-                        .interpolate({
-                      "name": "Micha",
-                      "you": "Iu",
-                      "details": ["Math", "Eng"],
-                      "map": {
-                        "name": {
-                          "age": 10,
-                          "names": [],
-                          "details": ["Math", "Eng"],
-                          "year": "1999",
+                    Text(
+                      "@name of @you# "
+                              "\nSimple List: @details#"
+                              "\nSimple List Index: @details.0#"
+                              "\nMap: @map.name.year# "
+                              "\nMap - List: @map.name.names# "
+                              "\nMap - List: @map.name.details#"
+                              "\n List<dynamic>: @studs.0.name#"
+                              "\n List<dynamic>2 : @studs..name#"
+                          .interpolate({
+                        "name": "Micha",
+                        "you": "Iu",
+                        "details": ["Math", "Eng"],
+                        "map": {
+                          "name": {
+                            "age": 10,
+                            "names": [],
+                            "details": ["Math", "Eng"],
+                            "year": "1999",
+                          },
                         },
-                      },
-                      "studs": [
-                        {"name": "Mwash"},
-                        {"name": "Kev"},
-                      ]
-                    }, listSeparator: ", ")),
+                        "studs": [
+                          {"name": "Mwash"},
+                          {"name": "Kev"},
+                        ]
+                      }, listSeparator: ", "),
+                    ),
+                    Text(DateTime.now().toWeekDayDate),
+                    Text(DateTime.now().toAPIDate),
+                    Text(DateTime.now().toAPIDateTime),
                     UtilsPieChart(
                       data: PieChartData(
                         sections: [
