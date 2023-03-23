@@ -17,6 +17,10 @@ extension DateExtension on DateTime {
 extension StringDateExt on String {
   DateTime? get toDate {
     try {
+      if (this.toLowerCase() == "today" || this.toLowerCase() == "now") {
+        return DateTime.now();
+      }
+
       var format = DateFormat("yyyy-MM-dd");
       return format.parse(this);
     } catch (e) {
