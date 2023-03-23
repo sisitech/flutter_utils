@@ -13,3 +13,14 @@ extension DateExtension on DateTime {
     return DateFormat("yyyy-MM-ddTHH:mm").format(this);
   }
 }
+
+extension StringDateExt on String {
+  DateTime? get toDate {
+    try {
+      var format = DateFormat("yyyy-MM-dd");
+      return format.parse(this);
+    } catch (e) {
+      return null;
+    }
+  }
+}
