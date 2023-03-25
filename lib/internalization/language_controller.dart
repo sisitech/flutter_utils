@@ -5,7 +5,9 @@ import 'package:get_storage/get_storage.dart';
 import '../flutter_utils.dart';
 import 'models.dart';
 
+// ignore: constant_identifier_names
 const locale_key = "current_locale";
+const missing_translation_keys = "missing_translations";
 
 class LocaleController extends SuperController {
   var box = GetStorage();
@@ -17,6 +19,7 @@ class LocaleController extends SuperController {
   List<NameLocale> locales;
   Widget? header;
   Widget? footer;
+
   Widget Function(BuildContext context, int index, NameLocale locale)?
       localBuilder;
 
@@ -31,6 +34,8 @@ class LocaleController extends SuperController {
     super.onInit();
     udpateLocale();
   }
+
+  addMissingTranslation() {}
 
   setLocale(NameLocale nameLocale) async {
     if (nameLocale.locale != null) {

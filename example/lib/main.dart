@@ -5,6 +5,7 @@ import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/graphs/bar.dart';
 import 'package:flutter_utils/graphs/graphs_models.dart';
 import 'package:flutter_utils/graphs/pie.dart';
+import 'package:flutter_utils/internalization/extensions.dart';
 import 'package:flutter_utils/internalization/language_controller.dart';
 import 'package:flutter_utils/internalization/models.dart';
 import 'package:flutter_utils/models.dart';
@@ -34,11 +35,14 @@ void main() async {
       revokeTokenUrl: 'o/revoke_token/'));
   await GetStorage.init();
   await GetStorage.init('GetStorage');
+  Get.put(LolaleConfig(updateAPIDebug: true, updateDebugMissOnlyDebug: true));
+
   Get.put(OfflineHttpCacheController());
   Get.put(NetworkStatusController());
   Get.put(OfflineHttpCacheController());
+
   Get.put(LocaleController(
-    defaultLocaleName: default_local_name,
+    defaultLocaleName: "English", //default_local_name,
     locales: [
       NameLocale(
         name: default_local_name,
@@ -155,6 +159,7 @@ class MyApp extends StatelessWidget {
                         ]
                       }, listSeparator: ", "),
                     ),
+                    Text("hello".ctr),
                     Text(DateTime.now().toWeekDayDate),
                     Text(DateTime.now().toAPIDate),
                     Text(DateTime.now().toAPIDateTime),
