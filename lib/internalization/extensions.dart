@@ -39,10 +39,10 @@ extension TranslationExt on String {
     //Update api
     String firebaseUrl = config.firebaseUrl;
     final connect = GetConnect();
-    var language_code = "${Get.locale!.languageCode}";
-    String url = "$firebaseUrl/$this/$language_code.json"
-        .replaceAll("#", "")
-        .replaceAll("\n", "_nl_");
+    var languageCode = "${Get.locale!.languageCode}";
+    String nameToPost = this.replaceAll("#", "_hsh_").replaceAll("\n", "_nl_");
+    String url = "$firebaseUrl/$nameToPost/$languageCode.json";
+
     var body = {
       "language": "${Get.locale!.languageCode}",
       "country": "${Get.locale!.countryCode}"
@@ -50,7 +50,7 @@ extension TranslationExt on String {
     dprint("\nPOSTING TRANSLATION");
     dprint(
         "Posting after canUpdate:$canUpdate updateMissOnly:$updateMissOnly and isPossible:$isPossible");
-    dprint(this);
+    dprint(nameToPost);
     dprint("");
 
     connect.patch(url, body).then((response) {
