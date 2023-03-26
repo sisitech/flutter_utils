@@ -22,8 +22,9 @@ extension TranslationExt on String {
     }
     var canUpdate =
         kDebugMode ? config.updateAPIDebug : config.updateAPIRelease;
-    var updateMissOnly =
-        kDebugMode ? config.updateAPIDebug : config.updateAPIRelease;
+    var updateMissOnly = kDebugMode
+        ? config.updateDebugMissOnlyDebug
+        : config.updateDebugMissOnlyRelease;
     // If can't update ignore
     if (!canUpdate) {
       return;
@@ -34,9 +35,6 @@ extension TranslationExt on String {
         return;
       }
     }
-    dprint(
-        "Posting after canUpdate:$canUpdate updateMissOnly:$updateMissOnly and isPossible:$isPossible");
-    dprint(this);
 
     //Update api
     String firebaseUrl = config.firebaseUrl;
@@ -44,12 +42,17 @@ extension TranslationExt on String {
     var language_code = "${Get.locale!.languageCode}";
     String url = "$firebaseUrl/$this/$language_code.json"
         .replaceAll("#", "")
-        .replaceAll("\n", "[nl]");
+        .replaceAll("\n", "_nl_");
     var body = {
       "language": "${Get.locale!.languageCode}",
       "country": "${Get.locale!.countryCode}"
     };
-    dprint("POSTING TRANSLATION");
+    dprint("\nPOSTING TRANSLATION");
+    dprint(
+        "Posting after canUpdate:$canUpdate updateMissOnly:$updateMissOnly and isPossible:$isPossible");
+    dprint(this);
+    dprint("");
+
     connect.patch(url, body).then((response) {
       // dprint(response.body);
     }, onError: (error) {
