@@ -36,6 +36,7 @@ extension TranslationExt on String {
     }
     dprint(
         "Posting after canUpdate:$canUpdate updateMissOnly:$updateMissOnly and isPossible:$isPossible");
+    dprint(this);
 
     //Update api
     String firebaseUrl = config.firebaseUrl;
