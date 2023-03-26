@@ -42,7 +42,9 @@ extension TranslationExt on String {
     String firebaseUrl = config.firebaseUrl;
     final connect = GetConnect();
     var language_code = "${Get.locale!.languageCode}";
-    String url = "$firebaseUrl/$this/$language_code.json".replaceAll("#", "");
+    String url = "$firebaseUrl/$this/$language_code.json"
+        .replaceAll("#", "")
+        .replaceAll("\n", "[nl]");
     var body = {
       "language": "${Get.locale!.languageCode}",
       "country": "${Get.locale!.countryCode}"
