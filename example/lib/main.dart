@@ -35,7 +35,7 @@ void main() async {
       revokeTokenUrl: 'o/revoke_token/'));
   await GetStorage.init();
   await GetStorage.init('GetStorage');
-  Get.put(LolaleConfig(updateAPIDebug: true, updateDebugMissOnlyDebug: true));
+  Get.put(LolaleConfig(updateAPIDebug: true, updateMissOnlyDebug: false));
 
   Get.put(OfflineHttpCacheController());
   Get.put(NetworkStatusController());

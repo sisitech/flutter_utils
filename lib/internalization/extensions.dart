@@ -22,9 +22,8 @@ extension TranslationExt on String {
     }
     var canUpdate =
         kDebugMode ? config.updateAPIDebug : config.updateAPIRelease;
-    var updateMissOnly = kDebugMode
-        ? config.updateDebugMissOnlyDebug
-        : config.updateDebugMissOnlyRelease;
+    var updateMissOnly =
+        kDebugMode ? config.updateMissOnlyDebug : config.updateMissOnlyRelease;
     // If can't update ignore
     if (!canUpdate) {
       return;
@@ -47,12 +46,14 @@ extension TranslationExt on String {
       "language": "${Get.locale!.languageCode}",
       "country": "${Get.locale!.countryCode}"
     };
-    dprint("\nPOSTING TRANSLATION");
-    dprint(
-        "Posting after canUpdate:$canUpdate updateMissOnly:$updateMissOnly and isPossible:$isPossible");
-    dprint(nameToPost);
-    dprint("");
 
+    if (config.printDebug && kDebugMode) {
+      dprint("\n ***POSTING TRANSLATION***");
+      dprint(
+          "Posting after canUpdate:$canUpdate updateMissOnly:$updateMissOnly and isPossible:$isPossible");
+      dprint(nameToPost);
+      dprint("******");
+    }
     connect.patch(url, body).then((response) {
       // dprint(response.body);
     }, onError: (error) {
