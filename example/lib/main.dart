@@ -35,7 +35,11 @@ void main() async {
       revokeTokenUrl: 'o/revoke_token/'));
   await GetStorage.init();
   await GetStorage.init('GetStorage');
-  Get.put(LolaleConfig(updateAPIDebug: true, updateMissOnlyDebug: false));
+  Get.put(LolaleConfig(
+    updateAPIDebug: true,
+    updateMissOnlyDebug: false,
+    printMissOnlyDebug: true,
+  ));
 
   Get.put(OfflineHttpCacheController());
   Get.put(NetworkStatusController());
@@ -160,6 +164,7 @@ class MyApp extends StatelessWidget {
                       }, listSeparator: ", "),
                     ),
                     Text("hello".ctr),
+                    Text("hello1".ctr),
                     Text(DateTime.now().toWeekDayDate),
                     Text(DateTime.now().toAPIDate),
                     Text(DateTime.now().toAPIDateTime),

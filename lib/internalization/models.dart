@@ -12,6 +12,7 @@ class NameLocale {
 class LolaleConfig {
   final bool updateAPIDebug;
   final bool printDebug;
+  final bool printMissOnlyDebug;
   final bool updateAPIRelease;
   final bool updateMissOnlyDebug;
   final bool updateMissOnlyRelease;
@@ -23,6 +24,7 @@ class LolaleConfig {
     this.updateMissOnlyDebug = false,
     this.updateMissOnlyRelease = false,
     this.printDebug = true,
+    this.printMissOnlyDebug = false,
     this.firebaseUrl =
         "https://somtranslation-1f5b5-default-rtdb.firebaseio.com",
   });

@@ -48,11 +48,13 @@ extension TranslationExt on String {
     };
 
     if (config.printDebug && kDebugMode) {
-      dprint("\n ***POSTING TRANSLATION***");
-      dprint(
-          "Posting after canUpdate:$canUpdate updateMissOnly:$updateMissOnly and isPossible:$isPossible");
-      dprint(nameToPost);
-      dprint("******");
+      if (!config.printMissOnlyDebug || !isPossible) {
+        dprint("\n ***POSTING TRANSLATION***");
+        dprint(
+            "Posting after canUpdate:$canUpdate updateMissOnly:$updateMissOnly and isPossible:$isPossible");
+        dprint(nameToPost);
+        dprint("******");
+      }
     }
     connect.patch(url, body).then((response) {
       // dprint(response.body);
