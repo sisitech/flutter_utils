@@ -1,5 +1,9 @@
 # Local Notifications
 
+## Installation
+
+Add `flutter_local_notifications: ^13.0.0` to your `pubspec.yaml`
+
 ## Android setup
 
 In the `android/app/build.gradle`

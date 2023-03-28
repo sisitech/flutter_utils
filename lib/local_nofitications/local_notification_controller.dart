@@ -28,13 +28,12 @@ class LocalNotificationController extends SuperController {
     // initializeLocalNotifications();
   }
 
-  requestPermission() {
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
-  }
-
   initializeLocalNotifications(
       {String defaultIcon = "@mipmap/ic_launcher"}) async {
+    if (!Platform.isAndroid) {
+      dprint("Ignoring non android platfroms");
+      return;
+    }
     // Initialization  setting for android
     InitializationSettings initializationSettingsAndroid =
         InitializationSettings(
@@ -87,15 +86,10 @@ class LocalNotificationController extends SuperController {
   Future<void> showBasicNotification(int id, String? title, String? body,
       NotificationDetails notificationDetails,
       {dynamic payload}) async {
-    // const AndroidNotificationDetails androidNotificationDetails =
-    //     AndroidNotificationDetails('your channel id', 'your channel name',
-    //         channelDescription: 'your channel description',
-    //         importance: Importance.max,
-    //         priority: Priority.high,
-    //         ticker: 'ticker');
-    // const NotificationDetails notificationDetails = NotificationDetails(
-    //   android: androidNotificationDetails,
-    // );
+    if (!Platform.isAndroid) {
+      dprint("Ignoring non android platfroms");
+      return;
+    }
     await _notificationsPlugin.show(id, title, body, notificationDetails,
         payload: payload);
   }
