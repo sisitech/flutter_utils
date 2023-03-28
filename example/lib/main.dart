@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_utils/bottom_navigation/bottom_navigation.dart';
 import 'package:flutter_utils/bottom_navigation/models.dart';
 import 'package:flutter_utils/flutter_utils.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_utils/graphs/pie.dart';
 import 'package:flutter_utils/internalization/extensions.dart';
 import 'package:flutter_utils/internalization/language_controller.dart';
 import 'package:flutter_utils/internalization/models.dart';
+import 'package:flutter_utils/local_nofitications/local_notification_controller.dart';
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/network_status/network_status.dart';
 import 'package:flutter_utils/network_status/network_status_controller.dart';
@@ -25,6 +27,20 @@ import 'package:flutter_utils/extensions/date_extensions.dart';
 
 const default_local_name = "Kiswahili";
 // import 'package:flutter_utils/';
+
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse notificationResponse) {
+  // ignore: avoid_print
+  print('notification(${notificationResponse.id}) action tapped: '
+      '${notificationResponse.actionId} with'
+      ' payload: ${notificationResponse.payload}');
+  if (notificationResponse.input?.isNotEmpty ?? false) {
+    // ignore: avoid_print
+    print(
+        'notification action tapped with input: ${notificationResponse.input}');
+  }
+}
+
 void main() async {
   Get.put<APIConfig>(APIConfig(
       apiEndpoint: "https://dukapi.roometo.com",
@@ -36,14 +52,19 @@ void main() async {
   await GetStorage.init();
   await GetStorage.init('GetStorage');
   Get.put(LolaleConfig(
-    updateAPIDebug: true,
+    updateAPIDebug: false,
     updateMissOnlyDebug: false,
-    printMissOnlyDebug: true,
+    printMissOnlyDebug: false,
   ));
 
   Get.put(OfflineHttpCacheController());
   Get.put(NetworkStatusController());
   Get.put(OfflineHttpCacheController());
+
+  var notificationCont = Get.put(LocalNotificationController(
+      notificationTapBackground: notificationTapBackground));
+
+  await notificationCont.initializeLocalNotifications();
 
   Get.put(LocaleController(
     defaultLocaleName: "English", //default_local_name,
@@ -124,67 +145,94 @@ class MyApp extends StatelessWidget {
           name: 'main',
           tabs: [
             BottomNavigationItem(
-              widget: SafeArea(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    IconButton(
-                      onPressed: () async {
-                        await triggerPhoneCall("0727290364");
-                      },
-                      icon: Icon(Icons.phone),
-                    ),
-                    PackageInfoWidget(),
-                    Text(
-                      "@name of @you# "
-                              "\nSimple List: @details#"
-                              "\nSimple List Index: @details.0#"
-                              "\nMap: @map.name.year# "
-                              "\nMap - List: @map.name.names# "
-                              "\nMap - List: @map.name.details#"
-                              "\n List<dynamic>: @studs.0.name#"
-                              "\n List<dynamic>2 : @studs..name#"
-                          .interpolate({
-                        "name": "Micha",
-                        "you": "Iu",
-                        "details": ["Math", "Eng"],
-                        "map": {
-                          "name": {
-                            "age": 10,
-                            "names": [],
-                            "details": ["Math", "Eng"],
-                            "year": "1999",
-                          },
+              widget: SingleChildScrollView(
+                child: SafeArea(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                        onPressed: () async {
+                          await triggerPhoneCall("0727290364");
                         },
-                        "studs": [
-                          {"name": "Mwash"},
-                          {"name": "Kev"},
-                        ]
-                      }, listSeparator: ", "),
-                    ),
-                    Text("hello".ctr),
-                    Text("hello1".ctr),
-                    Text(DateTime.now().toWeekDayDate),
-                    Text(DateTime.now().toAPIDate),
-                    Text(DateTime.now().toAPIDateTime),
-                    UtilsPieChart(
-                      data: PieChartData(
-                        sections: [
-                          PieChartSectionData(
-                            value: 25,
-                            color: Colors.blue,
-                            title: '26% Present',
-                          ),
-                          PieChartSectionData(
-                            value: 75,
-                            color: Colors.green,
-                            title: '75%',
-                          )
-                        ],
+                        icon: Icon(Icons.phone),
                       ),
-                    )
-                  ],
+                      PackageInfoWidget(),
+                      ElevatedButton.icon(
+                          onPressed: () {
+                            var notCont =
+                                Get.find<LocalNotificationController>();
+                            notCont.counter.value = notCont.counter.value + 1;
+                            const AndroidNotificationDetails
+                                androidNotificationDetails =
+                                AndroidNotificationDetails('B0', 'Basic',
+                                    channelDescription:
+                                        'For testing purposes nothing more',
+                                    importance: Importance.max,
+                                    priority: Priority.high,
+                                    ticker: 'ticker');
+                            const NotificationDetails notificationDetails =
+                                NotificationDetails(
+                              android: androidNotificationDetails,
+                            );
+                            notCont.showBasicNotification(
+                                notCont.counter.value,
+                                "Hello ${notCont.counter.value}",
+                                "THis is the body",
+                                notificationDetails);
+                          },
+                          icon: Icon(Icons.notification_add_outlined),
+                          label: const Text("Send Notification")),
+                      Text(
+                        "@name of @you# "
+                                "\nSimple List: @details#"
+                                "\nSimple List Index: @details.0#"
+                                "\nMap: @map.name.year# "
+                                "\nMap - List: @map.name.names# "
+                                "\nMap - List: @map.name.details#"
+                                "\n List<dynamic>: @studs.0.name#"
+                                "\n List<dynamic>2 : @studs..name#"
+                            .interpolate({
+                          "name": "Micha",
+                          "you": "Iu",
+                          "details": ["Math", "Eng"],
+                          "map": {
+                            "name": {
+                              "age": 10,
+                              "names": [],
+                              "details": ["Math", "Eng"],
+                              "year": "1999",
+                            },
+                          },
+                          "studs": [
+                            {"name": "Mwash"},
+                            {"name": "Kev"},
+                          ]
+                        }, listSeparator: ", "),
+                      ),
+                      Text("hello".ctr),
+                      Text("hello1".ctr),
+                      Text(DateTime.now().toWeekDayDate),
+                      Text(DateTime.now().toAPIDate),
+                      Text(DateTime.now().toAPIDateTime),
+                      UtilsPieChart(
+                        data: PieChartData(
+                          sections: [
+                            PieChartSectionData(
+                              value: 25,
+                              color: Colors.blue,
+                              title: '26% Present',
+                            ),
+                            PieChartSectionData(
+                              value: 75,
+                              color: Colors.green,
+                              title: '75%',
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
               barItem: const BottomNavigationBarItem(

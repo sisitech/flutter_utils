@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.example">
+    package="com.sisitech.flutterutils">
    <application
-        android:label="example"
+        android:label="Sisitech Utils"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

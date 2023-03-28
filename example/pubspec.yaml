@@ -52,11 +52,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   get: ^4.6.5
   get_storage: ^2.0.3
+  flutter_local_notifications: ^13.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_launcher_icons: ^0.12.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -66,6 +67,11 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/sisitech_logo_kinda.png"
 
 # The following section is specific to Flutter packages.
 flutter:
