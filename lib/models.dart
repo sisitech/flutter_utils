@@ -34,7 +34,7 @@ class OfflineHttpCall {
         data["id"] = instanceId;
         return data;
       }
-      var id = "api/v1/users/32/".idFromUpdateUrl;
+      var id = urlPath.idFromUpdateUrl;
       if (id != null) {
         data["id"] = id;
         return data;
