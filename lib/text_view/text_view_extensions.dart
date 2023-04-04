@@ -159,4 +159,18 @@ extension MyStringExt on String {
   String get slug {
     return slugify(this, delimiter: '_');
   }
+
+  String toCapitalized() =>
+      isNotEmpty ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
+
+  String get toTitleCase {
+    return replaceAll("_", " ").toCapitalized();
+  }
+
+  String get toCapitalizeEachWord {
+    if (isEmpty) {
+      return "";
+    }
+    return toTitleCase.split(" ").map((e) => e.toCapitalized()).join(" ");
+  }
 }
