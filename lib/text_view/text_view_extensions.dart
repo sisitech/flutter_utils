@@ -160,17 +160,17 @@ extension MyStringExt on String {
     return slugify(this, delimiter: '_');
   }
 
-  String toCapitalized() =>
+  String get capitalize =>
       isNotEmpty ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
 
-  String get toTitleCase {
-    return replaceAll("_", " ").toCapitalized();
+  String get tiitleCase {
+    return replaceAll("_", " ").capitalize;
   }
 
-  String get toCapitalizeEachWord {
+  String get capitalizeEachWord {
     if (isEmpty) {
       return "";
     }
-    return toTitleCase.split(" ").map((e) => e.toCapitalized()).join(" ");
+    return tiitleCase.split(" ").map((e) => e.capitalize).join(" ");
   }
 }

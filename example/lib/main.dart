@@ -215,8 +215,8 @@ class MyApp extends StatelessWidget {
                       Text(DateTime.now().toWeekDayDate),
                       Text(DateTime.now().toAPIDate),
                       Text(DateTime.now().toAPIDateTime),
-                      Text("hello_dada".toTitleCase),
-                      Text("hello_dada".toCapitalizeEachWord),
+                      Text("hello_dada".tiitleCase),
+                      Text("hello_dada".capitalizeEachWord),
                       UtilsPieChart(
                         data: PieChartData(
                           sections: [
