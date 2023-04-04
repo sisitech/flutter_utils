@@ -185,9 +185,8 @@ extension MyStringExt on String {
     return "${this.toUrlNoSlash()}/";
   }
 
-  String? get idFromUpdateUrl {
+  int? get idFromUpdateUrl {
     var last_part = toUrlNoSlash().split("/").last;
-    var value = int.tryParse(last_part);
-    return value != null ? "$value" : null;
+    return int.tryParse(last_part);
   }
 }
