@@ -163,7 +163,7 @@ extension MyStringExt on String {
   String get capitalize =>
       isNotEmpty ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
 
-  String get tiitleCase {
+  String get titleCase {
     return replaceAll("_", " ").capitalize;
   }
 
@@ -171,6 +171,6 @@ extension MyStringExt on String {
     if (isEmpty) {
       return "";
     }
-    return tiitleCase.split(" ").map((e) => e.capitalize).join(" ");
+    return titleCase.split(" ").map((e) => e.capitalize).join(" ");
   }
 }
