@@ -11,6 +11,7 @@ const offline_http_call_prefix = "offline_http_call";
 class OfflineHttpCall {
   String name;
   String urlPath;
+  String? instanceId;
   String storageContainer;
   dynamic formData;
   String httpMethod;
@@ -22,8 +23,25 @@ class OfflineHttpCall {
     required this.name,
     required this.httpMethod,
     required this.urlPath,
+    this.instanceId,
     this.storageContainer = "GetStorage",
   });
+
+  dynamic get instance {
+    var data = formData;
+    if (httpMethod != "POST") {
+      if (instanceId != null) {
+        data["id"] = instanceId;
+        return data;
+      }
+      var id = "api/v1/users/32/".idFromUpdateUrl;
+      if (id != null) {
+        data["id"] = id;
+        return data;
+      }
+    }
+    return data;
+  }
 
   String get id {
     var id_string =

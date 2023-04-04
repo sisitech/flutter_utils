@@ -173,4 +173,21 @@ extension MyStringExt on String {
     }
     return titleCase.split(" ").map((e) => e.capitalize).join(" ");
   }
+
+  String toUrlNoSlash() {
+    if (this.endsWith("/")) {
+      return this.substring(0, this.length - 1);
+    }
+    return this;
+  }
+
+  String toUrlWithSlash() {
+    return "${this.toUrlNoSlash()}/";
+  }
+
+  String? get idFromUpdateUrl {
+    var last_part = toUrlNoSlash().split("/").last;
+    var value = int.tryParse(last_part);
+    return value != null ? "$value" : null;
+  }
 }

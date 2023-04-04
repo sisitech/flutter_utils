@@ -12,6 +12,7 @@ OfflineHttpCall _$OfflineHttpCallFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       httpMethod: json['httpMethod'] as String,
       urlPath: json['urlPath'] as String,
+      instanceId: json['instanceId'] as String?,
       storageContainer: json['storageContainer'] as String? ?? "GetStorage",
     )
       ..status = json['status'] as String
@@ -21,6 +22,7 @@ Map<String, dynamic> _$OfflineHttpCallToJson(OfflineHttpCall instance) =>
     <String, dynamic>{
       'name': instance.name,
       'urlPath': instance.urlPath,
+      'instanceId': instance.instanceId,
       'storageContainer': instance.storageContainer,
       'formData': instance.formData,
       'httpMethod': instance.httpMethod,
