@@ -39,10 +39,9 @@ extension TranslationExt on String {
       }
     }
     //Check if it's an interpolation variable only
-    var hasSpace = value.contains(" ");
-    if (!hasSpace &&
-        value.split("").first == "@" &&
-        value.split("").last == "#") {
+    dprint(this);
+    var hasSpace = contains(" ");
+    if (!hasSpace && split("").first == "@" && split("").last == "#") {
       dprint("Ignore interpilation string only");
       dprint(value);
       return;
