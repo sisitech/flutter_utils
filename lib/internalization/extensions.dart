@@ -17,6 +17,9 @@ extension TranslationExt on String {
   }
 
   _updateResult(String value) {
+    if (trim().isEmpty) {
+      return;
+    }
     LolaleConfig config;
     var isPossible = this.isTranslatable;
     try {
@@ -39,7 +42,7 @@ extension TranslationExt on String {
       }
     }
     //Check if it's an interpolation variable only
-    dprint("Gotttiii $this");
+
     var hasSpace = contains(" ");
     if (!hasSpace && split("").first == "@" && split("").last == "#") {
       dprint("Ignore interpilation string only");
