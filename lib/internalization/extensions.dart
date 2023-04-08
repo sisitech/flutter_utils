@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_auth/auth_connect.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/internalization/models.dart';
 import 'package:get/get.dart';
@@ -8,7 +9,6 @@ extension TranslationExt on String {
     if (Get.locale == null) {
       return false;
     }
-
     return Get.translations.containsKey(
             "${Get.locale!.languageCode}_${Get.locale!.countryCode}") &&
         Get.translations[
@@ -38,13 +38,27 @@ extension TranslationExt on String {
         return;
       }
     }
+    //Check if it's an interpolation variable only
+    var hasSpace = value.contains(" ");
+    if (!hasSpace &&
+        value.split("").first == "@" &&
+        value.split("").last == "#") {
+      dprint("Ignore interpilation string only");
+      dprint(value);
+      return;
+    }
 
     //Update api
     String firebaseUrl = config.firebaseUrl;
     final connect = GetConnect();
+    if (Get?.locale == null) {
+      return;
+    }
+
     var languageCode = "${Get.locale!.languageCode}";
+
     String nameToPost = this.replaceAll("#", "_hsh_").replaceAll("\n", "_nl_");
-    String url = "$firebaseUrl/$nameToPost/$languageCode.json";
+    String firanseUrl = "$firebaseUrl/$nameToPost/$languageCode.json";
 
     var body = {
       "language": "${Get.locale!.languageCode}",
@@ -57,14 +71,26 @@ extension TranslationExt on String {
         dprint(
             "Posting after canUpdate:$canUpdate updateMissOnly:$updateMissOnly and isPossible:$isPossible");
         dprint(nameToPost);
+
+        //TODO: Select between firebase dn normal url
+
+        // connect.patch(firanseUrl, body).then((response) {
+        //   // dprint(response.body);
+        // }, onError: (error) {
+        //   dprint(error);
+        // });
+        try {
+          var authProvider = Get.find<AuthProvider>();
+          var apiUrl = "api/v1/translation-texts/";
+          authProvider.formPost(apiUrl, {"title": this});
+        } catch (e, trace) {
+          dprint(e);
+          dprint(trace);
+        }
+
         dprint("******");
       }
     }
-    connect.patch(url, body).then((response) {
-      // dprint(response.body);
-    }, onError: (error) {
-      dprint(error);
-    });
   }
 
   String get ctr {

@@ -56,7 +56,7 @@ void main() async {
   await GetStorage.init();
   await GetStorage.init('GetStorage');
   Get.put(LolaleConfig(
-    updateAPIDebug: false,
+    updateAPIDebug: true,
     updateMissOnlyDebug: false,
     printMissOnlyDebug: false,
   ));
@@ -213,6 +213,8 @@ class MyApp extends StatelessWidget {
                       ),
                       Text("hello".ctr),
                       Text("hello1".ctr),
+                      Text("@name#".ctr.interpolate({"name": "hello"})),
+                      Text("@name#_@name2#".ctr.interpolate({"name": "hello"})),
                       Text(DateTime.now().toWeekDayDate),
                       Text(DateTime.now().toAPIDate),
                       Text(DateTime.now().toAPIDateTime),
