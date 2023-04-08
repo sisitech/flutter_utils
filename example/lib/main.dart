@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/flutter_auth_controller.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_utils/bottom_navigation/bottom_navigation.dart';
 import 'package:flutter_utils/bottom_navigation/models.dart';
 import 'package:flutter_utils/flutter_utils.dart';
@@ -43,12 +45,14 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
 
 void main() async {
   Get.put<APIConfig>(APIConfig(
-      apiEndpoint: "https://dukapi.roometo.com",
+      apiEndpoint: "https://somapi.request.africa",
       version: "api/v1",
-      clientId: "NUiCuG59zwZJR14tIdWD7iQ5ILFnpxbdrO2epHIG",
+      clientId: "lrPkKtmh14glEbCaeMdLL4yLO1oFkac1yTq2ctdm",
       tokenUrl: 'o/token/',
       grantType: "password",
       revokeTokenUrl: 'o/revoke_token/'));
+  Get.put(AuthController());
+
   await GetStorage.init();
   await GetStorage.init('GetStorage');
   Get.put(LolaleConfig(
@@ -66,20 +70,17 @@ void main() async {
 
   await notificationCont.initializeLocalNotifications();
 
-  Get.put(LocaleController(
-    defaultLocaleName: "English", //default_local_name,
-    locales: [
-      NameLocale(
-        name: default_local_name,
-        locale: Locale("swa", "KE"),
-      ),
-      NameLocale(
-        name: "English",
-        locale: Locale("en", "US"),
-      ),
-    ],
-  ));
-  // StoreBinding();
+  var localeCont = LocaleController(
+    defaultLocaleName: "English",
+    defaultTranslationKeys: translationKeys,
+  );
+
+  Get.put(localeCont);
+  var box = GetStorage();
+  await box.remove(allLocalesKey);
+  await localeCont.apiGetLocales();
+  await localeCont.readAllStorageLocales();
+
   runApp(MyApp());
 }
 
@@ -135,7 +136,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       // initialBinding: ,
       title: 'Flutter Demo',
-      translations: AppTranslations(),
+      translations: Get.find<LocaleController>().getCustomAppTranslations(),
       theme: ThemeData(
         useMaterial3: true,
         primarySwatch: Colors.blue,
@@ -253,6 +254,7 @@ class MyApp extends StatelessWidget {
                           field: 'present_females', color: Colors.amber),
                     ],
                   ),
+                  const LoginWidget(),
                 ],
               ),
               barItem: const BottomNavigationBarItem(

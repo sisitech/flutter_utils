@@ -3,6 +3,8 @@ import 'package:flutter_utils/package_info/package_info_controller.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../internalization/language_controller.dart';
+
 class PackageInfoWidget extends StatelessWidget {
   TextStyle? style;
 

@@ -5,6 +5,10 @@ import 'package:get/get.dart';
 
 extension TranslationExt on String {
   bool get isTranslatable {
+    if (Get.locale == null) {
+      return false;
+    }
+
     return Get.translations.containsKey(
             "${Get.locale!.languageCode}_${Get.locale!.countryCode}") &&
         Get.translations[
@@ -65,6 +69,6 @@ extension TranslationExt on String {
 
   String get ctr {
     _updateResult(this);
-    return this.tr;
+    return tr;
   }
 }

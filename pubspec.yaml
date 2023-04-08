@@ -22,6 +22,9 @@ dependencies:
   workmanager: ^0.5.1
   package_info_plus: ^3.0.3
   flutter_local_notifications: ^13.0.0
+  flutter_auth:
+    git:
+      url: git@github.com:sisitech/flutter_auth.git
 
 dev_dependencies:
   flutter_test:

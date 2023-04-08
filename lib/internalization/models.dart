@@ -7,6 +7,12 @@ class NameLocale {
     required this.name,
     required this.locale,
   });
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "$locale";
+  }
 }
 
 class LolaleConfig {
