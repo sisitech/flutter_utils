@@ -28,6 +28,11 @@ class LocalNotificationController extends SuperController {
     // initializeLocalNotifications();
   }
 
+  @override
+  void onHidden() {
+    // TODO: implement onHidden
+  }
+
   initializeLocalNotifications(
       {String defaultIcon = "@mipmap/ic_launcher"}) async {
     if (!Platform.isAndroid) {

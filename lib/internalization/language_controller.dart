@@ -70,6 +70,11 @@ class LocaleController extends SuperController {
     setCurrentLocale();
   }
 
+  @override
+  void onHidden() {
+    // TODO: implement onHidden
+  }
+
   addMissingTranslation() {}
 
   CustomTranslations getCustomAppTranslations() {

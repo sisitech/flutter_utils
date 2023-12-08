@@ -64,6 +64,11 @@ class OfflineHttpCacheController extends SuperController {
     getInstances();
   }
 
+  @override
+  void onHidden() {
+    // TODO: implement onHidden
+  }
+
   getInstances() async {
     var keys = await getOfflineKeys("GetStorage");
     dprint(keys);
