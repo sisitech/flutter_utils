@@ -12,6 +12,7 @@ import 'package:flutter_utils/internalization/extensions.dart';
 import 'package:flutter_utils/internalization/language_controller.dart';
 import 'package:flutter_utils/internalization/models.dart';
 import 'package:flutter_utils/local_nofitications/local_notification_controller.dart';
+import 'package:flutter_utils/mixpanel/mixpanel_controller.dart';
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/network_status/network_status.dart';
 import 'package:flutter_utils/network_status/network_status_controller.dart';
@@ -62,9 +63,9 @@ void main() async {
   ));
 
   Get.put(OfflineHttpCacheController());
+  Get.put(MixPanelController(mixpanelToken: "f3132cbb2645d462c7b2058cb6e8e8f6"));
   Get.put(NetworkStatusController());
-  Get.put(OfflineHttpCacheController());
-
+ 
   var notificationCont = Get.put(LocalNotificationController(
       notificationTapBackground: notificationTapBackground));
 
@@ -93,6 +94,9 @@ class StoreBinding implements Bindings {
 class MyApp extends StatelessWidget {
   OfflineHttpCacheController offlineCont =
       Get.find<OfflineHttpCacheController>();
+
+     MixPanelController mixCont =
+      Get.find<MixPanelController>();
   MyApp({super.key}) {
     // OfflineHttpCall()
     offlineCont
@@ -154,6 +158,7 @@ class MyApp extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () async {
+                          mixCont.track("Call Made");
                           await triggerPhoneCall("0727290364");
                         },
                         icon: Icon(Icons.phone),
