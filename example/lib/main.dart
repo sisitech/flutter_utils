@@ -158,7 +158,7 @@ class MyApp extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () async {
-                          mixCont.track("Call Made");
+                          
                           await triggerPhoneCall("0727290364");
                         },
                         icon: Icon(Icons.phone),
@@ -181,9 +181,11 @@ class MyApp extends StatelessWidget {
                                 NotificationDetails(
                               android: androidNotificationDetails,
                             );
+                            var title="Hello ${notCont.counter.value}";
+                            mixCont.track(title);
                             notCont.showBasicNotification(
                                 notCont.counter.value,
-                                "Hello ${notCont.counter.value}",
+                                title,
                                 "THis is the body",
                                 notificationDetails);
                           },
@@ -249,20 +251,22 @@ class MyApp extends StatelessWidget {
                   icon: Icon(Icons.home), label: "Home"),
             ),
             BottomNavigationItem(
-              widget: Column(
-                children: [
-                  CustomBarGraph(
-                    data: data,
-                    xAxisField: "value",
-                    yAxisFields: [
-                      CustomBarChartRodData(field: 'present_males'),
-                      CustomBarChartRodData(field: 'absent_males'),
-                      CustomBarChartRodData(
-                          field: 'present_females', color: Colors.amber),
-                    ],
-                  ),
-                  const LoginWidget(),
-                ],
+              widget: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CustomBarGraph(
+                      data: data,
+                      xAxisField: "value",
+                      yAxisFields: [
+                        CustomBarChartRodData(field: 'present_males'),
+                        CustomBarChartRodData(field: 'absent_males'),
+                        CustomBarChartRodData(
+                            field: 'present_females', color: Colors.amber),
+                      ],
+                    ),
+                    const LoginWidget(),
+                  ],
+                ),
               ),
               barItem: const BottomNavigationBarItem(
                 icon: Icon(Icons.settings),
