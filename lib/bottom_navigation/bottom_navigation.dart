@@ -68,7 +68,7 @@ class CustomGetxBottomNavigation extends StatelessWidget {
     // return Obx(() => bottomNavigationController.selectedTab(tabs));
     return Obx(
       () => Scaffold(
-        floatingActionButton:floatingActionButton ,
+        floatingActionButton: floatingActionButton,
         body: bottomNavigationController.selectedTab(tabs),
         bottomNavigationBar: BottomNavigationBar(
           items: tabs.map((e) => e.barItem).toList(),
