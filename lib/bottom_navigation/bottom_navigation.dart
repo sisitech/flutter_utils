@@ -16,6 +16,7 @@ class CustomGetxBottomNavigation extends StatelessWidget {
   double iconSize;
   Color? selectedItemColor;
   Color? unselectedItemColor;
+  Widget? floatingActionButton;
   IconThemeData? selectedIconTheme;
   IconThemeData? unselectedIconTheme;
   double selectedFontSize;
@@ -39,6 +40,7 @@ class CustomGetxBottomNavigation extends StatelessWidget {
     this.fixedColor,
     this.backgroundColor,
     this.iconSize = 24.0,
+    this.floatingActionButton,
     this.selectedItemColor,
     this.unselectedItemColor,
     this.selectedIconTheme,
@@ -66,6 +68,7 @@ class CustomGetxBottomNavigation extends StatelessWidget {
     // return Obx(() => bottomNavigationController.selectedTab(tabs));
     return Obx(
       () => Scaffold(
+        floatingActionButton:floatingActionButton ,
         body: bottomNavigationController.selectedTab(tabs),
         bottomNavigationBar: BottomNavigationBar(
           items: tabs.map((e) => e.barItem).toList(),

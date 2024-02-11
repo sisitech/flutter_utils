@@ -22,7 +22,7 @@ import 'package:flutter_utils/phone_call_launcher.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
+import 'package:flutter_utils/fab/fab.dart';
 import 'internalization/translate.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_utils/internalization/select_locale.dart';
@@ -56,7 +56,7 @@ void main() async {
 
   await GetStorage.init();
   await GetStorage.init('GetStorage');
-  Get.put(LolaleConfig(
+  Get.put(const LolaleConfig(
     updateAPIDebug: true,
     updateMissOnlyDebug: false,
     printMissOnlyDebug: false,
@@ -147,6 +147,24 @@ class MyApp extends StatelessWidget {
       ),
       home: SafeArea(
         child: CustomGetxBottomNavigation(
+      floatingActionButton: ExtendedFAB(
+          // mainIcon: Icon(Icons.add), // Specify the main icon here
+          backgroundColor: Get.theme.primaryColor, // And the background color
+          items: [
+            FabItem(
+              icon: const Icon(Icons.add),
+              onPressed: () => print('Add pressed'),
+            ),
+            FabItem(
+              icon: const Icon(Icons.remove),
+              onPressed: () => print('Remove pressed'),
+            ),
+            FabItem(
+              icon: const Icon(Icons.share),
+              onPressed: () => print('Share pressed'),
+            ),
+          ],
+        ),
           name: 'main',
           tabs: [
             BottomNavigationItem(
@@ -161,7 +179,7 @@ class MyApp extends StatelessWidget {
                           
                           await triggerPhoneCall("0727290364");
                         },
-                        icon: Icon(Icons.phone),
+                        icon: const Icon(Icons.phone),
                       ),
                       PackageInfoWidget(),
                       ElevatedButton.icon(
@@ -189,7 +207,7 @@ class MyApp extends StatelessWidget {
                                 "THis is the body",
                                 notificationDetails);
                           },
-                          icon: Icon(Icons.notification_add_outlined),
+                          icon: const Icon(Icons.notification_add_outlined),
                           label: const Text("Send Notification")),
                       Text(
                         "@name of @you# "
