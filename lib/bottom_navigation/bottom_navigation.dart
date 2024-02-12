@@ -69,6 +69,37 @@ class CustomGetxBottomNavigation extends StatelessWidget {
     return Obx(
       () => Scaffold(
         floatingActionButton: floatingActionButton,
+        appBar: AppBar(
+          backgroundColor: Get.theme.primaryColor,
+          title: const Text('Flutter Utils'),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+                child: Text('Drawer Header'),
+              ),
+              ListTile(
+                title: const Text('Item 1'),
+                onTap: () {
+                  // Update the state of the app.
+                  // ...
+                },
+              ),
+              ListTile(
+                title: const Text('Item 2'),
+                onTap: () {
+                  // Update the state of the app.
+                  // ...
+                },
+              ),
+            ],
+          ),
+        ),
         body: bottomNavigationController.selectedTab(tabs),
         bottomNavigationBar: BottomNavigationBar(
           items: tabs.map((e) => e.barItem).toList(),

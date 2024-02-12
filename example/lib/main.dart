@@ -183,7 +183,12 @@ class MyApp extends StatelessWidget {
                         icon: const Icon(Icons.phone),
                       ),
                       PackageInfoWidget(),
-                      const SwitchExample(),
+                      SisitechSwitch(
+                        externalOnChanged: (bool value) {
+                          // ignore: avoid_print
+                          print("Switch state changed to: $value");
+                        },
+                      ),
                       ElevatedButton.icon(
                           onPressed: () {
                             var notCont =
