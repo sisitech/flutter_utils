@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/drawer/drawer.dart';
 import 'package:get/get.dart';
 import 'bottom_controller.dart';
 import 'models.dart';
@@ -73,32 +74,37 @@ class CustomGetxBottomNavigation extends StatelessWidget {
           backgroundColor: Get.theme.primaryColor,
           title: const Text('Flutter Utils'),
         ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text('Drawer Header'),
-              ),
-              ListTile(
-                title: const Text('Item 1'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-              ListTile(
-                title: const Text('Item 2'),
-                onTap: () {
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-            ],
-          ),
+        drawer: SisitechDrawer(
+          // headerWidget: SisitechDrawerHeader(
+          //   headerBackgroundColor: Colors.black,
+          //   headerText: 'Halooooo',
+          //   headerSubText: 'Halooooooooo',
+          // ),
+          headerBackgroundColor: Get.theme.primaryColor,
+          headerText: 'Welcome,',
+          headerSubText: 'Ali Dennis',
+          headerImage: "https://avatars.githubusercontent.com/u/9420130?v=4",
+          items: [
+            SisitechDrawerItem(
+              title: 'Home',
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                print('Home tapped');
+              },
+              leadingIcon: Icons.home,
+              trailingIcon: Icons.arrow_forward,
+            ),
+            SisitechDrawerItem(
+              title: 'Settings',
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                print('Settings tapped');
+              },
+              leadingIcon: Icons.settings,
+              trailingIcon: Icons.arrow_forward,
+            ),
+            // Add more items as needed
+          ],
         ),
         body: bottomNavigationController.selectedTab(tabs),
         bottomNavigationBar: BottomNavigationBar(
