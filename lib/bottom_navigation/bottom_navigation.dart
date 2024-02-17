@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/drawer/drawer.dart';
 import 'package:get/get.dart';
 import 'bottom_controller.dart';
 import 'models.dart';
@@ -68,7 +69,43 @@ class CustomGetxBottomNavigation extends StatelessWidget {
     // return Obx(() => bottomNavigationController.selectedTab(tabs));
     return Obx(
       () => Scaffold(
-        floatingActionButton:floatingActionButton ,
+        floatingActionButton: floatingActionButton,
+        appBar: AppBar(
+          backgroundColor: Get.theme.primaryColor,
+          title: const Text('Flutter Utils'),
+        ),
+        drawer: SisitechDrawer(
+          // headerWidget: SisitechDrawerHeader(
+          //   headerBackgroundColor: Colors.black,
+          //   headerText: 'Halooooo',
+          //   headerSubText: 'Halooooooooo',
+          // ),
+          headerBackgroundColor: Get.theme.primaryColor,
+          headerText: 'Welcome,',
+          headerSubText: 'Ali Dennis',
+          headerImage: "https://avatars.githubusercontent.com/u/9420130?v=4",
+          items: [
+            SisitechDrawerItem(
+              title: 'Home',
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                print('Home tapped');
+              },
+              leadingIcon: Icons.home,
+              trailingIcon: Icons.arrow_forward,
+            ),
+            SisitechDrawerItem(
+              title: 'Settings',
+              onTap: () {
+                Navigator.pop(context); // Close the drawer
+                print('Settings tapped');
+              },
+              leadingIcon: Icons.settings,
+              trailingIcon: Icons.arrow_forward,
+            ),
+            // Add more items as needed
+          ],
+        ),
         body: bottomNavigationController.selectedTab(tabs),
         bottomNavigationBar: BottomNavigationBar(
           items: tabs.map((e) => e.barItem).toList(),

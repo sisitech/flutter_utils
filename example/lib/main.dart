@@ -27,6 +27,7 @@ import 'internalization/translate.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_utils/internalization/select_locale.dart';
 import 'package:flutter_utils/extensions/date_extensions.dart';
+import 'package:flutter_utils/switch/switch.dart';
 
 const default_local_name = "Kiswahili";
 // import 'package:flutter_utils/';
@@ -63,9 +64,10 @@ void main() async {
   ));
 
   Get.put(OfflineHttpCacheController());
-  Get.put(MixPanelController(mixpanelToken: "f3132cbb2645d462c7b2058cb6e8e8f6"));
+  Get.put(
+      MixPanelController(mixpanelToken: "f3132cbb2645d462c7b2058cb6e8e8f6"));
   Get.put(NetworkStatusController());
- 
+
   var notificationCont = Get.put(LocalNotificationController(
       notificationTapBackground: notificationTapBackground));
 
@@ -95,8 +97,7 @@ class MyApp extends StatelessWidget {
   OfflineHttpCacheController offlineCont =
       Get.find<OfflineHttpCacheController>();
 
-     MixPanelController mixCont =
-      Get.find<MixPanelController>();
+  MixPanelController mixCont = Get.find<MixPanelController>();
   MyApp({super.key}) {
     // OfflineHttpCall()
     offlineCont
@@ -147,24 +148,24 @@ class MyApp extends StatelessWidget {
       ),
       home: SafeArea(
         child: CustomGetxBottomNavigation(
-      floatingActionButton: ExtendedFAB(
-          // mainIcon: Icon(Icons.add), // Specify the main icon here
-          backgroundColor: Get.theme.primaryColor, // And the background color
-          items: [
-            FabItem(
-              icon: const Icon(Icons.add),
-              onPressed: () => print('Add pressed'),
-            ),
-            FabItem(
-              icon: const Icon(Icons.remove),
-              onPressed: () => print('Remove pressed'),
-            ),
-            FabItem(
-              icon: const Icon(Icons.share),
-              onPressed: () => print('Share pressed'),
-            ),
-          ],
-        ),
+          floatingActionButton: ExtendedFAB(
+            // mainIcon: Icon(Icons.add), // Specify the main icon here
+            backgroundColor: Get.theme.primaryColor, // And the background color
+            items: [
+              FabItem(
+                icon: const Icon(Icons.add),
+                onPressed: () => print('Add pressed'),
+              ),
+              FabItem(
+                icon: const Icon(Icons.remove),
+                onPressed: () => print('Remove pressed'),
+              ),
+              FabItem(
+                icon: const Icon(Icons.share),
+                onPressed: () => print('Share pressed'),
+              ),
+            ],
+          ),
           name: 'main',
           tabs: [
             BottomNavigationItem(
@@ -182,6 +183,12 @@ class MyApp extends StatelessWidget {
                         icon: const Icon(Icons.phone),
                       ),
                       PackageInfoWidget(),
+                      SisitechSwitch(
+                        externalOnChanged: (bool value) {
+                          // ignore: avoid_print
+                          print("Switch state changed to: $value");
+                        },
+                      ),
                       ElevatedButton.icon(
                           onPressed: () {
                             var notCont =

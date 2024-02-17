@@ -18,19 +18,17 @@ class ExtendedFAB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-  
-        children: [
-          FloatingActionButton(
-            onPressed: () {
-              controller.toggleOptions();
-            },
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        FloatingActionButton(
+          onPressed: () {
+            controller.toggleOptions();
+          },
           backgroundColor: backgroundColor,
           child: mainIcon,
-          ),
-          const SizedBox(height: 16.0),
-          Obx(() => 
-              Visibility(
+        ),
+        const SizedBox(height: 16.0),
+        Obx(() => Visibility(
               visible: controller.showOptions.value,
               child: Column(
                   children: items
@@ -43,8 +41,8 @@ class ExtendedFAB extends StatelessWidget {
                           ))
                       .toList()),
             )),
-        ],
-      );
+      ],
+    );
   }
 }
 
