@@ -83,15 +83,18 @@ class SisitechDrawer extends StatelessWidget {
                   headerSubText: headerSubText ?? '',
                   headerImage: headerImage ?? ''),
           ...items
-              .map((item) => ListTile(
-                    leading: Icon(item.leadingIcon),
-                    title: Text(item.title),
-                    trailing: item.trailingIcon != null
-                        ? Icon(item.trailingIcon)
-                        : null,
-                    onTap: item.onTap,
-                  ))
+              .map(
+                (item) => ListTile(
+                  leading: Icon(item.leadingIcon),
+                  title: Text(item.title),
+                  trailing: item.trailingIcon != null
+                      ? Icon(item.trailingIcon)
+                      : null,
+                  onTap: item.onTap,
+                ),
+              )
               .toList(),
+          Icon(Icons.abc_outlined),
         ],
       ),
     );
