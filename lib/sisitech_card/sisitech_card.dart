@@ -65,6 +65,7 @@ class SisitechCard extends StatelessWidget {
                   ),
                   Text(
                     title ?? '',
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: titleColor,
                         ),
@@ -74,6 +75,7 @@ class SisitechCard extends StatelessWidget {
                   ),
                   Text(
                     description ?? '',
+                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: descriptionColor,
                         ),
