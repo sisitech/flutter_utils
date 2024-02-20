@@ -4,6 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_utils/bottom_navigation/bottom_navigation.dart';
 import 'package:flutter_utils/bottom_navigation/models.dart';
+import 'package:flutter_utils/drawer/drawer.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/graphs/bar.dart';
 import 'package:flutter_utils/graphs/graphs_models.dart';
@@ -148,7 +149,38 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: SafeArea(
-        child: CustomGetxBottomNavigation(
+        child: SistchLayoutWithDrawerBottomNavigation(
+          drawer: SisitechDrawer(
+            headerBackgroundColor: Get.theme.primaryColor,
+            headerText: 'Welcome,',
+            headerSubText: 'Ali Dennis',
+            headerImage: "https://avatars.githubusercontent.com/u/9420130?v=4",
+            items: [
+              SisitechDrawerItem(
+                title: 'Home',
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                  print('Home tapped');
+                },
+                leadingIcon: Icons.home,
+                trailingIcon: Icons.arrow_forward,
+              ),
+              SisitechDrawerItem(
+                title: 'Settings',
+                onTap: () {
+                  Navigator.pop(context); // Close the drawer
+                  print('Settings tapped');
+                },
+                leadingIcon: Icons.settings,
+                trailingIcon: Icons.arrow_forward,
+              ),
+              // Add more items as needed
+            ],
+          ),
+          appBar: AppBar(
+            backgroundColor: Get.theme.primaryColor,
+            title: const Text('Flutter Utils'),
+          ),
           floatingActionButton: ExtendedFAB(
             // mainIcon: Icon(Icons.add), // Specify the main icon here
             backgroundColor: Get.theme.primaryColor, // And the background color
@@ -178,7 +210,6 @@ class MyApp extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () async {
-                          mixCont.track("Call Made");
                           await triggerPhoneCall("0727290364");
                         },
                         icon: const Icon(Icons.phone),
@@ -229,11 +260,10 @@ class MyApp extends StatelessWidget {
                                 NotificationDetails(
                               android: androidNotificationDetails,
                             );
-                            notCont.showBasicNotification(
-                                notCont.counter.value,
-                                "Hello ${notCont.counter.value}",
-                                "THis is the body",
-                                notificationDetails);
+                            var title = "Hello ${notCont.counter.value}";
+                            mixCont.track(title);
+                            notCont.showBasicNotification(notCont.counter.value,
+                                title, "THis is the body", notificationDetails);
                           },
                           icon: const Icon(Icons.notification_add_outlined),
                           label: const Text("Send Notification")),
@@ -297,24 +327,42 @@ class MyApp extends StatelessWidget {
                   icon: Icon(Icons.home), label: "Home"),
             ),
             BottomNavigationItem(
-              widget: Column(
-                children: [
-                  CustomBarGraph(
-                    data: data,
-                    xAxisField: "value",
-                    yAxisFields: [
-                      CustomBarChartRodData(field: 'present_males'),
-                      CustomBarChartRodData(field: 'absent_males'),
-                      CustomBarChartRodData(
-                          field: 'present_females', color: Colors.amber),
-                    ],
-                  ),
-                  const LoginWidget(),
-                ],
+              widget: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CustomBarGraph(
+                      data: data,
+                      xAxisField: "value",
+                      yAxisFields: [
+                        CustomBarChartRodData(field: 'present_males'),
+                        CustomBarChartRodData(field: 'absent_males'),
+                        CustomBarChartRodData(
+                            field: 'present_females', color: Colors.amber),
+                      ],
+                    ),
+                    const LoginWidget(),
+                  ],
+                ),
               ),
               barItem: const BottomNavigationBarItem(
                 icon: Icon(Icons.settings),
                 label: "Settings",
+              ),
+            ),
+            BottomNavigationItem(
+              widget: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  NetworkStatusWidget(),
+                  const LocaleSelectorWidget(
+                    child: Text("Select language / Chagua Lugha"),
+                  ),
+                  // LocaleSelectorWidget(child:)
+                ],
+              ),
+              barItem: const BottomNavigationBarItem(
+                icon: Icon(Icons.wifi),
+                label: "Wifi",
               ),
             ),
             BottomNavigationItem(

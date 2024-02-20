@@ -1,5 +1,3 @@
-
-
 import 'package:flutter_auth/flutter_auth_controller.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/mixpanel/mixpanel.dart';
@@ -8,16 +6,25 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 class MixpanelOptions {
   final bool enableAnonymous;
+  final bool enabled;
   final bool persistentAnonymous;
-  const MixpanelOptions({ this.enableAnonymous=true,this.persistentAnonymous=true});
+  final bool disableInDebug;
+  const MixpanelOptions({
+    this.enableAnonymous = true,
+    this.enabled = true,
+    this.persistentAnonymous = true,
+    this.disableInDebug = true,
+  });
 }
 
-class MixPanelController extends GetxController{
+class MixPanelController extends GetxController {
   late String mixpanelToken;
   Mixpanel? _mixpanel;
   late MixpanelOptions options;
-  MixPanelController({required this.mixpanelToken,this.options=const MixpanelOptions()});
+  AuthController authController = Get.find<AuthController>();
 
+  MixPanelController(
+      {required this.mixpanelToken, this.options = const MixpanelOptions()});
 
   @override
   void onInit() {
@@ -25,31 +32,59 @@ class MixPanelController extends GetxController{
     initializeMixPanel(options);
   }
 
-  get mixpanel{
+  get mixpanel {
     return _mixpanel;
-  } 
+  }
 
-  getAnonymouseuser(MixpanelOptions options){
+  saveAnonymousId() {}
+
+  getSavedAnonymousId() {}
+
+  getAnonymouseuser() {
     // Save a unique id to local storage and use it everytime
-      // The key should be passed when initializing.
-      return "Anonymous";
-  }
-  initializeMixPanel(MixpanelOptions options) async{
-    AuthController authController = Get.find<AuthController>();
-    _mixpanel=await initMixpanel(mixpanelToken);
-     if(authController.isAuthenticated$.value){
-      dprint("Mixpanel User ${authController.profile.value?["username"]} initialized.");
-      _mixpanel?.identify(authController.profile.value?["username"]);
-     }else {
-      dprint("Mixpanel Anonymous initialized.");
-      _mixpanel?.identify(getAnonymouseuser(options));
-     }
-    //  Get.put(_mixpanel);
+    // The key should be passed when initializing.
+    if (options.enableAnonymous && options.persistentAnonymous) {
+      // Save or get
+    }
+    return "Anonymous";
   }
 
-  track(String eventName, {Map<String, dynamic>? properties}){
-  _mixpanel?.track(eventName,properties:properties);
+  get isDisAbled {
+    if (options.disableInDebug) {
+      return false;
+    }
+    // Check if anonymous mode enalbed
+    if (!authController.isAuthenticated$.value && !options.enableAnonymous) {
+      return false;
+    }
+    return options.enabled;
   }
 
+  getUser() {
+    var anymousProfile = {"username": getAnonymouseuser()};
+    Map<String, dynamic> profile;
+    if (authController.isAuthenticated$.value) {
+      profile = authController.profile.value ?? anymousProfile;
+      dprint(
+          "Mixpanel User ${authController.profile.value?["username"]} initialized.");
+    } else {
+      profile = anymousProfile;
+    }
+    return profile;
+  }
 
+  initializeMixPanel(MixpanelOptions options) async {
+    if (isDisAbled) {
+      dprint(
+          "Mixpanel disabled,disableInDebug:${options.disableInDebug} enabled:${options.enabled}");
+      return;
+    }
+    _mixpanel = await initMixpanel(mixpanelToken);
+    var profile = getUser();
+    _mixpanel?.identify(profile["username"]);
+  }
+
+  track(String eventName, {Map<String, dynamic>? properties}) {
+    _mixpanel?.track(eventName, properties: properties);
+  }
 }
