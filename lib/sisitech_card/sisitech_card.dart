@@ -14,6 +14,7 @@ class SisitechCard extends StatelessWidget {
   final double? iconSize; // Optional icon size
   final Color? titleColor;
   final Color? descriptionColor;
+  final CrossAxisAlignment? cardAxisAlignment;
 
   const SisitechCard({
     super.key,
@@ -27,6 +28,7 @@ class SisitechCard extends StatelessWidget {
     this.iconSize, // Icon size is optional
     this.titleColor,
     this.descriptionColor,
+    this.cardAxisAlignment,
   });
 
   @override
@@ -41,6 +43,8 @@ class SisitechCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
+                crossAxisAlignment:
+                    cardAxisAlignment ?? CrossAxisAlignment.center,
                 children: [
                   if (assetImage != null)
                     Image.asset(
@@ -58,7 +62,6 @@ class SisitechCard extends StatelessWidget {
                   ),
                   Text(
                     title,
-                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: titleColor,
                         ),
@@ -68,7 +71,6 @@ class SisitechCard extends StatelessWidget {
                   ),
                   Text(
                     description,
-                    textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: descriptionColor,
                         ),
@@ -78,24 +80,6 @@ class SisitechCard extends StatelessWidget {
             ),
           ),
         ),
-        // Card(
-        //   color: Theme.of(context).primaryColor,
-        //   elevation: 2,
-        //   child: ListTile(
-        //     leading: Icon(Icons.label,
-        //         color: Theme.of(context).colorScheme.primaryContainer),
-        //     title: Text(
-        //       title,
-        //       style: TextStyle(
-        //           color: Theme.of(context).colorScheme.primaryContainer),
-        //     ),
-        //     subtitle: Text(
-        //       description,
-        //       style: TextStyle(
-        //           color: Theme.of(context).colorScheme.secondaryContainer),
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }

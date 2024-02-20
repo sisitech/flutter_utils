@@ -228,7 +228,8 @@ class MyApp extends StatelessWidget {
                           description: 'Kshs. 10,000',
                           color: Colors.teal,
                           imageScale: 130,
-                          title: 'Balance', // Optional, as it defaults to teal
+                          cardAxisAlignment: CrossAxisAlignment.center,
+                          title: 'Balance',
                         ),
                       ),
                       SizedBox(
