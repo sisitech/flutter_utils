@@ -15,18 +15,19 @@ class SisitechCard extends StatelessWidget {
   final Color? titleColor;
   final Color? descriptionColor;
 
-  const SisitechCard(
-      {super.key,
-      this.assetImage, // Image path is optional
-      required this.description,
-      required this.title,
-      this.imageScale, // Image scale is optional
-      this.color = Colors.teal, // Default card color is teal
-      this.iconData, // Icon data is optional
-      this.iconColor, // Icon color is optional
-      this.iconSize, // Icon size is optional
-      this.titleColor,
-      this.descriptionColor});
+  const SisitechCard({
+    super.key,
+    this.assetImage, // Image path is optional
+    required this.description,
+    required this.title,
+    this.imageScale, // Image scale is optional
+    this.color = Colors.teal, // Default card color is teal
+    this.iconData, // Icon data is optional
+    this.iconColor, // Icon color is optional
+    this.iconSize, // Icon size is optional
+    this.titleColor,
+    this.descriptionColor,
+  });
 
   @override
   Widget build(BuildContext context) {

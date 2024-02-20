@@ -6,12 +6,14 @@ class ExtendedFAB extends StatelessWidget {
   final ExtendedFABController controller = Get.put(ExtendedFABController());
   final List<FabItem> items;
   final Widget? mainIcon; // Optional main icon for the extended FAB.
-  final Color backgroundColor; // Background color for the main FAB.
+  final Color? backgroundColor; // Background color for the main FAB.
+  final Color? foregroundColor; // Background color for the main FAB.
 
   ExtendedFAB({
     Key? key,
     required this.items,
     this.mainIcon = const Icon(Icons.add),
+    this.foregroundColor,
     this.backgroundColor = Colors.blue, // Default color if not specified.
   }) : super(key: key);
 
@@ -24,7 +26,10 @@ class ExtendedFAB extends StatelessWidget {
           onPressed: () {
             controller.toggleOptions();
           },
-          backgroundColor: backgroundColor,
+          backgroundColor:
+              backgroundColor ?? Theme.of(context).colorScheme.primary,
+          foregroundColor:
+              foregroundColor ?? Theme.of(context).colorScheme.primaryContainer,
           child: mainIcon,
         ),
         const SizedBox(height: 16.0),
