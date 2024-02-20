@@ -15,21 +15,22 @@ class SisitechCard extends StatelessWidget {
   final Color? titleColor;
   final Color? descriptionColor;
   final CrossAxisAlignment? cardAxisAlignment;
+  final MainAxisAlignment? cardMainAxisAlignment;
 
-  const SisitechCard({
-    super.key,
-    this.assetImage, // Image path is optional
-    this.description,
-    this.title,
-    this.imageScale, // Image scale is optional
-    this.color = Colors.teal, // Default card color is teal
-    this.iconData, // Icon data is optional
-    this.iconColor, // Icon color is optional
-    this.iconSize, // Icon size is optional
-    this.titleColor,
-    this.descriptionColor,
-    this.cardAxisAlignment,
-  });
+  const SisitechCard(
+      {super.key,
+      this.assetImage, // Image path is optional
+      this.description,
+      this.title,
+      this.imageScale, // Image scale is optional
+      this.color = Colors.teal, // Default card color is teal
+      this.iconData, // Icon data is optional
+      this.iconColor, // Icon color is optional
+      this.iconSize, // Icon size is optional
+      this.titleColor,
+      this.descriptionColor,
+      this.cardAxisAlignment,
+      this.cardMainAxisAlignment});
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +46,8 @@ class SisitechCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment:
                     cardAxisAlignment ?? CrossAxisAlignment.center,
+                mainAxisAlignment:
+                    cardMainAxisAlignment ?? MainAxisAlignment.center,
                 children: [
                   if (assetImage != null)
                     Image.asset(
