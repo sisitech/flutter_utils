@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'bottom_controller.dart';
 import 'models.dart';
 
-class CustomGetxBottomNavigation extends StatelessWidget {
+class SistchLayoutWithDrawerBottomNavigation extends StatelessWidget {
   final List<BottomNavigationItem> tabs;
   final Function? onControllerSetup;
   final String name;
@@ -28,16 +28,21 @@ class CustomGetxBottomNavigation extends StatelessWidget {
   bool? showUnselectedLabels;
   MouseCursor? mouseCursor;
   bool? enableFeedback;
+  AppBar? appBar;
+  Widget? drawer;
+
   BottomNavigationBarLandscapeLayout? landscapeLayout;
 
   BottomNavigationController? bottomNavigationController;
-  CustomGetxBottomNavigation({
+  SistchLayoutWithDrawerBottomNavigation({
     super.key,
     required this.tabs,
     required this.name,
     this.onControllerSetup,
     this.onTap,
     this.elevation,
+    this.appBar,
+    this.drawer,
     this.fixedColor,
     this.backgroundColor,
     this.iconSize = 24.0,
@@ -70,44 +75,11 @@ class CustomGetxBottomNavigation extends StatelessWidget {
     return Obx(
       () => Scaffold(
         floatingActionButton: floatingActionButton,
-        appBar: AppBar(
-          backgroundColor: Get.theme.primaryColor,
-          title: const Text('Flutter Utils'),
-        ),
-        drawer: SisitechDrawer(
-          // headerWidget: SisitechDrawerHeader(
-          //   headerBackgroundColor: Colors.black,
-          //   headerText: 'Halooooo',
-          //   headerSubText: 'Halooooooooo',
-          // ),
-          headerBackgroundColor: Get.theme.primaryColor,
-          headerText: 'Welcome,',
-          headerSubText: 'Ali Dennis',
-          headerImage: "https://avatars.githubusercontent.com/u/9420130?v=4",
-          items: [
-            SisitechDrawerItem(
-              title: 'Home',
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                print('Home tapped');
-              },
-              leadingIcon: Icons.home,
-              trailingIcon: Icons.arrow_forward,
-            ),
-            SisitechDrawerItem(
-              title: 'Settings',
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                print('Settings tapped');
-              },
-              leadingIcon: Icons.settings,
-              trailingIcon: Icons.arrow_forward,
-            ),
-            // Add more items as needed
-          ],
-        ),
+        appBar: appBar,
+        drawer: drawer,
         body: bottomNavigationController.selectedTab(tabs),
         bottomNavigationBar: BottomNavigationBar(
+          type: tabs.length > 3 ? BottomNavigationBarType.fixed : null,
           items: tabs.map((e) => e.barItem).toList(),
           onTap: (index) {
             bottomNavigationController?.selectTab(index, onTap);
