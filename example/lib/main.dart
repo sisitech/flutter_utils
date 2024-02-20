@@ -29,6 +29,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_utils/internalization/select_locale.dart';
 import 'package:flutter_utils/extensions/date_extensions.dart';
 import 'package:flutter_utils/switch/switch.dart';
+import 'package:flutter_utils/sisitech_card/sisitech_card.dart';
 
 const default_local_name = "Kiswahili";
 // import 'package:flutter_utils/';
@@ -219,6 +220,16 @@ class MyApp extends StatelessWidget {
                           // ignore: avoid_print
                           print("Switch state changed to: $value");
                         },
+                      ),
+                      SizedBox(
+                        width: Get.width * 1,
+                        child: const SisitechCard(
+                          assetImage: 'assets/images/sisitech_logo_kinda.png',
+                          description: 'Kshs. 10,000',
+                          color: Colors.teal,
+                          imageScale: 130,
+                          title: 'Balance', // Optional, as it defaults to teal
+                        ),
                       ),
                       ElevatedButton.icon(
                           onPressed: () {
