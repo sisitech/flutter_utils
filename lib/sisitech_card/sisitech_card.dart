@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 class SisitechCard extends StatelessWidget {
   final String? assetImage; // Optional image path
   final IconData? iconData; // Optional icon data
-  final String description;
-  final String title;
+  final String? description;
+  final String? title;
   final Color color; // Card color
   final double? imageScale; // Optional image scale
   final Color? iconColor; // Optional icon color
@@ -19,8 +19,8 @@ class SisitechCard extends StatelessWidget {
   const SisitechCard({
     super.key,
     this.assetImage, // Image path is optional
-    required this.description,
-    required this.title,
+    this.description,
+    this.title,
     this.imageScale, // Image scale is optional
     this.color = Colors.teal, // Default card color is teal
     this.iconData, // Icon data is optional
@@ -61,7 +61,7 @@ class SisitechCard extends StatelessWidget {
                     height: Get.height * 0.006,
                   ),
                   Text(
-                    title,
+                    title ?? '',
                     style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: titleColor,
                         ),
@@ -70,7 +70,7 @@ class SisitechCard extends StatelessWidget {
                     height: Get.height * 0.006,
                   ),
                   Text(
-                    description,
+                    description ?? '',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: descriptionColor,
                         ),
