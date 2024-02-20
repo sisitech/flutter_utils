@@ -1,21 +1,26 @@
-// File: lib/sisitech_card.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SisitechCard extends StatelessWidget {
-  final String assetImage;
+  final String? assetImage; // Optional image path
+  final IconData? iconData; // Optional icon data
   final String description;
   final String title;
-  final Color color;
-  final double imageScale;
+  final Color color; // Card color
+  final double? imageScale; // Optional image scale
+  final Color? iconColor; // Optional icon color
+  final double? iconSize; // Optional icon size
 
   const SisitechCard({
     super.key,
-    required this.assetImage,
+    this.assetImage, // Image path is optional
     required this.description,
     required this.title,
-    required this.imageScale,
-    this.color = Colors.teal, // Default color is teal
+    this.imageScale, // Image scale is optional
+    this.color = Colors.teal, // Default card color is teal
+    this.iconData, // Icon data is optional
+    this.iconColor, // Icon color is optional
+    this.iconSize, // Icon size is optional
   });
 
   @override
@@ -29,10 +34,18 @@ class SisitechCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Image.asset(
-              assetImage,
-              scale: imageScale,
-            ),
+            if (assetImage != null)
+              Image.asset(
+                assetImage!,
+                scale: imageScale ?? 1.0, // Use provided scale or default
+              )
+            else if (iconData != null)
+              Icon(
+                iconData,
+                size: iconSize ?? 24.0, // Use provided icon size or default
+                color: iconColor ??
+                    Colors.white, // Use provided icon color or default
+              ),
             SizedBox(
               height: Get.height * 0.006,
             ),

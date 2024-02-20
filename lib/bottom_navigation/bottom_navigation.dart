@@ -110,9 +110,9 @@ class CustomGetxBottomNavigation extends StatelessWidget {
         bottomNavigationBar: BottomNavigationBar(
           items: tabs.map((e) => e.barItem).toList(),
           onTap: (index) {
-            bottomNavigationController?.selectTab(index, onTap);
+            bottomNavigationController.selectTab(index, onTap);
           },
-          currentIndex: bottomNavigationController?.selectedIndex.value ?? 0,
+          currentIndex: bottomNavigationController.selectedIndex.value,
           elevation: elevation,
           fixedColor: fixedColor,
           backgroundColor: backgroundColor,

@@ -200,6 +200,18 @@ class MyApp extends StatelessWidget {
                           title: 'Balance', // Optional, as it defaults to teal
                         ),
                       ),
+                      SizedBox(
+                        width: Get.width * 1,
+                        child: SisitechCard(
+                          iconData: Icons.abc,
+                          iconSize: 40,
+                          iconColor: Theme.of(context).dialogBackgroundColor,
+                          description: 'Kshs. 10,000',
+                          color: Colors.teal,
+                          imageScale: 130,
+                          title: 'Balance', // Optional, as it defaults to teal
+                        ),
+                      ),
                       ElevatedButton.icon(
                           onPressed: () {
                             var notCont =
