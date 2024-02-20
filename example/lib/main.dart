@@ -196,7 +196,7 @@ class MyApp extends StatelessWidget {
                           assetImage: 'assets/images/sisitech_logo_kinda.png',
                           description: 'Kshs. 10,000',
                           color: Colors.teal,
-                          imageScale: 100,
+                          imageScale: 130,
                           title: 'Balance', // Optional, as it defaults to teal
                         ),
                       ),
