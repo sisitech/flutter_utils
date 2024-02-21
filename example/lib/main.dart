@@ -187,14 +187,17 @@ class MyApp extends StatelessWidget {
             items: [
               FabItem(
                 icon: const Icon(Icons.add),
+                title: 'Add',
                 onPressed: () => print('Add pressed'),
               ),
               FabItem(
                 icon: const Icon(Icons.remove),
+                title: 'Remove',
                 onPressed: () => print('Remove pressed'),
               ),
               FabItem(
                 icon: const Icon(Icons.share),
+                title: 'Share',
                 onPressed: () => print('Share pressed'),
               ),
             ],

@@ -41,7 +41,24 @@ class ExtendedFAB extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 16.0),
                             child: FloatingActionButton(
                               onPressed: item.onPressed,
-                              child: item.icon,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  item.icon,
+                                  Text(
+                                    item.title,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ))
                       .toList()),
@@ -54,6 +71,7 @@ class ExtendedFAB extends StatelessWidget {
 class FabItem {
   final Widget icon;
   final VoidCallback onPressed;
+  final String title;
 
-  FabItem({required this.icon, required this.onPressed});
+  FabItem({required this.icon, required this.onPressed, required this.title});
 }
