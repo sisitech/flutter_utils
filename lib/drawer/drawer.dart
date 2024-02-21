@@ -94,7 +94,6 @@ class SisitechDrawer extends StatelessWidget {
                 ),
               )
               .toList(),
-          Icon(Icons.abc_outlined),
         ],
       ),
     );
