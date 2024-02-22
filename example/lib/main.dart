@@ -389,8 +389,11 @@ class MyApp extends StatelessWidget {
               widget: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SisitechProgressIndicator(
-                    name: progressbar,
+                  const SisitechProgressIndicator(
+                    options: SisitechProgressOptions(
+                      name: progressbar,
+                      totalSteps: 10,
+                    ),
                   ),
                   NetworkStatusWidget(),
                   const LocaleSelectorWidget(
