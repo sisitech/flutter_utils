@@ -157,7 +157,7 @@ class MyApp extends StatelessWidget {
             headerBackgroundColor: Get.theme.primaryColor,
             headerText: 'Welcome,',
             headerSubText: 'Ali Dennis',
-            headerImage: "https://avatars.githubusercontent.com/u/9420130?v=4",
+            // headerImage: "https://avatars.githubusercontent.com/u/9420130?v=4",
             items: [
               SisitechDrawerItem(
                 title: 'Home',

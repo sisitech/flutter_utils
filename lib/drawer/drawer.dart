@@ -19,17 +19,34 @@ class SisitechDrawerHeader extends StatelessWidget {
     super.key,
     required this.headerBackgroundColor,
     required this.headerText,
-    this.headerSubText,
+    required this.headerSubText,
     this.headerImage,
   });
 
   final Color headerBackgroundColor;
   final String headerText;
-  final String? headerSubText;
+  final String headerSubText;
   final String? headerImage;
 
   @override
   Widget build(BuildContext context) {
+    Widget avatar;
+    if (headerImage != null && headerImage!.isNotEmpty) {
+      avatar = CircleAvatar(
+        backgroundImage: NetworkImage(headerImage!),
+      );
+    } else {
+      // If headerImage is null or empty, fallback to using the first letter of the headerText
+      String firstLetter =
+          headerSubText.isNotEmpty ? headerSubText[0].toUpperCase() : '';
+      avatar = CircleAvatar(
+        child: Text(
+          firstLetter,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+      );
+    }
+
     return DrawerHeader(
       decoration: BoxDecoration(
         color: headerBackgroundColor,
@@ -37,11 +54,7 @@ class SisitechDrawerHeader extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            backgroundImage:
-                headerImage != null ? NetworkImage(headerImage!) : null,
-            // NetworkImage('https://example.com/user_profile_pic.jpg'),
-          ),
+          avatar,
           const SizedBox(height: 16),
           Text(headerText, style: const TextStyle(color: Colors.white)),
           Text(headerSubText ?? '',
