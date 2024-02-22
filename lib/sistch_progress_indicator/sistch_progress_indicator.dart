@@ -4,11 +4,9 @@ import 'sistch_progress_controller.dart';
 
 class SisitechProgressOptions {
   final String name;
-  final int totalSteps;
   final ProgressBarController? progressBarController;
   const SisitechProgressOptions({
     required this.name,
-    required this.totalSteps,
     this.progressBarController,
   });
 }
@@ -47,7 +45,7 @@ class SisitechProgressIndicator extends StatelessWidget {
                 height: 20), // Spacing between the progress bar and text
             Obx(
               () => Text(
-                "Importing ${controller.currentTransaction.value}/${controller.options.totalSteps} transactions",
+                "Importing ${controller.currentTransaction.value}/${controller.totalSteps} transactions",
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),

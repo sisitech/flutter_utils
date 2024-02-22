@@ -9,12 +9,14 @@ class ProgressBarController extends GetxController {
 
   var progress = 0.0.obs; // Observable progress value
   var currentTransaction = 0.obs; // Observable transaction count
+  var totalSteps = 0.obs;
 
   // Method to increment the progress and update the transaction count
-  void incrementProgress() {
-    if (currentTransaction.value < options.totalSteps) {
+  void incrementProgress({int nextStep = 1}) {
+    currentTransaction.value = nextStep;
+    if (currentTransaction.value < totalSteps.value) {
       currentTransaction.value++;
-      progress.value = currentTransaction.value / options.totalSteps;
+      progress.value = currentTransaction.value / totalSteps.value;
     }
   }
 }
