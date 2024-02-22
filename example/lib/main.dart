@@ -49,6 +49,7 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
   }
 }
 
+const progressbar = "main";
 void main() async {
   Get.put<APIConfig>(APIConfig(
       apiEndpoint: "https://somapi.request.africa",
@@ -98,7 +99,6 @@ class StoreBinding implements Bindings {
 }
 
 class MyApp extends StatelessWidget {
-  final ProgressBarController controller = Get.put(ProgressBarController());
   OfflineHttpCacheController offlineCont =
       Get.find<OfflineHttpCacheController>();
 
@@ -207,6 +207,9 @@ class MyApp extends StatelessWidget {
                 icon: const Icon(Icons.add),
                 onPressed: () {
                   // Example action to update the progress
+                  final ProgressBarController controller =
+                      Get.find<ProgressBarController>(tag: progressbar);
+
                   var newValue =
                       (controller.progress.value + 0.1).clamp(0.0, 1.0);
                   controller.incrementProgress();
@@ -386,7 +389,12 @@ class MyApp extends StatelessWidget {
               widget: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SisitechProgressIndicator(),
+                  const SisitechProgressIndicator(
+                    options: SisitechProgressOptions(
+                      name: progressbar,
+                      totalSteps: 10,
+                    ),
+                  ),
                   NetworkStatusWidget(),
                   const LocaleSelectorWidget(
                     child: Text("Select language / Chagua Lugha"),

@@ -2,12 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'sistch_progress_controller.dart';
 
+class SisitechProgressOptions {
+  final String name;
+  final ProgressBarController? progressBarController;
+  const SisitechProgressOptions({
+    required this.name,
+    this.progressBarController,
+  });
+}
+
 class SisitechProgressIndicator extends StatelessWidget {
-  const SisitechProgressIndicator({super.key});
+  final SisitechProgressOptions options;
+
+  const SisitechProgressIndicator({super.key, required this.options});
 
   @override
   Widget build(BuildContext context) {
-    final ProgressBarController controller = Get.put(ProgressBarController());
+    final ProgressBarController controller;
+    if (options.progressBarController == null) {
+      controller =
+          Get.put(ProgressBarController(options: options), tag: options.name);
+    } else {
+      controller = options.progressBarController!;
+    }
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: SizedBox(
@@ -27,8 +45,8 @@ class SisitechProgressIndicator extends StatelessWidget {
                 height: 20), // Spacing between the progress bar and text
             Obx(
               () => Text(
-                "Importing ${controller.currentTransaction.value}/${controller.totalTransactions} transactions",
-                style: const TextStyle(fontSize: 16),
+                "Importing ${controller.currentTransaction.value}/${controller.totalSteps} transactions",
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
           ],
