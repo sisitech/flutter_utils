@@ -3,11 +3,14 @@ import 'package:get/get.dart';
 import 'sistch_progress_controller.dart';
 
 class SisitechProgressIndicator extends StatelessWidget {
-  const SisitechProgressIndicator({super.key});
+  final String name;
+
+  const SisitechProgressIndicator({super.key, required this.name});
 
   @override
   Widget build(BuildContext context) {
-    final ProgressBarController controller = Get.put(ProgressBarController());
+    final ProgressBarController controller =
+        Get.put(ProgressBarController(), tag: name);
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: SizedBox(
