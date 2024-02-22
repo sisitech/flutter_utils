@@ -20,6 +20,8 @@ import 'package:flutter_utils/network_status/network_status_controller.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
 import 'package:flutter_utils/package_info/package_info_widget.dart';
 import 'package:flutter_utils/phone_call_launcher.dart';
+import 'package:flutter_utils/sistch_progress_indicator/sistch_progress_controller.dart';
+import 'package:flutter_utils/sistch_progress_indicator/sistch_progress_indicator.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -96,6 +98,7 @@ class StoreBinding implements Bindings {
 }
 
 class MyApp extends StatelessWidget {
+  final ProgressBarController controller = Get.put(ProgressBarController());
   OfflineHttpCacheController offlineCont =
       Get.find<OfflineHttpCacheController>();
 
@@ -187,16 +190,29 @@ class MyApp extends StatelessWidget {
             items: [
               FabItem(
                 icon: const Icon(Icons.add),
+                title: 'Add',
                 onPressed: () => print('Add pressed'),
               ),
               FabItem(
                 icon: const Icon(Icons.remove),
+                title: 'Remove',
                 onPressed: () => print('Remove pressed'),
               ),
               FabItem(
                 icon: const Icon(Icons.share),
+                title: 'Share',
                 onPressed: () => print('Share pressed'),
               ),
+              FabItem(
+                icon: const Icon(Icons.add),
+                onPressed: () {
+                  // Example action to update the progress
+                  var newValue =
+                      (controller.progress.value + 0.1).clamp(0.0, 1.0);
+                  controller.incrementProgress();
+                },
+                title: "Progress",
+              )
             ],
           ),
           name: 'main',
@@ -222,9 +238,22 @@ class MyApp extends StatelessWidget {
                         },
                       ),
                       SizedBox(
-                        width: Get.width * 1,
+                        width: 1000,
                         child: const SisitechCard(
                           assetImage: 'assets/images/sisitech_logo_kinda.png',
+                          description: 'Kshs. 10,000',
+                          color: Colors.teal,
+                          imageScale: 130,
+                          cardAxisAlignment: CrossAxisAlignment.center,
+                          title: 'Balance',
+                        ),
+                      ),
+                      SizedBox(
+                        width: 1000,
+                        child: SisitechCard(
+                          iconData: Icons.abc,
+                          iconSize: 40,
+                          iconColor: Theme.of(context).dialogBackgroundColor,
                           description: 'Kshs. 10,000',
                           color: Colors.teal,
                           imageScale: 130,
@@ -357,6 +386,7 @@ class MyApp extends StatelessWidget {
               widget: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SisitechProgressIndicator(),
                   NetworkStatusWidget(),
                   const LocaleSelectorWidget(
                     child: Text("Select language / Chagua Lugha"),
