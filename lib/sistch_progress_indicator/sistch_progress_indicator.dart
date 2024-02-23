@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../flutter_utils.dart';
+
 class SisitechProgressOptions {
   final String name;
   final int totalSteps;
@@ -20,6 +22,8 @@ class SisitechProgressIndicator extends StatelessWidget {
   const SisitechProgressIndicator({super.key, required this.options});
   @override
   Widget build(BuildContext context) {
+    var step = (options.currentStep / options.totalSteps);
+
     return Padding(
       padding: EdgeInsets.all(Get.height * 0.011),
       child: SizedBox(
@@ -31,9 +35,9 @@ class SisitechProgressIndicator extends StatelessWidget {
               borderRadius:
                   BorderRadius.all(Radius.circular(Get.height * 0.011)),
               child: LinearProgressIndicator(
-                value: (options.currentStep /
-                    options
-                        .totalSteps), // Bind to the observable progress value
+                value: step.isNaN
+                    ? 0
+                    : step, // Bind to the observable progress value
               ),
             ),
             SizedBox(
