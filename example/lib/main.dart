@@ -393,7 +393,7 @@ class MyApp extends StatelessWidget {
                     options: SisitechProgressOptions(
                       name: progressbar,
                       totalSteps: 0,
-                      currentStep: 0,
+                      currentStep: 1,
                     ),
                   ),
                   NetworkStatusWidget(),

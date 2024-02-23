@@ -23,7 +23,7 @@ class SisitechProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var step = (options.currentStep / options.totalSteps);
-
+    // dprint(step);
     return Padding(
       padding: EdgeInsets.all(Get.height * 0.011),
       child: SizedBox(
@@ -35,7 +35,7 @@ class SisitechProgressIndicator extends StatelessWidget {
               borderRadius:
                   BorderRadius.all(Radius.circular(Get.height * 0.011)),
               child: LinearProgressIndicator(
-                value: step.isNaN
+                value: (step.isNaN | step.isInfinite)
                     ? 0
                     : step, // Bind to the observable progress value
               ),
