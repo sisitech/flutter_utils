@@ -8,6 +8,7 @@ class SisitechProgressOptions {
   const SisitechProgressOptions({
     required this.name,
     this.progressBarController,
+    required int totalSteps,
   });
 }
 
