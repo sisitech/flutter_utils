@@ -88,7 +88,14 @@ class SisitechDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MixPanelController mixCont = Get.find<MixPanelController>();
+    bool mixPanelEnabled = false;
+    MixPanelController? mixCont;
+    try {
+      mixCont = Get.find<MixPanelController>();
+      mixPanelEnabled = true;
+    } catch (e) {
+      mixPanelEnabled = false;
+    }
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -109,7 +116,7 @@ class SisitechDrawer extends StatelessWidget {
                       : null,
                   onTap: () {
                     item.onTap();
-                    mixCont.track(
+                    mixCont?.track(
                       "drawer_item_pressed",
                       properties: {"item_title": item.title},
                     );

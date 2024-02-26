@@ -87,4 +87,8 @@ class MixPanelController extends GetxController {
   track(String eventName, {Map<String, dynamic>? properties}) {
     _mixpanel?.track(eventName, properties: properties);
   }
+
+  timeEvent(String eventName) {
+    _mixpanel?.timeEvent(eventName);
+  }
 }
