@@ -20,7 +20,7 @@ import 'package:flutter_utils/network_status/network_status_controller.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
 import 'package:flutter_utils/package_info/package_info_widget.dart';
 import 'package:flutter_utils/phone_call_launcher.dart';
-import 'package:flutter_utils/sisitech_accordion/sisitech_accordion.dart';
+import 'package:flutter_utils/lockscreen/lockscreen_controller.dart';
 import 'package:flutter_utils/sistch_progress_indicator/sistch_progress_controller.dart';
 import 'package:flutter_utils/sistch_progress_indicator/sistch_progress_indicator.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
@@ -71,7 +71,8 @@ void main() async {
 
   Get.put(OfflineHttpCacheController());
   Get.put(
-      MixPanelController(mixpanelToken: "f3132cbb2645d462c7b2058cb6e8e8f6"));
+    MixPanelController(mixpanelToken: "f3132cbb2645d462c7b2058cb6e8e8f6"),
+  );
   Get.put(NetworkStatusController());
 
   var notificationCont = Get.put(LocalNotificationController(
@@ -104,6 +105,9 @@ class MyApp extends StatelessWidget {
       Get.find<OfflineHttpCacheController>();
 
   MixPanelController mixCont = Get.find<MixPanelController>();
+  final LockScreenController lockScreenController =
+      Get.put(LockScreenController());
+
   MyApp({super.key}) {
     // OfflineHttpCall()
     offlineCont
@@ -241,9 +245,9 @@ class MyApp extends StatelessWidget {
                           print("Switch state changed to: $value");
                         },
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 1000,
-                        child: const SisitechCard(
+                        child: SisitechCard(
                           assetImage: 'assets/images/sisitech_logo_kinda.png',
                           description: 'Kshs. 10,000',
                           color: Colors.teal,
@@ -393,7 +397,8 @@ class MyApp extends StatelessWidget {
                   const SisitechProgressIndicator(
                     options: SisitechProgressOptions(
                       name: progressbar,
-                      totalSteps: 10,
+                      totalSteps: 0,
+                      currentStep: 1,
                     ),
                   ),
                   NetworkStatusWidget(),

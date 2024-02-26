@@ -1,55 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'sistch_progress_controller.dart';
+
+import '../flutter_utils.dart';
 
 class SisitechProgressOptions {
   final String name;
-  final ProgressBarController? progressBarController;
+  final int totalSteps;
+  final int currentStep;
+  final String? description;
+
   const SisitechProgressOptions({
+    required this.totalSteps,
+    required this.currentStep,
+    this.description,
     required this.name,
-    this.progressBarController,
-    required int totalSteps,
   });
 }
 
 class SisitechProgressIndicator extends StatelessWidget {
   final SisitechProgressOptions options;
-
   const SisitechProgressIndicator({super.key, required this.options});
-
   @override
   Widget build(BuildContext context) {
-    final ProgressBarController controller;
-    if (options.progressBarController == null) {
-      controller =
-          Get.put(ProgressBarController(options: options), tag: options.name);
-    } else {
-      controller = options.progressBarController!;
-    }
-
+    var step = (options.currentStep / options.totalSteps);
+    // dprint(step);
     return Padding(
-      padding: const EdgeInsets.all(20.0),
+      padding: EdgeInsets.all(Get.height * 0.011),
       child: SizedBox(
-        height: 200,
+        // height: Get.,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              child: Obx(
-                () => LinearProgressIndicator(
-                  value: controller
-                      .progress.value, // Bind to the observable progress value
-                ),
+              borderRadius:
+                  BorderRadius.all(Radius.circular(Get.height * 0.011)),
+              child: LinearProgressIndicator(
+                value: (step.isNaN | step.isInfinite)
+                    ? 0
+                    : step, // Bind to the observable progress value
               ),
             ),
-            const SizedBox(
-                height: 20), // Spacing between the progress bar and text
-            Obx(
-              () => Text(
-                "Importing ${controller.currentTransaction.value}/${controller.totalSteps} transactions",
+            SizedBox(
+                height: Get.height *
+                    0.011), // Spacing between the progress bar and text
+            if (options.description != null)
+              Text(
+                // "Importing ${controller.currentTransaction.value}/${controller.totalSteps} transactions",
+                options.description!,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-            ),
           ],
         ),
       ),
