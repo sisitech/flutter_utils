@@ -105,8 +105,8 @@ class MyApp extends StatelessWidget {
       Get.find<OfflineHttpCacheController>();
 
   MixPanelController mixCont = Get.find<MixPanelController>();
-  final LockScreenController lockScreenController =
-      Get.put(LockScreenController());
+  // final LockScreenController lockScreenController =
+  //     Get.put(LockScreenController());
 
   MyApp({super.key}) {
     // OfflineHttpCall()
@@ -245,7 +245,7 @@ class MyApp extends StatelessWidget {
                           print("Switch state changed to: $value");
                         },
                       ),
-                      const SizedBox(
+                      SizedBox(
                         width: 1000,
                         child: SisitechCard(
                           assetImage: 'assets/images/sisitech_logo_kinda.png',
@@ -254,6 +254,7 @@ class MyApp extends StatelessWidget {
                           imageScale: 130,
                           cardAxisAlignment: CrossAxisAlignment.center,
                           title: 'Balance',
+                          enableTextVisibilityToggle: true,
                         ),
                       ),
                       SizedBox(
@@ -352,6 +353,29 @@ class MyApp extends StatelessWidget {
                   icon: Icon(Icons.home), label: "Home"),
             ),
             BottomNavigationItem(
+              widget: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SisitechProgressIndicator(
+                    options: SisitechProgressOptions(
+                      name: progressbar,
+                      totalSteps: 0,
+                      currentStep: 1,
+                    ),
+                  ),
+                  NetworkStatusWidget(),
+                  const LocaleSelectorWidget(
+                    child: Text("Select language / Chagua Lugha"),
+                  ),
+                  // LocaleSelectorWidget(child:)
+                ],
+              ),
+              barItem: const BottomNavigationBarItem(
+                icon: Icon(Icons.wifi),
+                label: "Wifi",
+              ),
+            ),
+            BottomNavigationItem(
               widget: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -390,29 +414,6 @@ class MyApp extends StatelessWidget {
                 label: "Wifi",
               ),
             ),
-            BottomNavigationItem(
-              widget: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SisitechProgressIndicator(
-                    options: SisitechProgressOptions(
-                      name: progressbar,
-                      totalSteps: 0,
-                      currentStep: 1,
-                    ),
-                  ),
-                  NetworkStatusWidget(),
-                  const LocaleSelectorWidget(
-                    child: Text("Select language / Chagua Lugha"),
-                  ),
-                  // LocaleSelectorWidget(child:)
-                ],
-              ),
-              barItem: const BottomNavigationBarItem(
-                icon: Icon(Icons.wifi),
-                label: "Wifi",
-              ),
-            )
           ],
         ),
       ),
