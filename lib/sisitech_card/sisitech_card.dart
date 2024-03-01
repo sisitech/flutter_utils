@@ -88,29 +88,36 @@ class SisitechCard extends StatelessWidget {
                   ),
                   SizedBox(height: Get.height * 0.01),
                   if (enableTextVisibilityToggle)
-                    Obx(() => Visibility(
-                          visible: controller!.isTextVisible.value,
-                          replacement: Column(
-                            children: [
-                              Text(
-                                '___,___,___',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(color: descriptionColor),
-                              ),
-                              SizedBox(height: Get.height * 0.008),
-                            ],
-                          ),
-                          child: Text(
-                            description ?? '',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(color: descriptionColor),
-                          ),
-                        )),
+                    Obx(
+                      () => Visibility(
+                        visible: controller!.isTextVisible.value,
+                        replacement: Column(
+                          children: [
+                            Text(
+                              '___,___,___',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(color: descriptionColor),
+                            ),
+                            SizedBox(height: Get.height * 0.008),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              description ?? '',
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(color: descriptionColor),
+                            ),
+                            SizedBox(height: Get.height * 0.008),
+                          ],
+                        ),
+                      ),
+                    ),
                   if (!enableTextVisibilityToggle)
                     Text(
                       description ?? '',
