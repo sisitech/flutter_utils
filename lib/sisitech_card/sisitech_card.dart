@@ -86,13 +86,19 @@ class SisitechCard extends StatelessWidget {
                         .titleSmall
                         ?.copyWith(color: titleColor),
                   ),
-                  SizedBox(height: Get.height * 0.006),
+                  SizedBox(height: Get.height * 0.01),
                   if (enableTextVisibilityToggle)
                     Obx(() => Visibility(
                           visible: controller!.isTextVisible.value,
                           replacement: Column(
                             children: [
-                              const Text('___,___,___'),
+                              Text(
+                                '___,___,___',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(color: descriptionColor),
+                              ),
                               SizedBox(height: Get.height * 0.008),
                             ],
                           ),
@@ -127,6 +133,7 @@ class SisitechCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                  SizedBox(height: Get.height * 0.01),
                 ],
               ),
             ),
