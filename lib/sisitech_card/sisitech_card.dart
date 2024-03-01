@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-// Assuming SisitechCardController is defined elsewhere in your project
 class SisitechCardController extends GetxController {
   var isTextVisible = false.obs;
 
   void toggleTextVisibility() {
-    isTextVisible.value = !isTextVisible.value;
+    isTextVisible.toggle();
   }
 }
 
@@ -43,11 +42,10 @@ class SisitechCard extends StatelessWidget {
     this.cardAxisAlignment,
     this.cardMainAxisAlignment,
     this.enableTextVisibilityToggle = false,
+    required this.controller, // Make it required and remove the initialization
     this.lockedIcon,
     this.unlockedIcon,
-  }) : controller = enableTextVisibilityToggle
-            ? Get.put(SisitechCardController())
-            : null;
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +85,7 @@ class SisitechCard extends StatelessWidget {
                         ?.copyWith(color: titleColor),
                   ),
                   SizedBox(height: Get.height * 0.01),
-                  if (enableTextVisibilityToggle)
+                  if (enableTextVisibilityToggle && controller != null)
                     Obx(
                       () => Visibility(
                         visible: controller!.isTextVisible.value,
@@ -103,18 +101,13 @@ class SisitechCard extends StatelessWidget {
                             SizedBox(height: Get.height * 0.008),
                           ],
                         ),
-                        child: Column(
-                          children: [
-                            Text(
-                              description ?? '',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(color: descriptionColor),
-                            ),
-                            SizedBox(height: Get.height * 0.008),
-                          ],
+                        child: Text(
+                          description ?? '',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(color: descriptionColor),
                         ),
                       ),
                     ),
@@ -127,7 +120,7 @@ class SisitechCard extends StatelessWidget {
                           .titleLarge
                           ?.copyWith(color: descriptionColor),
                     ),
-                  if (enableTextVisibilityToggle)
+                  if (enableTextVisibilityToggle && controller != null)
                     GestureDetector(
                       onTap: () => controller!.toggleTextVisibility(),
                       child: Obx(

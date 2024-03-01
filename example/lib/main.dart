@@ -255,6 +255,7 @@ class MyApp extends StatelessWidget {
                           cardAxisAlignment: CrossAxisAlignment.center,
                           title: 'Balance',
                           enableTextVisibilityToggle: true,
+                          controller: SisitechCardController(),
                         ),
                       ),
                       SizedBox(
@@ -267,6 +268,8 @@ class MyApp extends StatelessWidget {
                           color: Colors.teal,
                           imageScale: 130,
                           title: 'Balance', // Optional, as it defaults to teal
+                          enableTextVisibilityToggle: true,
+                          controller: SisitechCardController(),
                         ),
                       ),
                       ElevatedButton.icon(
