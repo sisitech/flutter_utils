@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../mixpanel/mixpanel_controller.dart';
 
 class SisitechDrawerItem {
   final String title;
@@ -85,6 +88,14 @@ class SisitechDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool mixPanelEnabled = false;
+    MixPanelController? mixCont;
+    try {
+      mixCont = Get.find<MixPanelController>();
+      mixPanelEnabled = true;
+    } catch (e) {
+      mixPanelEnabled = false;
+    }
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -103,7 +114,13 @@ class SisitechDrawer extends StatelessWidget {
                   trailing: item.trailingIcon != null
                       ? Icon(item.trailingIcon)
                       : null,
-                  onTap: item.onTap,
+                  onTap: () {
+                    item.onTap();
+                    mixCont?.track(
+                      "drawer_item_pressed",
+                      properties: {"item_title": item.title},
+                    );
+                  },
                 ),
               )
               .toList(),

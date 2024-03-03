@@ -1,36 +1,51 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
+class SisitechCardController extends GetxController {
+  var isTextVisible = false.obs;
+
+  void toggleTextVisibility() {
+    isTextVisible.toggle();
+  }
+}
+
 class SisitechCard extends StatelessWidget {
-  final String? assetImage; // Optional image path
-  final IconData? iconData; // Optional icon data
+  final String? assetImage;
+  final IconData? iconData;
   final String? description;
   final String? title;
-  final Color color; // Card color
-  final double? imageScale; // Optional image scale
-  final Color? iconColor; // Optional icon color
-  final double? iconSize; // Optional icon size
+  final Color color;
+  final double? imageScale;
+  final Color? iconColor;
+  final double? iconSize;
   final Color? titleColor;
   final Color? descriptionColor;
   final CrossAxisAlignment? cardAxisAlignment;
   final MainAxisAlignment? cardMainAxisAlignment;
+  final bool enableTextVisibilityToggle;
+  final SisitechCardController? controller;
+  final IconData? lockedIcon;
+  final IconData? unlockedIcon;
 
-  const SisitechCard(
-      {super.key,
-      this.assetImage, // Image path is optional
-      this.description,
-      this.title,
-      this.imageScale, // Image scale is optional
-      this.color = Colors.teal, // Default card color is teal
-      this.iconData, // Icon data is optional
-      this.iconColor, // Icon color is optional
-      this.iconSize, // Icon size is optional
-      this.titleColor,
-      this.descriptionColor,
-      this.cardAxisAlignment,
-      this.cardMainAxisAlignment});
+  SisitechCard({
+    super.key,
+    this.assetImage,
+    this.description,
+    this.title,
+    this.imageScale,
+    this.color = Colors.teal,
+    this.iconData,
+    this.iconColor,
+    this.iconSize,
+    this.titleColor,
+    this.descriptionColor,
+    this.cardAxisAlignment,
+    this.cardMainAxisAlignment,
+    this.enableTextVisibilityToggle = false,
+    required this.controller, // Make it required and remove the initialization
+    this.lockedIcon,
+    this.unlockedIcon,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,26 +75,65 @@ class SisitechCard extends StatelessWidget {
                       size: iconSize ?? 24.0,
                       color: iconColor ?? Colors.white,
                     ),
-                  SizedBox(
-                    height: Get.height * 0.006,
-                  ),
+                  SizedBox(height: Get.height * 0.006),
                   Text(
                     title ?? '',
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          color: titleColor,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(color: titleColor),
+                  ),
+                  SizedBox(height: Get.height * 0.01),
+                  if (enableTextVisibilityToggle && controller != null)
+                    Obx(
+                      () => Visibility(
+                        visible: controller!.isTextVisible.value,
+                        replacement: Column(
+                          children: [
+                            Text(
+                              '___,___,___',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(color: descriptionColor),
+                            ),
+                            SizedBox(height: Get.height * 0.008),
+                          ],
                         ),
-                  ),
-                  SizedBox(
-                    height: Get.height * 0.006,
-                  ),
-                  Text(
-                    description ?? '',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: descriptionColor,
+                        child: Text(
+                          description ?? '',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(color: descriptionColor),
                         ),
-                  ),
+                      ),
+                    ),
+                  if (!enableTextVisibilityToggle)
+                    Text(
+                      description ?? '',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(color: descriptionColor),
+                    ),
+                  if (enableTextVisibilityToggle && controller != null)
+                    GestureDetector(
+                      onTap: () => controller!.toggleTextVisibility(),
+                      child: Obx(
+                        () => Icon(
+                          controller!.isTextVisible.value
+                              ? (unlockedIcon ?? Icons.lock_open)
+                              : (lockedIcon ?? Icons.lock),
+                          color: iconColor ??
+                              Theme.of(context).colorScheme.primaryContainer,
+                        ),
+                      ),
+                    ),
+                  SizedBox(height: Get.height * 0.01),
                 ],
               ),
             ),

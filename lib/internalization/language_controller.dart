@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
 import '../flutter_utils.dart';
+import '../mixpanel/mixpanel_controller.dart';
 import 'models.dart';
 
 // import 'aut'
@@ -194,6 +195,15 @@ class LocaleController extends SuperController {
   }
 
   selectLocale() async {
+    bool mixPanelEnabled = false;
+    MixPanelController? mixCont;
+    try {
+      mixCont = Get.find<MixPanelController>();
+      mixPanelEnabled = true;
+    } catch (e) {
+      mixPanelEnabled = false;
+    }
+
     var res = await Get.bottomSheet(
       // title: selectorTitle?.tr ?? "Select Language".tr,
       // titleStyle: Get.textTheme.displayMedium,
@@ -230,6 +240,12 @@ class LocaleController extends SuperController {
                     return ListTile(
                       onTap: () {
                         setLocale(nameLocale);
+                        mixCont?.track(
+                          "language_selected",
+                          properties: {
+                            "language": selectedNameLocale.value?.name,
+                          },
+                        );
                       },
                       title: Text(
                         nameLocale.name,
