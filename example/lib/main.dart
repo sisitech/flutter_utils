@@ -5,6 +5,7 @@ import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_utils/bottom_navigation/bottom_navigation.dart';
 import 'package:flutter_utils/bottom_navigation/models.dart';
 import 'package:flutter_utils/drawer/drawer.dart';
+import 'package:flutter_utils/fab/fab_controller.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/graphs/bar.dart';
 import 'package:flutter_utils/graphs/graphs_models.dart';
@@ -147,6 +148,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     titles = data.map((e) => e["value"].toString()).toList();
+    final ExtendedFABController fabController =
+        Get.put(ExtendedFABController());
 
     return GetMaterialApp(
       // initialBinding: ,
@@ -227,6 +230,7 @@ class MyApp extends StatelessWidget {
           tabs: [
             BottomNavigationItem(
               widget: SingleChildScrollView(
+                controller: fabController.scrollController,
                 child: SafeArea(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
