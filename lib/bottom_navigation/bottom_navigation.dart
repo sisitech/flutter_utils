@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/drawer/drawer.dart';
 import 'package:get/get.dart';
+import '../fab/fab_controller.dart';
 import 'bottom_controller.dart';
 import 'models.dart';
 
@@ -77,7 +78,18 @@ class SistchLayoutWithDrawerBottomNavigation extends StatelessWidget {
         floatingActionButton: floatingActionButton,
         appBar: appBar,
         drawer: drawer,
-        body: bottomNavigationController.selectedTab(tabs),
+        body: GestureDetector(
+          onTap: () {
+            final controller = Get.find<ExtendedFABController>();
+            if (controller.showOptions.value) {
+              controller.toggleOptions();
+            }
+          },
+          behavior: HitTestBehavior.translucent,
+          child: bottomNavigationController.selectedTab(
+            tabs,
+          ),
+        ),
         bottomNavigationBar: BottomNavigationBar(
           type: tabs.length > 3 ? BottomNavigationBarType.fixed : null,
           items: tabs.map((e) => e.barItem).toList(),
