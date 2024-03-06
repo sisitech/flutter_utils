@@ -12,6 +12,10 @@ extension DateExtension on DateTime {
   String get toAPIDateTime {
     return DateFormat("yyyy-MM-ddTHH:mm").format(this);
   }
+
+  String toDateTimeFormat(String format) {
+    return DateFormat(format).format(this);
+  }
 }
 
 extension StringDateExt on String {
