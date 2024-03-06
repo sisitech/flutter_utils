@@ -27,13 +27,20 @@ class ExtendedFABController extends GetxController {
   }
 
   void _scrollListener() {
-    if (scrollController.position.userScrollDirection != ScrollDirection.idle) {
-      hideFABTemporarily();
+    // Check if the scroll position is at the bottom
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      hideFab();
+    } else {
+      showFab();
     }
   }
 
-  void hideFABTemporarily() {
+  void hideFab() {
     isFABVisible.value = false;
-    Timer(Duration(seconds: 2), () => isFABVisible.value = true);
+  }
+
+  void showFab() {
+    isFABVisible.value = true;
   }
 }
