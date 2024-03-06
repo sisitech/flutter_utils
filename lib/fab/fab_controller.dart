@@ -36,8 +36,13 @@ class ExtendedFABController extends GetxController {
     }
   }
 
+  void hideOptions() {
+    showOptions.value = false;
+  }
+
   void hideFab() {
     isFABVisible.value = false;
+    hideOptions();
   }
 
   void showFab() {
