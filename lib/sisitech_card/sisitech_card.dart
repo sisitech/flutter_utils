@@ -89,36 +89,45 @@ class SisitechCard extends StatelessWidget {
                     Obx(
                       () => Visibility(
                         visible: controller!.isTextVisible.value,
-                        replacement: Column(
-                          children: [
-                            Text(
-                              '___,___,___',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(color: descriptionColor),
-                            ),
-                            SizedBox(height: Get.height * 0.008),
-                          ],
+                        replacement: GestureDetector(
+                          onTap: () => controller!.toggleTextVisibility(),
+                          child: Column(
+                            children: [
+                              Text(
+                                '___,___,___',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(color: descriptionColor),
+                              ),
+                              SizedBox(height: Get.height * 0.008),
+                            ],
+                          ),
                         ),
-                        child: Text(
-                          description ?? '',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge
-                              ?.copyWith(color: descriptionColor),
+                        child: GestureDetector(
+                          onTap: () => controller!.toggleTextVisibility(),
+                          child: Text(
+                            description ?? '',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(color: descriptionColor),
+                          ),
                         ),
                       ),
                     ),
                   if (!enableTextVisibilityToggle)
-                    Text(
-                      description ?? '',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(color: descriptionColor),
+                    GestureDetector(
+                      onTap: () => controller!.toggleTextVisibility(),
+                      child: Text(
+                        description ?? '',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(color: descriptionColor),
+                      ),
                     ),
                   if (enableTextVisibilityToggle && controller != null)
                     GestureDetector(
