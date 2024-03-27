@@ -10,9 +10,9 @@ class MixpanelOptions {
   final bool persistentAnonymous;
   final bool disableInDebug;
   const MixpanelOptions({
-    this.enableAnonymous = true,
+    this.enableAnonymous = false,
     this.enabled = true,
-    this.persistentAnonymous = true,
+    this.persistentAnonymous = false,
     this.disableInDebug = true,
   });
 }
