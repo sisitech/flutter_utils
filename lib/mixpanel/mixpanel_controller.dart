@@ -82,6 +82,8 @@ class MixPanelController extends GetxController {
     _mixpanel = await initMixpanel(mixpanelToken);
     var profile = getUser();
     _mixpanel?.identify(profile["username"]);
+    _mixpanel?.getPeople().set('username', profile["username"]);
+    _mixpanel?.getPeople().set('last_login', DateTime.now());
   }
 
   track(String eventName, {Map<String, dynamic>? properties}) {
