@@ -97,6 +97,7 @@ class MixPanelController extends GetxController {
   }
 
   initializeMixPanel() async {
+    dprint("Initializing Mixpanel");
     if (isDisAbled) {
       dprint(
           "Mixpanel disabled,disableInDebug:${options.disableInDebug} enabled:${options.enabled}");
