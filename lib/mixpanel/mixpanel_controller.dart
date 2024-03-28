@@ -9,11 +9,14 @@ class MixpanelOptions {
   final bool enabled;
   final bool persistentAnonymous;
   final bool disableInDebug;
+  // Requires manual calling of initializeMixPanel somewhere in your project if enabled
+  final bool enableManualInit;
   const MixpanelOptions({
     this.enableAnonymous = false,
     this.enabled = true,
     this.persistentAnonymous = true,
     this.disableInDebug = true,
+    this.enableManualInit = false,
   });
 }
 
@@ -29,11 +32,13 @@ class MixPanelController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    initializeMixPanel(options);
+    if (options.enableManualInit) {
+      initializeMixPanel();
+    }
   }
 
   @override
-  onClose() {
+  void onClose() {
     super.onClose();
   }
 
@@ -91,7 +96,7 @@ class MixPanelController extends GetxController {
     dprint(profile);
   }
 
-  initializeMixPanel(MixpanelOptions options) async {
+  initializeMixPanel() async {
     if (isDisAbled) {
       dprint(
           "Mixpanel disabled,disableInDebug:${options.disableInDebug} enabled:${options.enabled}");
