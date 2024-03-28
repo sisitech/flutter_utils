@@ -33,7 +33,7 @@ class MixPanelController extends GetxController {
   void onInit() {
     super.onInit();
     dprint("Mixpanel Oninti");
-    if (options.enableManualInit) {
+    if (!options.enableManualInit) {
       initializeMixPanel();
     }
   }
