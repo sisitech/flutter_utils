@@ -100,7 +100,7 @@ class LocaleController extends SuperController {
 
   readAllStorageLocales() async {
     var readLocalesConfigs = await box.read(allLocalesKey);
-    dprint(readLocalesConfigs);
+    // dprint(readLocalesConfigs);
     Map<String, Map<String, String>> parsedLocales = {};
 
     if (readLocalesConfigs != null) {
@@ -117,7 +117,7 @@ class LocaleController extends SuperController {
     localesConfigs =
         readLocalesConfigs != null ? parsedLocales : defaultTranslationKeys;
     dprint("localeCOnfigs");
-    dprint(localesConfigs);
+    // dprint(localesConfigs);
     await Future.delayed(Duration(milliseconds: 500));
     createLocales(localesConfigs);
     if (localesConfigs == null) {
