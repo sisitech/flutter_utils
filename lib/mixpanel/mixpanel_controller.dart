@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_auth/flutter_auth_controller.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/mixpanel/mixpanel.dart';
@@ -9,10 +10,12 @@ class MixpanelOptions {
   final bool enabled;
   final bool persistentAnonymous;
   final bool disableInDebug;
+  final bool flushNow;
   // Requires manual calling of initializeMixPanel somewhere in your project if enabled
   final bool enableManualInit;
   const MixpanelOptions({
     this.enableAnonymous = false,
+    this.flushNow = false,
     this.enabled = true,
     this.persistentAnonymous = true,
     this.disableInDebug = true,
@@ -110,6 +113,12 @@ class MixPanelController extends GetxController {
 
   track(String eventName, {Map<String, dynamic>? properties}) {
     _mixpanel?.track(eventName, properties: properties);
+    if (options.flushNow) {
+      if (kDebugMode) {
+        // dprint("value")
+        _mixpanel?.flush();
+      }
+    }
   }
 
   timeEvent(String eventName) {
