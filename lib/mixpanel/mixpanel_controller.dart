@@ -12,7 +12,7 @@ class MixpanelOptions {
   const MixpanelOptions({
     this.enableAnonymous = false,
     this.enabled = true,
-    this.persistentAnonymous = false,
+    this.persistentAnonymous = true,
     this.disableInDebug = true,
   });
 }
@@ -30,6 +30,11 @@ class MixPanelController extends GetxController {
   void onInit() {
     super.onInit();
     initializeMixPanel(options);
+  }
+
+  @override
+  onClose() {
+    super.onClose();
   }
 
   get mixpanel {
@@ -63,7 +68,7 @@ class MixPanelController extends GetxController {
   getUser() {
     var anymousProfile = {"username": getAnonymouseuser()};
     Map<String, dynamic> profile;
-    if (authController.isAuthenticated$.value) {
+    if (authController.isAuthenticated$.value != null) {
       profile = authController.profile.value ?? anymousProfile;
       dprint(
           "Mixpanel User ${authController.profile.value?["username"]} initialized.");
@@ -73,6 +78,19 @@ class MixPanelController extends GetxController {
     return profile;
   }
 
+  setLoggedInUser() {
+    if (_mixpanel == null) {
+      return;
+    }
+    var profile = getUser();
+    _mixpanel?.identify(profile["username"]);
+    _mixpanel?.getPeople().set('username', profile["username"]);
+    _mixpanel?.getPeople().set('last_login', DateTime.now());
+
+    dprint("Mixpanel Set Profile");
+    dprint(profile);
+  }
+
   initializeMixPanel(MixpanelOptions options) async {
     if (isDisAbled) {
       dprint(
@@ -80,10 +98,7 @@ class MixPanelController extends GetxController {
       return;
     }
     _mixpanel = await initMixpanel(mixpanelToken);
-    var profile = getUser();
-    _mixpanel?.identify(profile["username"]);
-    _mixpanel?.getPeople().set('username', profile["username"]);
-    _mixpanel?.getPeople().set('last_login', DateTime.now());
+    setLoggedInUser();
   }
 
   track(String eventName, {Map<String, dynamic>? properties}) {
