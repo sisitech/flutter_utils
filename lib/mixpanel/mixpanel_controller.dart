@@ -89,6 +89,7 @@ class MixPanelController extends GetxController {
 
   setLoggedInUser() {
     if (_mixpanel == null) {
+      dprint("No intialized _mixpanel instance found");
       return;
     }
     var profile = getUser();
@@ -107,7 +108,11 @@ class MixPanelController extends GetxController {
           "Mixpanel disabled,disableInDebug:${options.disableInDebug} enabled:${options.enabled}");
       return;
     }
-    _mixpanel = await initMixpanel(mixpanelToken);
+    try {
+      _mixpanel = await initMixpanel(mixpanelToken);
+    } catch (e) {
+      dprint(e);
+    }
     setLoggedInUser();
   }
 
