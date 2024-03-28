@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_auth/flutter_auth_controller.dart';
+import 'package:flutter_utils/extensions/date_extensions.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/mixpanel/mixpanel.dart';
 import 'package:get/get.dart';
@@ -95,9 +96,8 @@ class MixPanelController extends GetxController {
     var profile = getUser();
     _mixpanel?.identify(profile["username"]);
     _mixpanel?.getPeople().set('username', profile["username"]);
-    _mixpanel?.getPeople().set('last_login', DateTime.now());
-
-    dprint("Mixpanel Set Profile");
+    _mixpanel?.getPeople().set('last_login', DateTime.now().toWeekDayDate);
+    // dprint("Mixpanel Set Profile");
     dprint(profile);
   }
 

@@ -396,7 +396,20 @@ class MyApp extends StatelessWidget {
                             field: 'present_females', color: Colors.amber),
                       ],
                     ),
-                    const LoginWidget(),
+                    LoginWidget(
+                      onLoginChange: (data) {
+                        dprint(data);
+                        try {
+                          MixPanelController? mixCont =
+                              Get.find<MixPanelController>();
+                          mixCont.setLoggedInUser();
+                          // dprint("Set the mixpanel user");
+                        } catch (e) {
+                          // dprint("Error setting mixpanel user");
+                          dprint(e);
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
