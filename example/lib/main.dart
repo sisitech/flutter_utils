@@ -34,6 +34,7 @@ import 'package:flutter_utils/internalization/select_locale.dart';
 import 'package:flutter_utils/extensions/date_extensions.dart';
 import 'package:flutter_utils/switch/switch.dart';
 import 'package:flutter_utils/sisitech_card/sisitech_card.dart';
+import 'package:flutter_utils/nfc/nfc.dart';
 
 const default_local_name = "Kiswahili";
 // import 'package:flutter_utils/';
@@ -65,7 +66,7 @@ void main() async {
   await GetStorage.init();
   await GetStorage.init('GetStorage');
   Get.put(const LolaleConfig(
-    updateAPIDebug: true,
+    updateAPIDebug: false,
     updateMissOnlyDebug: false,
     printMissOnlyDebug: false,
   ));
@@ -236,6 +237,7 @@ class MyApp extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      NfcReader(),
                       IconButton(
                         onPressed: () async {
                           await triggerPhoneCall("0727290364");
