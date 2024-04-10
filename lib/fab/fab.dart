@@ -6,15 +6,11 @@ class ExtendedFAB extends StatelessWidget {
   final ExtendedFABController controller = Get.put(ExtendedFABController());
   final List<FabItem> items;
   final Widget? mainIcon;
-  final Color? backgroundColor;
-  final Color? foregroundColor;
 
   ExtendedFAB({
     Key? key,
     required this.items,
     this.mainIcon = const Icon(Icons.add),
-    this.foregroundColor,
-    this.backgroundColor = Colors.blue,
   }) : super(key: key);
 
   @override
@@ -28,10 +24,6 @@ class ExtendedFAB extends StatelessWidget {
                 onPressed: () {
                   controller.toggleOptions();
                 },
-                backgroundColor:
-                    backgroundColor ?? Theme.of(context).colorScheme.primary,
-                foregroundColor:
-                    foregroundColor ?? Theme.of(context).colorScheme.onPrimary,
                 child: mainIcon,
               ),
             )),

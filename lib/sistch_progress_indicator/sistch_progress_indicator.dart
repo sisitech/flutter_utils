@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../flutter_utils.dart';
-
 class SisitechProgressOptions {
   final String name;
   final int totalSteps;
