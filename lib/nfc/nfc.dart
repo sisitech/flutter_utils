@@ -5,7 +5,9 @@ import 'package:flutter_utils/nfc/utils.dart';
 import 'package:get/get.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
+import 'models.dart';
 import 'nfc_controller.dart';
+import 'nfc_scan.dart';
 
 class NfcNotSupported extends StatelessWidget {
   const NfcNotSupported({super.key});
@@ -29,43 +31,19 @@ class NfcNotSupported extends StatelessWidget {
 }
 
 class NfcReader extends StatelessWidget {
-  const NfcReader({super.key});
+  final NFCReaderOptions options;
+
+  const NfcReader({super.key, required this.options});
 
   @override
   Widget build(BuildContext context) {
-    var nfcController = Get.put(NFCController());
+    var nfcController = Get.find<NFCController>();
     return Obx(() {
-      if (nfcController.isAvailable.value) return const NfcSupported();
+      if (nfcController.isAvailable.value) {
+        return NfcSupported(options: options);
+      }
       return const NfcNotSupported();
     });
-  }
-}
-
-class IsScanning extends StatelessWidget {
-  const IsScanning({super.key});
-  @override
-  Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    var nfcController = Get.put(NFCController());
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: size.height * 0.02),
-          child: const CircularProgressIndicator(),
-        ),
-        SizedBox(width: size.width * 0.1),
-        ElevatedButton.icon(
-          onPressed: () {
-            nfcController.stopReader();
-          },
-          icon: const Icon(Icons.stop),
-          label: Text(''),
-        )
-      ],
-    );
   }
 }
 
@@ -106,7 +84,7 @@ class NfcTagWidget extends StatelessWidget {
         child: Padding(
       padding: EdgeInsets.symmetric(vertical: size.height * 0.01),
       child: ElevatedButton.icon(
-        label: Text(tag.nfcTag.handle),
+        label: Text(tag?.serial_number ?? ""),
         onPressed: () {
           Get.bottomSheet(
             // NfcTagWidget(
@@ -128,7 +106,7 @@ class ScannedTagsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var nfcController = Get.put(NFCController());
+    var nfcController = Get.find<NFCController>();
 
     return Obx(() {
       return ListView.builder(
@@ -147,11 +125,14 @@ class ScannedTagsList extends StatelessWidget {
 }
 
 class NfcSupported extends StatelessWidget {
-  const NfcSupported({super.key});
+  final NFCReaderOptions options;
+
+  const NfcSupported({super.key, required this.options});
 
   @override
   Widget build(BuildContext context) {
-    var nfcController = Get.put(NFCController());
+    var nfcController = Get.find<NFCController>();
+
     var size = MediaQuery.of(context).size;
 
     return Obx(() {
@@ -162,11 +143,11 @@ class NfcSupported extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(vertical: size.height * 0.02),
               child: ElevatedButton.icon(
-                onPressed: () {
-                  nfcController.startReader();
+                onPressed: () async {
+                  await startScannerWithBottomSheet();
                 },
                 icon: const Icon(Icons.nfc_rounded),
-                label: Text("Scan".ctr),
+                label: Text("Scan"),
               ),
             ),
           const ScannedTagsList()
