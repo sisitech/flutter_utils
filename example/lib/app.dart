@@ -380,7 +380,7 @@ class MyApp extends StatelessWidget {
                       ),
                       const SisitechCachedImage(
                           imageUrl:
-                              "https://www.arsenal.com/sites/default/files/styles/paragraph_group_three_column_large/public/images/saka-celeb-bayern.png?auto=webp&itok=Flajso1v"),
+                              "https://cdn.vox-cdn.com/thumbor/mlWqtqxSTJ4KuqOB65JvA6u5sTQ=/1400x1050/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/24729976/1498680017.jpg"),
                     ],
                   ),
                   barItem: const BottomNavigationBarItem(
