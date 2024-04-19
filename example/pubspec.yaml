@@ -58,7 +58,7 @@ dependencies:
   nfc_manager: ^3.4.0
   flex_color_scheme: ^7.3.1
   fl_chart: ^0.61.0
-  google_fonts: ^6.1.0
+  google_fonts: 6.1.0
   flutter_svg: ^2.0.10
 
 dependency_overrides:
