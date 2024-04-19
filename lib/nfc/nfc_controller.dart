@@ -4,11 +4,15 @@ import 'package:flutter_utils/flutter_utils.dart';
 import 'package:get/get.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
+import 'models.dart';
 import 'utils.dart';
 
 class NFCController extends GetxController {
   var isAvailable = false.obs;
   var isScanning = false.obs;
+  final NFCReaderOptions options;
+
+  NFCController({required this.options});
 
   RxList<NfcTagInfo> scannedTags = RxList.empty();
 
@@ -35,9 +39,9 @@ class NFCController extends GetxController {
     isScanning.value = true;
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
-        if (stopOnFirst) {
-          stopReader();
-        }
+        // if (!options.infiniteScan) {
+        //   stopReader();
+        // }
         await onDiscoverTag(tag);
       },
     );
@@ -58,7 +62,16 @@ class NFCController extends GetxController {
     if (scannedTags.value
         .where((element) => element.nfcTag.handle == tag.handle)
         .isEmpty) {
-      scannedTags.add(await NfcTagInfo.fromTag(tag));
+      var parsedTag = await NfcTagInfo.fromTag(tag);
+      if (scannedTags
+          .where((tag) => tag.serial_number == parsedTag.serial_number)
+          .isEmpty) {
+        if (options.infiniteScan) {
+          scannedTags.add(parsedTag);
+        } else {
+          scannedTags.value = [parsedTag];
+        }
+      }
     }
     dprint((await tag.ndefRecordInfos()).map((e) => e.subtitle));
   }

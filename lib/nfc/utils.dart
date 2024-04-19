@@ -215,42 +215,59 @@ extension IntExtension on int {
   }
 }
 
+String? getSerialNumber(NfcTag tag) {
+  Uint8List identifier =
+      Uint8List.fromList(tag.data["mifareultralight"]['identifier']);
+  return identifier.map((e) => e.toRadixString(16).padLeft(2, '0')).join(':');
+}
+
 class NfcTagInfo {
   final NfcTag nfcTag;
+  final String? serial_number;
+  final String? manaufaturer;
   final List<NdefRecordInfo> records;
 
-  NfcTagInfo({required this.records, required this.nfcTag});
+  NfcTagInfo(
+      {required this.records,
+      required this.nfcTag,
+      this.manaufaturer,
+      this.serial_number});
 
   static Future<NfcTagInfo> fromTag(NfcTag tag) async {
+    var ndef = Ndef.from(tag);
+    var chipId = null;
+    // dprint(ndef?.additionalData);
+    if (ndef != null) {
+      chipId = ndef.additionalData['identifier']
+          .map((e) => e.toRadixString(16).padLeft(2, '0'))
+          .join(':');
+    }
+    // dprint(chipId);
+    // dprint(tag.data);
     var records = await tag.ndefRecordInfos();
-    return NfcTagInfo(records: records, nfcTag: tag);
+    return NfcTagInfo(
+      records: records,
+      nfcTag: tag,
+      serial_number: chipId ?? getSerialNumber(tag),
+    );
   }
 }
 
 extension NfcTagExt on NfcTag {
   Future<List<NdefRecordInfo>> ndefRecordInfos() async {
     try {
-      dprint("Trying....");
       var cachedMessage = data["ndef"]["cachedMessage"];
       if (cachedMessage != null) {
         NdefMessage? message = await Ndef.from(this)?.read();
         if (message?.records.isNotEmpty ?? false) {
-          // final info = NdefRecordInfo.fromNdef(message!.records.first);
-          // dprint(info.title);
-          // dprint(info.subtitle);
-          // dprint(info.record);
-
           var messageRecords =
               message!.records.map((e) => NdefRecordInfo.fromNdef(e)).toList();
-          dprint("FOund lenght");
-          dprint(messageRecords.length);
           return messageRecords;
         }
       }
     } catch (er) {
       dprint(er);
     }
-
     return [];
   }
 }

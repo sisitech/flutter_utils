@@ -19,6 +19,8 @@ import 'package:flutter_utils/local_nofitications/local_notification_controller.
 import 'package:flutter_utils/mixpanel/mixpanel_controller.dart';
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/network_status/network_status.dart';
+import 'package:flutter_utils/nfc/models.dart';
+import 'package:flutter_utils/nfc/nfc_controller.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
 import 'package:flutter_utils/package_info/package_info_widget.dart';
 import 'package:flutter_utils/phone_call_launcher.dart';
@@ -34,6 +36,8 @@ import 'package:flutter_utils/extensions/date_extensions.dart';
 import 'package:flutter_utils/switch/switch.dart';
 import 'package:flutter_utils/sisitech_card/sisitech_card.dart';
 import 'package:flutter_utils/nfc/nfc.dart';
+
+import 'constatns.dart';
 
 const progressBar = "main";
 
@@ -86,6 +90,7 @@ class MyApp extends StatelessWidget {
     titles = data.map((e) => e["value"].toString()).toList();
     final ExtendedFABController fabController =
         Get.put(ExtendedFABController());
+    var nfcController = Get.put(NFCController(options: defaultNfcOptions));
 
     return GetBuilder<ThemeController>(
       builder: (themeController) {
@@ -175,7 +180,9 @@ class MyApp extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const NfcReader(),
+                          NfcReader(
+                            options: defaultNfcOptions,
+                          ),
                           IconButton(
                             onPressed: () async {
                               await triggerPhoneCall("0727290364");
