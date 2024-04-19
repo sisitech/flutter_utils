@@ -8,6 +8,7 @@ class SisitechCachedImage extends StatelessWidget {
   final double placeholderWidth;
   final double placeholderHeight;
   final BoxFit fit;
+  final bool isNetworkImage;
 
   const SisitechCachedImage({
     Key? key,
@@ -17,10 +18,19 @@ class SisitechCachedImage extends StatelessWidget {
     this.placeholderWidth = 50.0,
     this.placeholderHeight = 50.0,
     this.fit = BoxFit.cover,
+    this.isNetworkImage = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    return isNetworkImage ? _buildNetworkImage() : _buildLocalImage();
+  }
+
+  CachedNetworkImageProvider get imageProvider {
+    return CachedNetworkImageProvider(imageUrl);
+  }
+
+  Widget _buildNetworkImage() {
     return CachedNetworkImage(
       imageUrl: imageUrl,
       width: imageWidth,
@@ -37,6 +47,15 @@ class SisitechCachedImage extends StatelessWidget {
         Icons.error,
         size: placeholderWidth,
       ),
+    );
+  }
+
+  Widget _buildLocalImage() {
+    return Image.asset(
+      imageUrl,
+      width: imageWidth,
+      height: imageHeight,
+      fit: fit,
     );
   }
 }
