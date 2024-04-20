@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'utils.dart';
 
 class NFCReaderOptions {
@@ -7,11 +9,13 @@ class NFCReaderOptions {
   final String foundTitle;
   final String cancelButtonText;
   final String okButtonText;
+  final Widget? foundWidget;
   final Function(List<NfcTagInfo> tags)? onScanComplete;
 
   const NFCReaderOptions({
     this.infiniteScan = false,
     this.scanButtonText = "Scan",
+    this.foundWidget,
     this.scanAgainButtonText = "Scan Again",
     this.foundTitle = "Pass Found",
     this.cancelButtonText = "Cancel",
@@ -25,11 +29,13 @@ class NFCWriterOptions {
   final String scanButtonText;
   final String scanAgainButtonText;
   final String foundTitle;
+  final Widget? foundWidget;
   final String cancelButtonText;
   final String okButtonText;
   final Function(List<NfcTagInfo> tags)? onScanComplete;
   const NFCWriterOptions({
     this.infiniteScan = false,
+    this.foundWidget,
     this.scanButtonText = "Writer",
     this.scanAgainButtonText = "Writer Again",
     this.foundTitle = "Pass Found",

@@ -144,7 +144,7 @@ class NfcSupported extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: size.height * 0.02),
               child: ElevatedButton.icon(
                 onPressed: () async {
-                  await startScannerWithBottomSheet();
+                  await startScannerWithBottomSheet(options: options);
                 },
                 icon: const Icon(Icons.nfc_rounded),
                 label: Text("Scan"),

@@ -78,7 +78,7 @@ class NFCController extends GetxController {
         } else {
           scannerStatus.value = "Writing in progress.".ctr;
           NdefRecord uriRecord = NdefRecord.createUri(
-              Uri.parse("https://www.sisitech.com/#/case-studies/wavvy"));
+              Uri.parse("https://sisitech.com/#/case-studies/wavvy"));
           String inputString = "michameiu";
           // Prepare the second external type record
 
@@ -90,7 +90,10 @@ class NFCController extends GetxController {
               );
 
           if (parsedTag.ndef != null) {
-            NdefMessage message = NdefMessage([externalRecord2, uriRecord]);
+            NdefMessage message = NdefMessage([
+              uriRecord,
+              externalRecord2,
+            ]);
 
             await parsedTag.ndef?.write(message);
           }

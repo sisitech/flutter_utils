@@ -33,9 +33,7 @@ class NfcWriterSupported extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var nfcController = Get.find<NFCController>();
-
     var size = MediaQuery.of(context).size;
-
     return Obx(() {
       return Column(
         children: [
@@ -45,7 +43,8 @@ class NfcWriterSupported extends StatelessWidget {
               padding: EdgeInsets.symmetric(vertical: size.height * 0.002),
               child: ElevatedButton.icon(
                 onPressed: () async {
-                  await startNFCWriterWithBottomSheet("welcome");
+                  await startNFCWriterWithBottomSheet("welcome",
+                      options: options);
                 },
                 icon: const Icon(Icons.nfc_rounded),
                 label: Text(options?.scanButtonText ?? "Scana"),

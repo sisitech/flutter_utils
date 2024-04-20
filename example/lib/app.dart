@@ -39,6 +39,7 @@ import 'package:flutter_utils/sisitech_card/sisitech_card.dart';
 import 'package:flutter_utils/nfc/nfc.dart';
 
 import 'constatns.dart';
+import 'nfc_found_widget.dart';
 
 const progressBar = "main";
 
@@ -181,8 +182,9 @@ class MyApp extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          NfcReader(
-                            options: defaultNfcOptions,
+                          const NfcReader(
+                            options: NFCReaderOptions(
+                                foundWidget: NFCTagsFoundWidget()),
                           ),
                           const NfcWriter(
                             options: NFCWriterOptions(),
