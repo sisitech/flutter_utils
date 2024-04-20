@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_utils/bottom_navigation/bottom_navigation.dart';
 import 'package:flutter_utils/bottom_navigation/models.dart';
+import 'package:flutter_utils/cached_image/sisitech_cached_image.dart';
 import 'package:flutter_utils/drawer/drawer.dart';
 import 'package:flutter_utils/fab/fab_controller.dart';
 import 'package:flutter_utils/flutter_utils.dart';
@@ -385,7 +386,12 @@ class MyApp extends StatelessWidget {
                       const LocaleSelectorWidget(
                         child: Text("Select language / Chagua Lugha"),
                       ),
-                      // LocaleSelectorWidget(child:)
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      const SisitechCachedImage(
+                          imageUrl:
+                              "https://cdn.vox-cdn.com/thumbor/mlWqtqxSTJ4KuqOB65JvA6u5sTQ=/1400x1050/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/24729976/1498680017.jpg"),
                     ],
                   ),
                   barItem: const BottomNavigationBarItem(
