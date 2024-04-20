@@ -90,7 +90,7 @@ class NFCController extends GetxController {
               );
 
           if (parsedTag.ndef != null) {
-            NdefMessage message = NdefMessage([uriRecord, externalRecord2]);
+            NdefMessage message = NdefMessage([externalRecord2, uriRecord]);
 
             await parsedTag.ndef?.write(message);
           }
