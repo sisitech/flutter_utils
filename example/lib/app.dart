@@ -19,6 +19,7 @@ import 'package:flutter_utils/mixpanel/mixpanel_controller.dart';
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/network_status/network_status.dart';
 import 'package:flutter_utils/nfc/models.dart';
+import 'package:flutter_utils/nfc/nfc_writer.dart';
 import 'package:flutter_utils/nfc/nfc_controller.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
 import 'package:flutter_utils/package_info/package_info_widget.dart';
@@ -181,6 +182,9 @@ class MyApp extends StatelessWidget {
                         children: [
                           NfcReader(
                             options: defaultNfcOptions,
+                          ),
+                          const NfcWriter(
+                            options: NFCWriterOptions(),
                           ),
                           IconButton(
                             onPressed: () async {

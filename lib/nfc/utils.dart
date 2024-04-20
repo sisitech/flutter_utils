@@ -1,6 +1,5 @@
 import 'dart:convert' show ascii, utf8;
 import 'dart:typed_data';
-import 'dart:typed_data';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
@@ -225,22 +224,28 @@ class NfcTagInfo {
   final NfcTag nfcTag;
   final String? serial_number;
   final String? manaufaturer;
+  final bool isWritable;
+  final Ndef? ndef;
   final List<NdefRecordInfo> records;
 
   NfcTagInfo(
       {required this.records,
       required this.nfcTag,
       this.manaufaturer,
+      this.isWritable = false,
+      this.ndef,
       this.serial_number});
 
   static Future<NfcTagInfo> fromTag(NfcTag tag) async {
     var ndef = Ndef.from(tag);
-    var chipId = null;
+    var chipId = "";
     // dprint(ndef?.additionalData);
     if (ndef != null) {
-      chipId = ndef.additionalData['identifier']
-          .map((e) => e.toRadixString(16).padLeft(2, '0'))
-          .join(':');
+      try {
+        chipId = ndef.additionalData['identifier']
+            .map((e) => e.toRadixString(16).padLeft(2, '0'))
+            .join(':');
+      } catch (er) {}
     }
     // dprint(chipId);
     // dprint(tag.data);
@@ -248,6 +253,8 @@ class NfcTagInfo {
     return NfcTagInfo(
       records: records,
       nfcTag: tag,
+      ndef: ndef,
+      isWritable: ndef?.isWritable ?? false,
       serial_number: chipId ?? getSerialNumber(tag),
     );
   }

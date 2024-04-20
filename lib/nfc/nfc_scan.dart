@@ -27,42 +27,57 @@ class NFCScanningNoTagFound extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(height: Get.height * 0.02),
-        Divider(
-          color: Get.theme.colorScheme.surface,
-          thickness: 2,
-          indent: 220,
-          endIndent: 220,
-        ),
-        SizedBox(height: Get.height * 0.02),
-        Text(
-          'Ready to Scan'.ctr,
-          textAlign: TextAlign.center,
-          style: Get.theme.textTheme.bodyLarge?.copyWith(
+    var nfc_controller = Get.find<NFCController>();
+
+    return Obx(() {
+      return Column(
+        children: [
+          SizedBox(height: Get.height * 0.02),
+          Divider(
             color: Get.theme.colorScheme.surface,
-            fontWeight: FontWeight.bold,
+            thickness: 2,
+            indent: 220,
+            endIndent: 220,
           ),
-        ),
-        const NFCScanningLoader(),
-        Padding(
-          padding: const EdgeInsets.only(
-            left: 20.0,
-            right: 20.0,
-            bottom: 20.0,
-            top: 0.0,
-          ),
-          child: Text(
-            'Hold your device near the NFC pass'.ctr,
+          SizedBox(height: Get.height * 0.02),
+          Text(
+            'Ready to Scan'.ctr,
             textAlign: TextAlign.center,
-            style: Get.theme.textTheme.titleMedium?.copyWith(
+            style: Get.theme.textTheme.bodyLarge?.copyWith(
               color: Get.theme.colorScheme.surface,
+              fontWeight: FontWeight.bold,
             ),
           ),
-        ),
-      ],
-    );
+          const NFCScanningLoader(),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 20.0,
+              right: 20.0,
+              bottom: 20.0,
+              top: 0.0,
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'Hold your device near the NFC pass'.ctr,
+                  textAlign: TextAlign.center,
+                  style: Get.theme.textTheme.titleMedium?.copyWith(
+                    color: Get.theme.colorScheme.surface,
+                  ),
+                ),
+                Text(
+                  nfc_controller.scannerStatus.value.ctr,
+                  textAlign: TextAlign.center,
+                  style: Get.theme.textTheme.titleSmall?.copyWith(
+                    color: Get.theme.colorScheme.surface,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    });
   }
 }
 
@@ -102,6 +117,13 @@ class TagFoundWidget extends StatelessWidget {
             style: Get.theme.textTheme.bodyLarge?.copyWith(
               color: Get.theme.colorScheme.surface,
               fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            nfcController.scannerStatus.value.ctr,
+            textAlign: TextAlign.center,
+            style: Get.theme.textTheme.titleSmall?.copyWith(
+              color: Get.theme.colorScheme.surface,
             ),
           ),
           SizedBox(height: Get.height * 0.02),
@@ -186,13 +208,21 @@ Future<List<NfcTagInfo>> startScannerWithBottomSheet() async {
   nfcController.stopReader();
   var tags = nfcController.scannedTags.value;
   return tags;
-  // showModalBottomSheet(
-  //   backgroundColor: Get.theme.colorScheme.surfaceTint,
-  //   context: Get.context!,
-  //   builder: (BuildContext context) {
-  //     return ;
-  //   },
-  // );
+}
+
+Future<List<NfcTagInfo>> startNFCWriterWithBottomSheet(dynamic value) async {
+  var nfcController = Get.find<NFCController>();
+  nfcController.startWriter(value);
+  var res = await Get.bottomSheet(
+    const NFCScannerBottomSheet(),
+    isDismissible: false,
+    backgroundColor: Get.theme.colorScheme.surfaceTint,
+  );
+  // dprint("BottomSheet doin");
+  // dprint(res);
+  nfcController.stopReader();
+  var tags = nfcController.scannedTags.value;
+  return tags;
 }
 
 class IsScanning extends StatelessWidget {

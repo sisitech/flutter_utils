@@ -125,9 +125,9 @@ class ScannedTagsList extends StatelessWidget {
 }
 
 class NfcSupported extends StatelessWidget {
-  final NFCReaderOptions options;
+  final NFCReaderOptions? options;
 
-  const NfcSupported({super.key, required this.options});
+  const NfcSupported({super.key, this.options});
 
   @override
   Widget build(BuildContext context) {
