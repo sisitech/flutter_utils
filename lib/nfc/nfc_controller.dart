@@ -48,8 +48,6 @@ class NFCController extends GetxController {
     isScanning.value = true;
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
-        dprint(onNfcTagDiscovered == null);
-        dprint(onNfcTagDiscovered);
         if (onNfcTagDiscovered != null) {
           var parsedTag = await NfcTagInfo.fromTag(tag);
           await onNfcTagDiscovered!(parsedTag);

@@ -2,6 +2,7 @@ import 'package:example/svg_widgets.dart';
 import 'package:example/util_widgets.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form/form_connect.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_utils/bottom_navigation/bottom_navigation.dart';
@@ -87,6 +88,36 @@ class MyApp extends StatelessWidget {
   // var titles;
   List<BarChartGroupData> mybarGroups = [];
 
+  handleTag(String serial_number) async {
+    var nfcControllera = Get.find<NFCController>(tag: defaultNfcOptions.tag);
+    dprint("Found: ${serial_number}");
+    dprint("Searching online");
+    nfcControllera.scannerStatus.value = "Verifying NFC Tag...";
+    FormProvider serv = Get.put<FormProvider>(FormProvider());
+
+    if (serial_number == "") {
+      nfcControllera.scannerStatus.value = "NFC card not supported";
+      return;
+    }
+    var response = await serv.formGet("api/v1/nfc-tags/${serial_number}/");
+    dprint(response.statusCode);
+    if (response.statusCode == 404) {
+      nfcControllera.scannerStatus.value = "Invalid or Unregistered.";
+      var data = {"order": 1, "model": 1, "manufacturer_serial": serial_number};
+      var response = await serv.formPost(
+          "api/v1/nfc-tag-orders/${data["order"]}/tags/", data);
+      if (response.statusCode == 201) {
+        nfcControllera.scannerStatus.value = "Registered Successfully";
+      } else if (response.statusCode == 400) {
+        nfcControllera.scannerStatus.value = "Form filled wrongly";
+      } else {
+        nfcControllera.scannerStatus.value = "Failed .${response.statusCode}";
+      }
+    } else {
+      nfcControllera.scannerStatus.value = "Already Registered and Valid";
+    }
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -95,26 +126,22 @@ class MyApp extends StatelessWidget {
     final ExtendedFABController fabController =
         Get.put(ExtendedFABController());
     var nfcController = Get.put(
-        NFCController(
-            options: defaultNfcOptions,
-            onNfcTagDiscovered: (
-              NfcTagInfo tag,
-            ) async {
-              var nfcControllera =
-                  Get.find<NFCController>(tag: defaultNfcOptions.tag);
-              nfcControllera?.defaultOnNfcTagDiscovered(tag.nfcTag);
-            }),
-        tag: defaultControllerTagName);
+      NFCController(
+        options: defaultNfcOptions,
+        onNfcTagDiscovered: (NfcTagInfo tag) async {
+          var serial_number = tag.serial_number ?? "";
+          handleTag(serial_number);
+        },
+      ),
+      tag: defaultControllerTagName,
+    );
+
     var rednfcController = Get.put(
         NFCController(
             options: defaultNfcOptions,
             onNfcTagDiscovered: (
               NfcTagInfo tag,
-            ) async {
-              var nfcControllera =
-                  Get.find<NFCController>(tag: defaultNfcOptions.tag);
-              nfcControllera?.defaultOnNfcTagDiscovered(tag.nfcTag);
-            }),
+            ) async {}),
         tag: writerTag);
 
     return GetBuilder<ThemeController>(
@@ -205,15 +232,12 @@ class MyApp extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          NfcReader(
-                            onNfcTagDiscovered: (NfcTagInfo tag) async {
-                              dprint("Discovered Tag");
-                              dprint("SERIAL: ${tag.serial_number}");
-                            },
-                            options: const NFCReaderOptions(
-                                foundWidget: NFCTagsFoundWidget(
-                              tag: defaultControllerTagName,
-                            )),
+                          const NfcReader(
+                            options: NFCReaderOptions(
+                                // foundWidget: NFCTagsFoundWidget(
+                                //   tag: defaultControllerTagName,
+                                // ),
+                                ),
                           ),
                           NfcWriter(
                             options: NFCWriterOptions(
