@@ -154,7 +154,7 @@ class NfcSupported extends StatelessWidget {
                   await startScannerWithBottomSheet(options: options);
                 },
                 icon: const Icon(Icons.nfc_rounded),
-                label: Text("Scan"),
+                label: Text(options.scanButtonText),
               ),
             ),
           ScannedTagsList(

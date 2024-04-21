@@ -103,11 +103,12 @@ class MyApp extends StatelessWidget {
     dprint(response.statusCode);
     if (response.statusCode == 404) {
       nfcControllera.scannerStatus.value = "Invalid or Unregistered.";
-      var data = {"order": 1, "model": 1, "manufacturer_serial": serial_number};
+      var data = {"order": 1, "model": 2, "manufacturer_serial": serial_number};
       var response = await serv.formPost(
           "api/v1/nfc-tag-orders/${data["order"]}/tags/", data);
       if (response.statusCode == 201) {
-        nfcControllera.scannerStatus.value = "Registered Successfully";
+        nfcControllera.scannerStatus.value =
+            "Registered Successfully. Scan another Tag";
       } else if (response.statusCode == 400) {
         nfcControllera.scannerStatus.value = "Form filled wrongly";
       } else {
