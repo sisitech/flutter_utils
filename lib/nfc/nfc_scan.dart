@@ -25,10 +25,11 @@ class NFCScanningLoader extends StatelessWidget {
 }
 
 class TagFoundWidget extends StatelessWidget {
-  const TagFoundWidget({super.key});
+  final String tag;
+  const TagFoundWidget({super.key, required this.tag});
   @override
   Widget build(BuildContext context) {
-    var nfcController = Get.find<NFCController>();
+    var nfcController = Get.find<NFCController>(tag: tag);
 
     return Obx(() {
       var tag = nfcController.scannedTags.value?.first;
@@ -104,12 +105,13 @@ class TagFoundWidget extends StatelessWidget {
 }
 
 Future<List<NfcTagInfo>> startScannerWithBottomSheet(
-    {NFCReaderOptions? options = null}) async {
-  var nfcController = Get.find<NFCController>();
+    {required NFCReaderOptions options}) async {
+  var nfcController = Get.find<NFCController>(tag: options.tag);
   nfcController.startReader();
   var res = await Get.bottomSheet(
     NFCScannerBottomSheet(
-      foundWidget: options?.foundWidget,
+      foundWidget: options.foundWidget,
+      tag: options.tag,
     ),
     isDismissible: false,
     backgroundColor: Get.theme.colorScheme.surfaceTint,
@@ -122,12 +124,13 @@ Future<List<NfcTagInfo>> startScannerWithBottomSheet(
 }
 
 Future<List<NfcTagInfo>> startNFCWriterWithBottomSheet(dynamic value,
-    {NFCWriterOptions? options = null}) async {
-  var nfcController = Get.find<NFCController>();
+    {required NFCWriterOptions options}) async {
+  var nfcController = Get.find<NFCController>(tag: options.tag);
   nfcController.startWriter(value);
   var res = await Get.bottomSheet(
     NFCScannerBottomSheet(
-      foundWidget: options?.foundWidget,
+      foundWidget: options.foundWidget,
+      tag: options.tag,
     ),
     isDismissible: false,
     backgroundColor: Get.theme.colorScheme.surfaceTint,
@@ -140,11 +143,12 @@ Future<List<NfcTagInfo>> startNFCWriterWithBottomSheet(dynamic value,
 }
 
 class IsScanning extends StatelessWidget {
-  const IsScanning({super.key});
+  final String tag;
+  const IsScanning({super.key, required this.tag});
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    var nfcController = Get.find<NFCController>();
+    var nfcController = Get.find<NFCController>(tag: tag);
 
     return const Row(
       crossAxisAlignment: CrossAxisAlignment.center,

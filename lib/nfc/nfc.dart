@@ -32,12 +32,14 @@ class NfcNotSupported extends StatelessWidget {
 
 class NfcReader extends StatelessWidget {
   final NFCReaderOptions options;
+  final Future<void> Function(NfcTagInfo tag)? onNfcTagDiscovered;
 
-  const NfcReader({super.key, required this.options});
+  const NfcReader({super.key, required this.options, this.onNfcTagDiscovered});
 
   @override
   Widget build(BuildContext context) {
-    var nfcController = Get.find<NFCController>();
+    var nfcController = Get.find<NFCController>(tag: options.tag);
+
     return Obx(() {
       if (nfcController.isAvailable.value) {
         return NfcSupported(options: options);
@@ -102,11 +104,13 @@ class NfcTagWidget extends StatelessWidget {
 }
 
 class ScannedTagsList extends StatelessWidget {
-  const ScannedTagsList({super.key});
+  final NFCReaderOptions options;
+
+  const ScannedTagsList({super.key, required this.options});
 
   @override
   Widget build(BuildContext context) {
-    var nfcController = Get.find<NFCController>();
+    var nfcController = Get.find<NFCController>(tag: options.tag);
 
     return Obx(() {
       return ListView.builder(
@@ -125,20 +129,23 @@ class ScannedTagsList extends StatelessWidget {
 }
 
 class NfcSupported extends StatelessWidget {
-  final NFCReaderOptions? options;
+  final NFCReaderOptions options;
 
-  const NfcSupported({super.key, this.options});
+  const NfcSupported({super.key, required this.options});
 
   @override
   Widget build(BuildContext context) {
-    var nfcController = Get.find<NFCController>();
+    var nfcController = Get.find<NFCController>(tag: options.tag);
 
     var size = MediaQuery.of(context).size;
 
     return Obx(() {
       return Column(
         children: [
-          if (nfcController.isScanning.value) const IsScanning(),
+          if (nfcController.isScanning.value)
+            IsScanning(
+              tag: options.tag,
+            ),
           if (!nfcController.isScanning.value)
             Padding(
               padding: EdgeInsets.symmetric(vertical: size.height * 0.02),
@@ -150,7 +157,9 @@ class NfcSupported extends StatelessWidget {
                 label: Text("Scan"),
               ),
             ),
-          const ScannedTagsList()
+          ScannedTagsList(
+            options: options,
+          )
         ],
       );
     });

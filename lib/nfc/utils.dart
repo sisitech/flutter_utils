@@ -3,6 +3,8 @@ import 'dart:typed_data';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
+const defaultControllerTagName = "default";
+
 abstract class Record {
   NdefRecord toNdef();
 

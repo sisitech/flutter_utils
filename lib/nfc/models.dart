@@ -10,10 +10,12 @@ class NFCReaderOptions {
   final String cancelButtonText;
   final String okButtonText;
   final Widget? foundWidget;
+  final String tag;
   final Function(List<NfcTagInfo> tags)? onScanComplete;
 
   const NFCReaderOptions({
     this.infiniteScan = false,
+    this.tag = defaultControllerTagName,
     this.scanButtonText = "Scan",
     this.foundWidget,
     this.scanAgainButtonText = "Scan Again",
@@ -31,10 +33,12 @@ class NFCWriterOptions {
   final String foundTitle;
   final Widget? foundWidget;
   final String cancelButtonText;
+  final String tag;
   final String okButtonText;
   final Function(List<NfcTagInfo> tags)? onScanComplete;
   const NFCWriterOptions({
     this.infiniteScan = false,
+    this.tag = defaultControllerTagName,
     this.foundWidget,
     this.scanButtonText = "Writer",
     this.scanAgainButtonText = "Writer Again",

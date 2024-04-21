@@ -22,6 +22,7 @@ import 'package:flutter_utils/network_status/network_status.dart';
 import 'package:flutter_utils/nfc/models.dart';
 import 'package:flutter_utils/nfc/nfc_writer.dart';
 import 'package:flutter_utils/nfc/nfc_controller.dart';
+import 'package:flutter_utils/nfc/utils.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
 import 'package:flutter_utils/package_info/package_info_widget.dart';
 import 'package:flutter_utils/phone_call_launcher.dart';
@@ -90,9 +91,31 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     titles = data.map((e) => e["value"].toString()).toList();
+    var writerTag = "writer";
     final ExtendedFABController fabController =
         Get.put(ExtendedFABController());
-    var nfcController = Get.put(NFCController(options: defaultNfcOptions));
+    var nfcController = Get.put(
+        NFCController(
+            options: defaultNfcOptions,
+            onNfcTagDiscovered: (
+              NfcTagInfo tag,
+            ) async {
+              var nfcControllera =
+                  Get.find<NFCController>(tag: defaultNfcOptions.tag);
+              nfcControllera?.defaultOnNfcTagDiscovered(tag.nfcTag);
+            }),
+        tag: defaultControllerTagName);
+    var rednfcController = Get.put(
+        NFCController(
+            options: defaultNfcOptions,
+            onNfcTagDiscovered: (
+              NfcTagInfo tag,
+            ) async {
+              var nfcControllera =
+                  Get.find<NFCController>(tag: defaultNfcOptions.tag);
+              nfcControllera?.defaultOnNfcTagDiscovered(tag.nfcTag);
+            }),
+        tag: writerTag);
 
     return GetBuilder<ThemeController>(
       builder: (themeController) {
@@ -182,12 +205,20 @@ class MyApp extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const NfcReader(
-                            options: NFCReaderOptions(
-                                foundWidget: NFCTagsFoundWidget()),
+                          NfcReader(
+                            onNfcTagDiscovered: (NfcTagInfo tag) async {
+                              dprint("Discovered Tag");
+                              dprint("SERIAL: ${tag.serial_number}");
+                            },
+                            options: const NFCReaderOptions(
+                                foundWidget: NFCTagsFoundWidget(
+                              tag: defaultControllerTagName,
+                            )),
                           ),
-                          const NfcWriter(
-                            options: NFCWriterOptions(),
+                          NfcWriter(
+                            options: NFCWriterOptions(
+                              tag: writerTag,
+                            ),
                           ),
                           IconButton(
                             onPressed: () async {

@@ -6,11 +6,13 @@ import 'nfc_controller.dart';
 import 'nfc_scan.dart';
 
 class NFCScanningNoTagFound extends StatelessWidget {
-  const NFCScanningNoTagFound({super.key});
+  final String tag;
+
+  const NFCScanningNoTagFound({super.key, required this.tag});
 
   @override
   Widget build(BuildContext context) {
-    var nfc_controller = Get.find<NFCController>();
+    var nfc_controller = Get.find<NFCController>(tag: tag);
 
     return Obx(() {
       return Column(
@@ -67,13 +69,18 @@ class NFCScanningNoTagFound extends StatelessWidget {
 class NFCScannerBottomSheet extends StatelessWidget {
   final Widget? child;
   final Widget? foundWidget;
+  final String tag;
 
-  const NFCScannerBottomSheet({super.key, this.foundWidget, this.child});
+  const NFCScannerBottomSheet(
+      {super.key, this.foundWidget, this.child, required this.tag});
 
   @override
   Widget build(BuildContext context) {
-    var nfcController = Get.find<NFCController>();
-    var finalWidget = foundWidget ?? const TagFoundWidget();
+    var nfcController = Get.find<NFCController>(tag: tag);
+    var finalWidget = foundWidget ??
+        TagFoundWidget(
+          tag: tag,
+        );
 
     if (child != null) {
       return child!;
@@ -84,7 +91,9 @@ class NFCScannerBottomSheet extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             if (nfcController.scannedTags.value.isEmpty)
-              const NFCScanningNoTagFound(),
+              NFCScanningNoTagFound(
+                tag: tag,
+              ),
             if (nfcController.scannedTags.value.isNotEmpty) finalWidget,
             ElevatedButton(
               onPressed: () {
