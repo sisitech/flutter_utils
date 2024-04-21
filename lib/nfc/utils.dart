@@ -219,7 +219,7 @@ extension IntExtension on int {
 String? getSerialNumber(NfcTag tag) {
   Uint8List identifier =
       Uint8List.fromList(tag.data["mifareultralight"]['identifier']);
-  return identifier.map((e) => e.toRadixString(16).padLeft(2, '0')).join(':');
+  return identifier.map((e) => e.toRadixString(16).padLeft(2, '0')).join('');
 }
 
 class NfcTagInfo {
@@ -246,7 +246,7 @@ class NfcTagInfo {
       try {
         chipId = ndef.additionalData['identifier']
             .map((e) => e.toRadixString(16).padLeft(2, '0'))
-            .join(':');
+            .join('');
       } catch (er) {}
     }
     // dprint(chipId);
