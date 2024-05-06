@@ -33,11 +33,11 @@ var dateRanges = [
     // displayName: "Week of @start_date_display#",
     startDate: () {
       var now = DateTime.now();
-      return DateTime(now.year, now.month, now.day);
+      return DateTime(now.year, now.month, now.day - 7);
     },
     endDate: () {
       var now = DateTime.now();
-      return DateTime(now.year, now.month, now.day - 7);
+      return DateTime(now.year, now.month, now.day);
     },
   ),
   TimePeriod(
