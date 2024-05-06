@@ -28,16 +28,16 @@ var dateRanges = [
     },
   ),
   TimePeriod(
-    displayName: 'Last Week',
+    displayName: 'Last 7 Days',
     value: 3,
     // displayName: "Week of @start_date_display#",
     startDate: () {
       var now = DateTime.now();
-      return DateTime(now.year, now.month, now.day - 10);
+      return DateTime(now.year, now.month, now.day - 7);
     },
     endDate: () {
       var now = DateTime.now();
-      return DateTime(now.year, now.month, now.day - 2);
+      return DateTime(now.year, now.month, now.day + 1);
     },
   ),
   TimePeriod(
