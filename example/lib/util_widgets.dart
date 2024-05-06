@@ -16,8 +16,7 @@ class UtilWidgetsScreen extends StatefulWidget {
 }
 
 class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
-  TimePeriod datePeriod =
-      dateRanges.firstWhere((element) => element.displayName == 'Last Week');
+  TimePeriod datePeriod = dateRanges[0];
   final ThemeController themeController = Get.find<ThemeController>();
 
   Future<void> onDatePeriodChange(int newPeriod) async {
