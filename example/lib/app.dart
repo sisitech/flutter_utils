@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:example/svg_widgets.dart';
 import 'package:example/util_widgets.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -39,6 +42,7 @@ import 'package:flutter_utils/extensions/date_extensions.dart';
 import 'package:flutter_utils/switch/switch.dart';
 import 'package:flutter_utils/sisitech_card/sisitech_card.dart';
 import 'package:flutter_utils/nfc/nfc.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
 import 'constatns.dart';
 import 'nfc_found_widget.dart';
@@ -136,6 +140,14 @@ class MyApp extends StatelessWidget {
       ),
       tag: defaultControllerTagName,
     );
+    String inputString = "michameiu";
+    NdefRecord uriRecord = NdefRecord.createUri(
+        Uri.parse("https://sisitech.com/#/case-studies/wavvy"));
+    NdefRecord externalRecord2 = NdefRecord.createExternal(
+        'com.sisitech', // domain
+        'username', // type
+        Uint8List.fromList(utf8.encode(inputString)) // payload as byte array
+        );
 
     var rednfcController = Get.put(
         NFCController(
@@ -241,9 +253,10 @@ class MyApp extends StatelessWidget {
                                 ),
                           ),
                           NfcWriter(
-                            options: NFCWriterOptions(
-                              tag: writerTag,
-                            ),
+                            options: NFCWriterOptions(tag: writerTag, records: [
+                              uriRecord,
+                              externalRecord2,
+                            ]),
                           ),
                           IconButton(
                             onPressed: () async {

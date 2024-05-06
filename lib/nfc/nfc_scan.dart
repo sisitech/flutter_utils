@@ -126,7 +126,7 @@ Future<List<NfcTagInfo>> startScannerWithBottomSheet(
 Future<List<NfcTagInfo>> startNFCWriterWithBottomSheet(dynamic value,
     {required NFCWriterOptions options}) async {
   var nfcController = Get.find<NFCController>(tag: options.tag);
-  nfcController.startWriter(value);
+  nfcController.startWriter(value, options: options);
   var res = await Get.bottomSheet(
     NFCScannerBottomSheet(
       foundWidget: options.foundWidget,

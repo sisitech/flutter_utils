@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
 import 'utils.dart';
 
@@ -36,6 +37,9 @@ class NFCWriterOptions {
   final String tag;
   final String okButtonText;
   final Function(List<NfcTagInfo> tags)? onScanComplete;
+
+  final List<NdefRecord> records;
+
   const NFCWriterOptions({
     this.infiniteScan = false,
     this.tag = defaultControllerTagName,
@@ -46,5 +50,6 @@ class NFCWriterOptions {
     this.cancelButtonText = "Cancel",
     this.okButtonText = "Use",
     this.onScanComplete,
+    required this.records,
   });
 }

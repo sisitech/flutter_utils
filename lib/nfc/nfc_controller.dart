@@ -79,7 +79,8 @@ class NFCController extends GetxController {
 
   var scannerStatus = "".obs;
 
-  startWriter(message, {bool stopOnFirst = false}) {
+  startWriter(message,
+      {bool stopOnFirst = false, required NFCWriterOptions options}) {
     scannedTags.value = [];
     isScanning.value = true;
     scannerStatus.value = "NFC writer started. Waiting for card...".ctr;
@@ -101,24 +102,10 @@ class NFCController extends GetxController {
           return;
         } else {
           scannerStatus.value = "Writing in progress.".ctr;
-          NdefRecord uriRecord = NdefRecord.createUri(
-              Uri.parse("https://sisitech.com/#/case-studies/wavvy"));
           String inputString = "michameiu";
-          // Prepare the second external type record
-
-          NdefRecord externalRecord2 = NdefRecord.createExternal(
-              'com.sisitech', // domain
-              'username', // type
-              Uint8List.fromList(
-                  utf8.encode(inputString)) // payload as byte array
-              );
 
           if (parsedTag.ndef != null) {
-            NdefMessage message = NdefMessage([
-              uriRecord,
-              externalRecord2,
-            ]);
-
+            NdefMessage message = NdefMessage(options.records);
             await parsedTag.ndef?.write(message);
           }
           scannerStatus.value = "Writing Done.".ctr;
