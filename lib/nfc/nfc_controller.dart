@@ -108,7 +108,7 @@ class NFCController extends GetxController {
             NdefMessage message = NdefMessage(options.records);
             await parsedTag.ndef?.write(message);
           }
-          scannerStatus.value = "Writing Done.".ctr;
+          scannerStatus.value = "Writing Done. Please scan another card.".ctr;
 
           if (onNfcTagDiscovered != null) {
             await onNfcTagDiscovered!(parsedTag);
