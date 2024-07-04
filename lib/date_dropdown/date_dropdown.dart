@@ -38,7 +38,7 @@ class _SistchDateDropdownState extends State<SistchDateDropdown> {
               ),
               formControlName: 'duration',
               hint: Text(
-                widget.datePeriod.displayName,
+                widget.datePeriod.displayText,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               onChanged: (FormControl formControl) async {

@@ -35,6 +35,11 @@ class TimePeriod {
     }
   }
 
+  get displayText {
+    return displayName.ctr.interpolate(toJson() ?? {});
+  }
+
+
   TimePeriod({
     this.displayName = "This Month",
     this.value = 0,
