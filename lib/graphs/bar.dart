@@ -110,7 +110,7 @@ class CustomBarGraph extends StatelessWidget {
               barTouchData: barTouchData ??
                   BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
-                      tooltipBgColor: Colors.grey,
+                      // tooltipBgColor: Colors.grey,
                       getTooltipItem: getTooltipItem ?? defaultBarTooltipItem,
                     ),
                   ),
