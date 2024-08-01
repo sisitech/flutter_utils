@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter_utils/utils/global_widgets.dart';
+import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 
 // Models

@@ -1,7 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/pie_donut_chart/pie_chart_controller.dart';
-import 'package:flutter_utils/utils/global_widgets.dart';
+import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 
 class SistchPieDonutChart extends StatefulWidget {

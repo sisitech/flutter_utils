@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_utils/utils/global_widgets.dart';
+import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
