@@ -23,9 +23,6 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
   Future<void> onDatePeriodChange(int newPeriod) async {
     datePeriod = dateRanges.firstWhere((element) => element.value == newPeriod);
     dprint(datePeriod.displayName);
-    dprint(datePeriod.prevStartDate);
-    dprint(datePeriod.startDateFunc!());
-    dprint(datePeriod.intervalLabels);
   }
 
   @override
@@ -52,6 +49,10 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 ),
               ),
               const Divider(),
+              Text(
+                'Text Carousel Widget'.ctr,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const SistchTextCarousel(
                 texts: ["Text One", "Text Two", "Text Three"],
               ),

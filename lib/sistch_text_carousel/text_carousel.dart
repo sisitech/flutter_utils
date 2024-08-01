@@ -10,6 +10,7 @@ class SistchTextCarousel extends StatefulWidget {
   final Color? bgColor;
   final Color? textColor;
   final IconData? icon;
+  final double? height;
 
   ///[SistchTextCarousel] renders an animated text carousel widget
   ///Required Fields:
@@ -23,6 +24,7 @@ class SistchTextCarousel extends StatefulWidget {
     this.bgColor,
     this.textColor,
     this.icon,
+    this.height,
   });
 
   @override
@@ -82,6 +84,7 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
                 const SizedBox(width: 10),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.65,
+                  height: widget.height,
                   child: Obx(
                     () => FadeInDownText(
                       currentText:

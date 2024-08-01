@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:example/chart_widgets.dart';
 import 'package:example/svg_widgets.dart';
 import 'package:example/util_widgets.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -196,6 +197,14 @@ class MyApp extends StatelessWidget {
                     leadingIcon: Icons.settings,
                     trailingIcon: Icons.arrow_forward,
                   ),
+                  SisitechDrawerItem(
+                    title: 'Chart Widgets',
+                    onTap: () {
+                      Get.to(() => const ChartWidgetsScreen());
+                    },
+                    leadingIcon: Icons.bar_chart,
+                    trailingIcon: Icons.arrow_forward,
+                  ),
                   // Add more items as needed
                 ],
               ),
@@ -276,7 +285,7 @@ class MyApp extends StatelessWidget {
                             child: SisitechCard(
                               assetImage:
                                   'assets/images/sisitech_logo_kinda.png',
-                              description: 'Kshs. 10,000',
+                              description: 'Kes. 10,000',
                               color: Theme.of(context).colorScheme.primary,
                               imageScale: 130,
                               cardAxisAlignment: CrossAxisAlignment.center,
@@ -289,10 +298,24 @@ class MyApp extends StatelessWidget {
                             width: 1000,
                             child: SisitechCard(
                               iconData: Icons.abc,
+                              topRightWidget: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 5),
+                                decoration: BoxDecoration(
+                                    color: Colors.blueGrey,
+                                    borderRadius: BorderRadius.circular(5)),
+                                child: const Row(
+                                  children: [
+                                    Icon(Icons.arrow_downward, size: 12),
+                                    SizedBox(width: 2),
+                                    Text("12.2%"),
+                                  ],
+                                ),
+                              ),
                               iconSize: 40,
                               iconColor:
                                   Theme.of(context).dialogBackgroundColor,
-                              description: 'Kshs. 10,000',
+                              description: 'Kes. 10,000',
                               color: Theme.of(context).colorScheme.primary,
                               imageScale: 130,
                               title:

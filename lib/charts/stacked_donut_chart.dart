@@ -200,7 +200,9 @@ class StackedDonutChartController extends GetxController {
   createDtChartData() {
     isDtChartLoading.value = true;
 
-    chartColors = dtColors ?? getChartColors(dataSeries.length);
+    chartColors = dtColors == null
+        ? [firstColor, ...getChartColors(dataSeries.length)]
+        : dtColors!;
     double seriesTotal = getListOfDoublesSum(dataSeries);
     double startRadius = (chartWidth ?? defChartWidth) * 0.6;
     double radDcr = 10;
@@ -215,7 +217,7 @@ class StackedDonutChartController extends GetxController {
       return SistchDtChartData(
         percent: e / seriesTotal,
         radius: startRadius - ((index + 1) * radDcr),
-        sectionColor: index == 0 ? firstColor : chartColors[index - 1],
+        sectionColor: chartColors[index],
         startAngle: index == 0 ? 335 : angle + ((index - 1) * angleIncr),
       );
     }).toList();

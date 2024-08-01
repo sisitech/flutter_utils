@@ -16,6 +16,7 @@ class SistchPieDonutChart extends StatefulWidget {
   final String? chartTitle;
   final double? badgeOffset;
   final double? titleOffset;
+  final bool? hideIndicatorExt;
 
   ///[SistchPieDonutChart] renders custom Sisitech Pie or Donut Chart
   /// Required Fields:
@@ -37,6 +38,7 @@ class SistchPieDonutChart extends StatefulWidget {
     this.chartTitle,
     this.badgeOffset,
     this.titleOffset,
+    this.hideIndicatorExt,
   });
 
   @override
@@ -62,6 +64,7 @@ class _SistchPieDonutChartState extends State<SistchPieDonutChart> {
       hideIndicators: widget.hideIndicators,
       badgeOffset: widget.badgeOffset,
       titleOffset: widget.titleOffset,
+      hideIndicatorExt: widget.hideIndicatorExt,
     ));
   }
 
@@ -80,6 +83,7 @@ class _SistchPieDonutChartState extends State<SistchPieDonutChart> {
       hideIndicators: widget.hideIndicators,
       badgeOffset: widget.badgeOffset,
       titleOffset: widget.titleOffset,
+      hideIndicatorExt: widget.hideIndicatorExt,
     );
 
     return Padding(
@@ -153,10 +157,9 @@ class _SistchPieDonutChartState extends State<SistchPieDonutChart> {
       margin: isHorizFormat
           ? null
           : EdgeInsets.only(left: MediaQuery.of(context).size.width / 12),
-      width: isHorizFormat
-          ? MediaQuery.of(context).size.width * 0.25
-          : MediaQuery.of(context).size.width,
+      width: isHorizFormat ? MediaQuery.of(context).size.width * 0.25 : null,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: pieChartCtrl.pieChartIndicators
             .map((indicator) => indicator)
             .toList(),
