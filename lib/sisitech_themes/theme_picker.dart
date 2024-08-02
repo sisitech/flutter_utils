@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_utils/internalization/extensions.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:get/get.dart';
@@ -37,6 +38,21 @@ class _SistchThemePickerState extends State<SistchThemePicker> {
                       .toList(),
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                width: 300,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                    Get.back();
+                  },
+                  child: const Text(
+                    'Apply Theme',
+                  ),
+                ),
+              )
             ],
           ),
         ),
