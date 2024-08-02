@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_utils/internalization/extensions.dart';
+import 'package:flutter_utils/sisitech_themes/format_theme_names.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:get/get.dart';
 
@@ -73,7 +73,7 @@ class _SistchThemePickerState extends State<SistchThemePicker> {
           ),
           Obx(
             () => Text(
-              m3Theme.flexScheme.toString().split(".").last,
+              formatThemeName(m3Theme.flexScheme.toString().split(".").last),
               style: TextStyle(
                   color:
                       themeController.currentScheme.value == m3Theme.flexScheme
