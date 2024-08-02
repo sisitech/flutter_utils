@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/internalization/extensions.dart';
-import 'package:flutter_utils/sisitech_themes/format_theme_names.dart';
+import 'package:flutter_utils/sisitech_themes/format_theme_name.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:get/get.dart';
 
