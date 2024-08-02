@@ -1,5 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
+import 'package:get/get.dart';
+
+void showSnackbar(
+    {required String title,
+    required String subtitle,
+    required IconData iconPath,
+    required ColorScheme colorScheme,
+    SnackPosition? snackPosition = SnackPosition.BOTTOM}) {
+  Get.snackbar(title, subtitle,
+      backgroundColor: colorScheme.primary,
+      colorText: colorScheme.onPrimary,
+      icon: Icon(
+        iconPath,
+        size: 28,
+        color: colorScheme.onPrimary,
+      ),
+      snackPosition: snackPosition);
+}
 
 Widget loadingWidget(String loadingTxt) {
   return Padding(

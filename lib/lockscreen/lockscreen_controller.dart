@@ -11,7 +11,7 @@ class LockScreenController extends GetxController {
         // screenLockCreate(
         //   context: Get.context!,
         //   onConfirmed: (value) =>
-        //       print(value), // store new passcode somewhere here
+        //       print(value), // store new passCode somewhere here
         // );
         screenLock(
           context: Get.context!,
