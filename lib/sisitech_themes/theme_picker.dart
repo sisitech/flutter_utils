@@ -14,20 +14,23 @@ class SistchThemePicker extends StatefulWidget {
 
 class _SistchThemePickerState extends State<SistchThemePicker> {
   final ThemeController themeController = Get.find<ThemeController>();
+  final String title = "Choose a Theme";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          title.ctr,
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
       body: SingleChildScrollView(
         padding:
             const EdgeInsets.only(top: 45, right: 25, bottom: 25, left: 25),
         child: Center(
           child: Column(
             children: [
-              Text(
-                'Choose a Theme'.ctr,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Wrap(
