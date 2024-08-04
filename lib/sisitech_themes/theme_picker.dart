@@ -22,8 +22,16 @@ class _SistchThemePickerState extends State<SistchThemePicker> {
       appBar: AppBar(
         title: Text(
           title.ctr,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
         ),
         backgroundColor: Theme.of(context).primaryColor,
+        iconTheme: IconThemeData(
+          color: Theme.of(context)
+              .colorScheme
+              .onPrimary, // Use onPrimary for adaptive icon color
+        ),
       ),
       body: SingleChildScrollView(
         padding:
