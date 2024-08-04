@@ -52,16 +52,26 @@ class SisitechDrawerHeader extends StatelessWidget {
 
     return DrawerHeader(
       decoration: BoxDecoration(
-        color: headerBackgroundColor,
+        color: Theme.of(context).primaryColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          SizedBox(height: Get.height * 0.02),
           avatar,
-          const SizedBox(height: 16),
-          Text(headerText, style: const TextStyle(color: Colors.white)),
-          Text(headerSubText ?? '',
-              style: const TextStyle(color: Colors.white)),
+          SizedBox(height: Get.height * 0.01),
+          Text(
+            headerText,
+            style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+          ),
+          Text(
+            headerSubText,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+          ),
         ],
       ),
     );
