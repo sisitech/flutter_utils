@@ -30,6 +30,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   chartTitle: "Stacked Donut Chart Widget",
                   dataSeries: [90, 40, 80, 30, 20],
                   dtLabels: ["One", "Two", "Three", "Four", "Five"],
+                  centerWidget: Text("Ola!"),
                 ),
               ),
               Divider(),

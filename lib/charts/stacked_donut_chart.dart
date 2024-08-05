@@ -55,7 +55,7 @@ class _SistchStackedDonutChartState extends State<SistchStackedDonutChart> {
       dtLabels: widget.dtLabels,
       dtColors: widget.dtColors ?? getChartColors(widget.dataSeries.length),
       chartWidth: widget.chartWidth ?? defChartWidth,
-      firstColor: widget.firstColor ?? Colors.blueGrey,
+      firstColor: widget.firstColor,
     ));
   }
 
@@ -69,7 +69,7 @@ class _SistchStackedDonutChartState extends State<SistchStackedDonutChart> {
       dataSeries: widget.dataSeries,
       dtLabels: widget.dtLabels,
       dtColors: widget.dtColors,
-      firstColor: widget.firstColor ?? Colors.blueGrey,
+      firstColor: widget.firstColor,
     );
 
     return Padding(
@@ -185,7 +185,7 @@ class StackedDonutChartController extends GetxController {
   List<String> dtLabels;
   List<Color>? dtColors;
   double? chartWidth;
-  Color firstColor;
+  Color? firstColor;
 
   StackedDonutChartController({
     required this.dataSeries,
@@ -200,9 +200,11 @@ class StackedDonutChartController extends GetxController {
   createDtChartData() {
     isDtChartLoading.value = true;
 
-    chartColors = dtColors == null
-        ? [firstColor, ...getChartColors(dataSeries.length)]
-        : dtColors!;
+    chartColors = dtColors != null
+        ? dtColors!
+        : firstColor != null
+            ? [firstColor!, ...getChartColors(dataSeries.length)]
+            : getChartColors(dataSeries.length);
     double seriesTotal = getListOfDoublesSum(dataSeries);
     double startRadius = (chartWidth ?? defChartWidth) * 0.6;
     double radDcr = 10;
@@ -232,7 +234,7 @@ class StackedDonutChartController extends GetxController {
   void updateDtChart({
     required List<double> dataSeries,
     required List<String> dtLabels,
-    required Color firstColor,
+    Color? firstColor,
     List<Color>? dtColors,
     double? chartWidth,
   }) {
