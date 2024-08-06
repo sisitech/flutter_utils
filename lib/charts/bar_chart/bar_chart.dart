@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_utils/charts/bar_chart/bar_chart_controller.dart';
+import 'package:flutter_utils/charts/bar_chart_beta/bar_chart_controller_beta.dart';
 import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +15,6 @@ class SistchBarChart extends StatelessWidget {
   final double? chartHeight;
   final String? tipPreText;
   final String? chartTitle;
-  final bool? useIndIcons;
 
   const SistchBarChart({
     super.key,
@@ -28,18 +27,16 @@ class SistchBarChart extends StatelessWidget {
     this.chartTitle,
     this.chartHeight = 200,
     this.tipPreText = "KES.",
-    this.useIndIcons,
   });
 
   @override
   Widget build(BuildContext context) {
-    final barChartCtrl = Get.put(BarChartController(
+    final barChartCtrl = Get.put(BarChartControllerBeta(
       dataSeries: dataSeries,
       seriesColors: seriesColors,
       xAxisLabels: xAxisLabels,
       textColor: textColor,
       seriesLabels: seriesLabels,
-      useIndIcons: useIndIcons,
     ));
 
     final colorScheme = Theme.of(context).colorScheme;
