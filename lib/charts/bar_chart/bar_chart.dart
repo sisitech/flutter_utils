@@ -15,7 +15,6 @@ class SistchBarChart extends StatelessWidget {
   final double? chartHeight;
   final String? tipPreText;
   final String? chartTitle;
-  final bool? useIndIcons;
 
   const SistchBarChart({
     super.key,
@@ -30,43 +29,6 @@ class SistchBarChart extends StatelessWidget {
     this.tipPreText = "KES.",
   });
 
-  ///[SistchBarChart] renders custom Sisitech Bar Chart
-  /// Required Fields:
-  ///- List<List<double>> dataSeries: list of series of data points
-  ///- List<String> xAxisLabels: list of x-axis titles
-  const SistchBarChart(
-      {super.key,
-      required this.dataSeries,
-      required this.xAxisLabels,
-      this.seriesLabels,
-      this.seriesColors,
-      this.bgColor,
-      this.useIndIcons,
-      this.textColor,
-      this.chartTitle,
-      this.chartHeight = 200,
-      this.tipPreText = "KES."});
-
-  @override
-  State<SistchBarChart> createState() => _SistchBarChartState();
-}
-
-class _SistchBarChartState extends State<SistchBarChart> {
-  late BarChartController barChartCtrl;
-
-  @override
-  void initState() {
-    super.initState();
-    barChartCtrl = Get.put(BarChartController(
-      dataSeries: widget.dataSeries,
-      seriesColors: widget.seriesColors,
-      xAxisLabels: widget.xAxisLabels,
-      textColor: widget.textColor,
-      seriesLabels: widget.seriesLabels,
-      useIndIcons: widget.useIndIcons,
-    ));
-  }
-
   @override
   Widget build(BuildContext context) {
     final barChartCtrl = Get.put(BarChartController(
@@ -79,15 +41,6 @@ class _SistchBarChartState extends State<SistchBarChart> {
 
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-
-    barChartCtrl.updateChart(
-      dataSeries: widget.dataSeries,
-      seriesColors: widget.seriesColors,
-      xAxisLabels: widget.xAxisLabels,
-      textColor: widget.textColor,
-      seriesLabels: widget.seriesLabels,
-      useIndIcons: widget.useIndIcons,
-    );
 
     return Padding(
       padding: const EdgeInsets.all(10),
