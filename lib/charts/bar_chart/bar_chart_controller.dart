@@ -11,6 +11,7 @@ class SistchBarChartData {
   List<Color> seriesColors;
   List<String> seriesLabels;
   Color? textColor;
+  bool? useIndIcons;
 
   SistchBarChartData({
     required this.barGroupData,
@@ -19,6 +20,7 @@ class SistchBarChartData {
     required this.seriesColors,
     required this.seriesLabels,
     this.textColor,
+    this.useIndIcons,
   });
 
   SistchBarChartData copyWith({
@@ -28,6 +30,7 @@ class SistchBarChartData {
     List<Color>? seriesColors,
     List<String>? seriesLabels,
     Color? textColor,
+    bool? useIndIcons,
   }) {
     return SistchBarChartData(
       barGroupData: barGroupData ?? this.barGroupData,
@@ -36,6 +39,7 @@ class SistchBarChartData {
       seriesColors: seriesColors ?? this.seriesColors,
       seriesLabels: seriesLabels ?? this.seriesLabels,
       textColor: textColor ?? this.textColor,
+      useIndIcons: useIndIcons ?? this.useIndIcons,
     );
   }
 }
@@ -59,6 +63,7 @@ class BarChartController extends GetxController {
   Color? textColor;
   List<Color>? seriesColors;
   List<String>? seriesLabels;
+  bool? useIndIcons;
 
   BarChartController({
     required List<List<double>> dataSeries,
@@ -66,6 +71,7 @@ class BarChartController extends GetxController {
     this.seriesColors,
     this.seriesLabels,
     this.textColor,
+    this.useIndIcons,
   }) {
     this.dataSeries = dataSeries;
     this.xAxisLabels = xAxisLabels;
@@ -97,8 +103,9 @@ class BarChartController extends GetxController {
       currentSeriesColors = [barChartColors[currentSeriesIdx]];
     }
 
-    barChartIndicators.value =
-        getChartIndicators(currentSeriesLabels, currentSeriesColors);
+    barChartIndicators.value = getChartIndicators(
+        currentSeriesLabels, currentSeriesColors,
+        useIcons: useIndIcons);
 
     final barGroupData = getBarGroupData(currentSeries, currentSeriesColors);
 
@@ -109,6 +116,7 @@ class BarChartController extends GetxController {
       textColor: textColor,
       seriesColors: currentSeriesColors,
       seriesLabels: currentSeriesLabels,
+      useIndIcons: useIndIcons,
     );
 
     isBarChartLoading.value = false;
@@ -118,14 +126,18 @@ class BarChartController extends GetxController {
     required List<List<double>> dataSeries,
     List<Color>? seriesColors,
     required List<String> xAxisLabels,
-    Color? textColor,
-    List<String>? seriesLabels,
+    required Color? textColor,
+    required List<String>? seriesLabels,
+    bool? useIndIcons,
   }) {
     this.dataSeries = dataSeries;
     this.seriesColors = seriesColors;
     this.xAxisLabels = xAxisLabels;
     this.textColor = textColor;
     this.seriesLabels = seriesLabels;
+    this.useIndIcons = useIndIcons;
+
+    createBarChartData();
   }
 
   List<BarChartGroupData> getBarGroupData(

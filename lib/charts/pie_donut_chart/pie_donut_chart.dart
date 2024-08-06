@@ -17,6 +17,7 @@ class SistchPieDonutChart extends StatefulWidget {
   final double? badgeOffset;
   final double? titleOffset;
   final bool? hideIndicatorExt;
+  final bool? useIndIcons;
 
   ///[SistchPieDonutChart] renders custom Sisitech Pie or Donut Chart
   /// Required Fields:
@@ -39,6 +40,7 @@ class SistchPieDonutChart extends StatefulWidget {
     this.badgeOffset,
     this.titleOffset,
     this.hideIndicatorExt,
+    this.useIndIcons,
   });
 
   @override
@@ -65,6 +67,7 @@ class _SistchPieDonutChartState extends State<SistchPieDonutChart> {
       badgeOffset: widget.badgeOffset,
       titleOffset: widget.titleOffset,
       hideIndicatorExt: widget.hideIndicatorExt,
+      useIndIcons: widget.useIndIcons,
     ));
   }
 
@@ -84,6 +87,7 @@ class _SistchPieDonutChartState extends State<SistchPieDonutChart> {
       badgeOffset: widget.badgeOffset,
       titleOffset: widget.titleOffset,
       hideIndicatorExt: widget.hideIndicatorExt,
+      useIndIcons: widget.useIndIcons,
     );
 
     return Padding(

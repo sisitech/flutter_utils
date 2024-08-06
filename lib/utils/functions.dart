@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
+import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:get/get.dart';
 
 void showSnackbar(
@@ -51,16 +52,27 @@ String addThousandSeparators(double value) {
       decimalPart;
 }
 
-Widget chartIndicator({Color? color, function, required String label}) {
+Widget chartIndicator(
+    {Color? color,
+    function,
+    required String label,
+    bool? useIcons,
+    required String rawLabel}) {
   return Padding(
     padding: const EdgeInsets.only(right: 8, bottom: 4),
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-        ),
+        useIcons == true
+            ? Icon(
+                iconMapper[rawLabel] ?? Icons.circle,
+                color: color,
+                size: 12,
+              )
+            : Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              ),
         const SizedBox(width: 4),
         Flexible(
           child: Text(
@@ -79,10 +91,12 @@ Widget chartIndicator({Color? color, function, required String label}) {
 }
 
 List<Widget> getChartIndicators(List<String> labels, List<Color> colors,
-    {List<double>? values, bool? isPercent = false}) {
+    {List<double>? values, bool? isPercent = false, bool? useIcons}) {
   return List.generate(
     labels.length,
     (i) => chartIndicator(
+      useIcons: useIcons,
+      rawLabel: labels[i],
       label: "@label#@value#".interpolate({
         "label": labels[i],
         "value": values != null
@@ -123,7 +137,6 @@ List<Color> chartColors = const [
   Color(0xFF3D5B59),
   Color(0xFFDB668D),
   Color(0xFF000C66),
-  Color(0xFF86D388),
   Color(0xFFF3E1C0),
 ];
 
@@ -141,6 +154,5 @@ Map<Color, Color> textChartColors = {
   const Color(0xFF18A558): Colors.white,
   const Color(0xFF3D5B59): Colors.white,
   const Color(0xFF000C66): Colors.white,
-  const Color(0xFF86D388): Colors.black,
   const Color(0xFFF3E1C0): Colors.black,
 };

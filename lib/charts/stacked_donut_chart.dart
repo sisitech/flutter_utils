@@ -18,6 +18,7 @@ class SistchStackedDonutChart extends StatefulWidget {
   final double? chartWidth;
   final Widget? centerWidget;
   final Color? firstColor;
+  final bool? useIndIcons;
 
   ///[SistchStackedDonutChart] renders custom Sisitech Stack of Donut Charts
   /// Required Fields:
@@ -33,6 +34,7 @@ class SistchStackedDonutChart extends StatefulWidget {
     this.chartWidth = defChartWidth,
     this.centerWidget,
     this.firstColor,
+    this.useIndIcons,
   });
 
   @override
@@ -56,6 +58,7 @@ class _SistchStackedDonutChartState extends State<SistchStackedDonutChart> {
       dtColors: widget.dtColors ?? getChartColors(widget.dataSeries.length),
       chartWidth: widget.chartWidth ?? defChartWidth,
       firstColor: widget.firstColor,
+      useIndIcons: widget.useIndIcons,
     ));
   }
 
@@ -70,6 +73,7 @@ class _SistchStackedDonutChartState extends State<SistchStackedDonutChart> {
       dtLabels: widget.dtLabels,
       dtColors: widget.dtColors,
       firstColor: widget.firstColor,
+      useIndIcons: widget.useIndIcons,
     );
 
     return Padding(
@@ -186,6 +190,7 @@ class StackedDonutChartController extends GetxController {
   List<Color>? dtColors;
   double? chartWidth;
   Color? firstColor;
+  bool? useIndIcons;
 
   StackedDonutChartController({
     required this.dataSeries,
@@ -193,6 +198,7 @@ class StackedDonutChartController extends GetxController {
     required this.firstColor,
     this.dtColors,
     this.chartWidth,
+    this.useIndIcons,
   }) {
     createDtChartData();
   }
@@ -226,6 +232,7 @@ class StackedDonutChartController extends GetxController {
 
     donutChartIndicators.value = getChartIndicators(dtLabels, chartColors,
         values: chartData.map((e) => e.percent * 100).toList(),
+        useIcons: useIndIcons,
         isPercent: true);
 
     isDtChartLoading.value = false;
@@ -237,12 +244,14 @@ class StackedDonutChartController extends GetxController {
     Color? firstColor,
     List<Color>? dtColors,
     double? chartWidth,
+    bool? useIndIcons,
   }) {
     this.dataSeries = dataSeries;
     this.dtLabels = dtLabels;
     this.dtColors = dtColors;
     this.chartWidth = chartWidth;
     this.firstColor = firstColor;
+    this.useIndIcons = useIndIcons;
 
     createDtChartData();
   }
