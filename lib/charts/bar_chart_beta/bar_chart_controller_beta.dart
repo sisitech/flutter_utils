@@ -4,7 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 
-class SistchBarChartData {
+class SistchBarChartDataBeta {
   List<BarChartGroupData> barGroupData;
   List<String> xAxisLabels;
   double maxY;
@@ -12,7 +12,7 @@ class SistchBarChartData {
   List<String> seriesLabels;
   Color? textColor;
 
-  SistchBarChartData({
+  SistchBarChartDataBeta({
     required this.barGroupData,
     required this.xAxisLabels,
     required this.maxY,
@@ -21,7 +21,7 @@ class SistchBarChartData {
     this.textColor,
   });
 
-  SistchBarChartData copyWith({
+  SistchBarChartDataBeta copyWith({
     List<BarChartGroupData>? barGroupData,
     List<String>? xAxisLabels,
     double? maxY,
@@ -29,7 +29,7 @@ class SistchBarChartData {
     List<String>? seriesLabels,
     Color? textColor,
   }) {
-    return SistchBarChartData(
+    return SistchBarChartDataBeta(
       barGroupData: barGroupData ?? this.barGroupData,
       xAxisLabels: xAxisLabels ?? this.xAxisLabels,
       maxY: maxY ?? this.maxY,
@@ -41,7 +41,7 @@ class SistchBarChartData {
 }
 
 class BarChartController extends GetxController {
-  Rx<SistchBarChartData> chartData = SistchBarChartData(
+  Rx<SistchBarChartDataBeta> chartData = SistchBarChartDataBeta(
     barGroupData: [],
     xAxisLabels: [],
     maxY: 0,
@@ -102,7 +102,7 @@ class BarChartController extends GetxController {
 
     final barGroupData = getBarGroupData(currentSeries, currentSeriesColors);
 
-    chartData.value = SistchBarChartData(
+    chartData.value = SistchBarChartDataBeta(
       barGroupData: barGroupData,
       xAxisLabels: xAxisLabels,
       maxY: getMaxY(currentSeries),

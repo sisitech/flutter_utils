@@ -5,7 +5,7 @@ import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class SistchBarChart extends StatelessWidget {
+class SistchBarChartBeta extends StatelessWidget {
   final List<List<double>> dataSeries;
   final List<String> xAxisLabels;
   final List<String>? seriesLabels;
@@ -16,7 +16,7 @@ class SistchBarChart extends StatelessWidget {
   final String? tipPreText;
   final String? chartTitle;
 
-  const SistchBarChart({
+  const SistchBarChartBeta({
     super.key,
     required this.dataSeries,
     required this.xAxisLabels,

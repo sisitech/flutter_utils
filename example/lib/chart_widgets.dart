@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/charts/bar_chart_beta/bar_chart_beta.dart';
 import 'package:flutter_utils/charts/stacked_donut_chart.dart';
 import 'package:flutter_utils/charts/bar_chart/bar_chart.dart';
 import 'package:flutter_utils/charts/pie_donut_chart/pie_donut_chart.dart';
@@ -38,7 +39,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
               Divider(),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10),
-                child: SistchBarChart(
+                child: SistchBarChartBeta(
                   chartTitle: "Bar Chart Double Series",
                   dataSeries: [
                     [20, 30, 50, 60],
@@ -46,7 +47,6 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   ],
                   seriesLabels: ["Expenses", "Income"],
                   xAxisLabels: ["One", "Two", "Three", "Four"],
-                  useIndIcons: true,
                 ),
               ),
               Divider(),

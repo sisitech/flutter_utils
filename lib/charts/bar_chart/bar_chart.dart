@@ -15,6 +15,7 @@ class SistchBarChart extends StatelessWidget {
   final double? chartHeight;
   final String? tipPreText;
   final String? chartTitle;
+  final bool? useIndIcons;
 
   const SistchBarChart({
     super.key,
@@ -27,6 +28,7 @@ class SistchBarChart extends StatelessWidget {
     this.chartTitle,
     this.chartHeight = 200,
     this.tipPreText = "KES.",
+    this.useIndIcons,
   });
 
   @override
@@ -37,6 +39,7 @@ class SistchBarChart extends StatelessWidget {
       xAxisLabels: xAxisLabels,
       textColor: textColor,
       seriesLabels: seriesLabels,
+      useIndIcons: useIndIcons,
     ));
 
     final colorScheme = Theme.of(context).colorScheme;
