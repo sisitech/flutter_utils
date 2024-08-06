@@ -17,6 +17,7 @@ class SistchBarChart extends StatefulWidget {
   final double? chartHeight;
   final String? tipPreText;
   final String? chartTitle;
+  final bool? useIndIcons;
 
   ///[SistchBarChart] renders custom Sisitech Bar Chart
   /// Required Fields:
@@ -29,6 +30,7 @@ class SistchBarChart extends StatefulWidget {
       this.seriesLabels,
       this.seriesColors,
       this.bgColor,
+      this.useIndIcons,
       this.textColor,
       this.chartTitle,
       this.chartHeight = 200,
@@ -50,6 +52,7 @@ class _SistchBarChartState extends State<SistchBarChart> {
       xAxisLabels: widget.xAxisLabels,
       textColor: widget.textColor,
       seriesLabels: widget.seriesLabels,
+      useIndIcons: widget.useIndIcons,
     ));
   }
 
@@ -64,6 +67,7 @@ class _SistchBarChartState extends State<SistchBarChart> {
       xAxisLabels: widget.xAxisLabels,
       textColor: widget.textColor,
       seriesLabels: widget.seriesLabels,
+      useIndIcons: widget.useIndIcons,
     );
 
     return Padding(

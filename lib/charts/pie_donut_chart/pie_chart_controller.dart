@@ -36,6 +36,7 @@ class PieDonutChartController extends GetxController {
   double? badgeOffset;
   double? titleOffset;
   bool? hideIndicatorExt;
+  bool? useIndIcons;
 
   PieDonutChartController({
     required this.dataSeries,
@@ -47,6 +48,7 @@ class PieDonutChartController extends GetxController {
     this.badgeOffset,
     this.titleOffset,
     this.hideIndicatorExt,
+    this.useIndIcons,
   }) {
     createPieChartData();
   }
@@ -56,7 +58,9 @@ class PieDonutChartController extends GetxController {
 
     chartColors = pieColors ?? getChartColors(dataSeries.length);
     pieChartIndicators.value = getChartIndicators(pieLabels, chartColors,
-        values: hideIndicatorExt == true ? null : dataSeries, isPercent: false);
+        values: hideIndicatorExt == true ? null : dataSeries,
+        isPercent: false,
+        useIcons: useIndIcons);
 
     chartData.value = SistchPieDonutChartData(
       pieChartSections: getPieChartSections(),
@@ -75,6 +79,7 @@ class PieDonutChartController extends GetxController {
     double? badgeOffset,
     double? titleOffset,
     bool? hideIndicatorExt,
+    bool? useIndIcons,
   }) {
     this.dataSeries = dataSeries;
     this.pieLabels = pieLabels;
@@ -85,6 +90,7 @@ class PieDonutChartController extends GetxController {
     this.titleOffset = titleOffset;
     this.badgeOffset = badgeOffset;
     this.hideIndicatorExt = hideIndicatorExt;
+    this.useIndIcons = useIndIcons;
 
     createPieChartData();
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/stacked_donut_chart.dart';
 import 'package:flutter_utils/charts/bar_chart/bar_chart.dart';
 import 'package:flutter_utils/charts/pie_donut_chart/pie_donut_chart.dart';
+import 'package:flutter_utils/charts/linear_percent_chart.dart';
 
 class ChartWidgetsScreen extends StatefulWidget {
   final routeName = "/chart-widgets";
@@ -30,6 +31,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   chartTitle: "Stacked Donut Chart Widget",
                   dataSeries: [90, 40, 80, 30, 20],
                   dtLabels: ["One", "Two", "Three", "Four", "Five"],
+                  useIndIcons: true,
                   centerWidget: Text("Ola!"),
                 ),
               ),
@@ -43,6 +45,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                     [40, 60, 70, 10],
                   ],
                   xAxisLabels: ["One", "Two", "Three", "Four"],
+                  useIndIcons: true,
                 ),
               ),
               Divider(),
@@ -64,6 +67,26 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   dataSeries: [50, 60, 70, 80],
                   pieLabels: ["One", "Two", "Three", "Four"],
                   donutCenterRadius: 0,
+                ),
+              ),
+              Divider(),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: SistchPieDonutChart(
+                  chartTitle: "Pie Chart",
+                  dataSeries: [50, 60, 70],
+                  pieLabels: ["Household", "Shopping", "Tech"],
+                  useIndIcons: true,
+                  donutCenterRadius: 0,
+                ),
+              ),
+              Divider(),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 10),
+                child: SistchLinearPercentChart(
+                  chartTitle: "Linear Percent Chart",
+                  dataSeries: [50, 60, 70, 80, 200],
+                  chartLabels: ["One", "Two", "Three", "Four", "Five"],
                 ),
               ),
               Divider(),
