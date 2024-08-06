@@ -42,6 +42,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                     [20, 30, 50, 60],
                     [40, 60, 70, 10],
                   ],
+                  seriesLabels: ["Expenses", "Income"],
                   xAxisLabels: ["One", "Two", "Three", "Four"],
                 ),
               ),

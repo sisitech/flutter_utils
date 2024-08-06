@@ -1,12 +1,9 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 
-// Models
-//
 class SistchBarChartData {
   List<BarChartGroupData> barGroupData;
   List<String> xAxisLabels;
@@ -43,10 +40,7 @@ class SistchBarChartData {
   }
 }
 
-// Controller
-//
 class BarChartController extends GetxController {
-  // --- widget variables
   Rx<SistchBarChartData> chartData = SistchBarChartData(
     barGroupData: [],
     xAxisLabels: [],
@@ -55,34 +49,38 @@ class BarChartController extends GetxController {
     seriesLabels: [],
   ).obs;
   RxList<Widget> barChartIndicators = <Widget>[].obs;
-  // ----- State variables
   int currentSeriesIdx = -1;
   int touchedGroupIndex = -1;
   RxBool isBarChartLoading = false.obs;
-  //--- holder variables
   List<Color> barChartColors = [];
   List<String> barSeriesLabels = [];
-  // ----- Passed holder variables
-  List<List<double>> dataSeries;
-  List<String> xAxisLabels;
+  late List<List<double>> dataSeries;
+  late List<String> xAxisLabels;
   Color? textColor;
   List<Color>? seriesColors;
   List<String>? seriesLabels;
 
   BarChartController({
-    required this.dataSeries,
-    required this.xAxisLabels,
+    required List<List<double>> dataSeries,
+    required List<String> xAxisLabels,
     this.seriesColors,
     this.seriesLabels,
     this.textColor,
   }) {
+    this.dataSeries = dataSeries;
+    this.xAxisLabels = xAxisLabels;
     barSeriesLabels =
         seriesLabels ?? List.generate(dataSeries.length, (i) => "Series $i");
     barChartColors = seriesColors ?? getChartColors(dataSeries.length);
+    if (barSeriesLabels.length != dataSeries.length ||
+        barChartColors.length != dataSeries.length) {
+      throw ArgumentError(
+          "The length of seriesLabels or seriesColors does not match the data series length.");
+    }
     createBarChartData();
   }
 
-  createBarChartData() {
+  void createBarChartData() {
     isBarChartLoading.value = true;
 
     List<List<double>> currentSeries;
@@ -118,18 +116,16 @@ class BarChartController extends GetxController {
 
   void updateChart({
     required List<List<double>> dataSeries,
-    required List<Color>? seriesColors,
+    List<Color>? seriesColors,
     required List<String> xAxisLabels,
-    required Color? textColor,
-    required List<String>? seriesLabels,
+    Color? textColor,
+    List<String>? seriesLabels,
   }) {
     this.dataSeries = dataSeries;
     this.seriesColors = seriesColors;
     this.xAxisLabels = xAxisLabels;
     this.textColor = textColor;
     this.seriesLabels = seriesLabels;
-
-    createBarChartData();
   }
 
   List<BarChartGroupData> getBarGroupData(

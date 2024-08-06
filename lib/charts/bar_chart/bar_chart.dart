@@ -5,9 +5,7 @@ import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-// View
-//
-class SistchBarChart extends StatefulWidget {
+class SistchBarChart extends StatelessWidget {
   final List<List<double>> dataSeries;
   final List<String> xAxisLabels;
   final List<String>? seriesLabels;
@@ -18,66 +16,46 @@ class SistchBarChart extends StatefulWidget {
   final String? tipPreText;
   final String? chartTitle;
 
-  ///[SistchBarChart] renders custom Sisitech Bar Chart
-  /// Required Fields:
-  ///- List<List<double>> dataSeries: list of series of data points
-  ///- List<String> xAxisLabels: list of x-axis titles
-  const SistchBarChart(
-      {super.key,
-      required this.dataSeries,
-      required this.xAxisLabels,
-      this.seriesLabels,
-      this.seriesColors,
-      this.bgColor,
-      this.textColor,
-      this.chartTitle,
-      this.chartHeight = 200,
-      this.tipPreText = "KES."});
-
-  @override
-  State<SistchBarChart> createState() => _SistchBarChartState();
-}
-
-class _SistchBarChartState extends State<SistchBarChart> {
-  late BarChartController barChartCtrl;
-
-  @override
-  void initState() {
-    super.initState();
-    barChartCtrl = Get.put(BarChartController(
-      dataSeries: widget.dataSeries,
-      seriesColors: widget.seriesColors,
-      xAxisLabels: widget.xAxisLabels,
-      textColor: widget.textColor,
-      seriesLabels: widget.seriesLabels,
-    ));
-  }
+  const SistchBarChart({
+    super.key,
+    required this.dataSeries,
+    required this.xAxisLabels,
+    this.seriesLabels,
+    this.seriesColors,
+    this.bgColor,
+    this.textColor,
+    this.chartTitle,
+    this.chartHeight = 200,
+    this.tipPreText = "KES.",
+  });
 
   @override
   Widget build(BuildContext context) {
+    final barChartCtrl = Get.put(BarChartController(
+      dataSeries: dataSeries,
+      seriesColors: seriesColors,
+      xAxisLabels: xAxisLabels,
+      textColor: textColor,
+      seriesLabels: seriesLabels,
+    ));
+
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-
-    barChartCtrl.updateChart(
-      dataSeries: widget.dataSeries,
-      seriesColors: widget.seriesColors,
-      xAxisLabels: widget.xAxisLabels,
-      textColor: widget.textColor,
-      seriesLabels: widget.seriesLabels,
-    );
 
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Column(
         children: [
           const SizedBox(height: 10),
-          if (widget.chartTitle != null)
+          if (chartTitle != null)
             Text(
-              widget.chartTitle!,
+              chartTitle!,
               style: textTheme.titleLarge!.copyWith(
-                  color: colorScheme.primary, fontWeight: FontWeight.bold),
+                color: colorScheme.primary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          if (widget.dataSeries.length > 1)
+          if (dataSeries.length > 1)
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -89,12 +67,13 @@ class _SistchBarChartState extends State<SistchBarChart> {
                   ),
                 ),
                 IconButton(
-                    onPressed: barChartCtrl.onSwapChartSeries,
-                    icon: const Icon(Icons.swap_horiz))
+                  onPressed: barChartCtrl.onSwapChartSeries,
+                  icon: const Icon(Icons.swap_horiz),
+                )
               ],
             ),
           SizedBox(
-            height: widget.chartHeight,
+            height: chartHeight,
             child: Obx(
               () => barChartCtrl.isBarChartLoading.value
                   ? loadingWidget("Loading ...")
@@ -129,7 +108,9 @@ class _SistchBarChartState extends State<SistchBarChart> {
                           show: true,
                           border: Border(
                             bottom: BorderSide(
-                                width: 1, color: Theme.of(context).hintColor),
+                              width: 1,
+                              color: Theme.of(context).hintColor,
+                            ),
                           ),
                         ),
                         gridData:
@@ -143,13 +124,14 @@ class _SistchBarChartState extends State<SistchBarChart> {
                                 int rodIndex) {
                               final NumberFormat currencyFormat =
                                   NumberFormat.currency(
-                                      symbol: widget.tipPreText,
-                                      decimalDigits: 2);
+                                symbol: tipPreText,
+                                decimalDigits: 2,
+                              );
 
                               return BarTooltipItem(
-                                "${widget.xAxisLabels[group.x]}: ",
+                                "${xAxisLabels[group.x]}: ",
                                 TextStyle(
-                                  color: widget.textColor,
+                                  color: textColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 11,
                                 ),
@@ -166,7 +148,9 @@ class _SistchBarChartState extends State<SistchBarChart> {
                               );
                             },
                             tooltipPadding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
                           ),
                         ),
                       ),
