@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/bar_chart_beta/bar_chart_beta.dart';
+import 'package:flutter_utils/charts/pie_donut_chart_beta/pie_donut_chart_beta.dart';
 import 'package:flutter_utils/charts/stacked_donut_chart.dart';
 import 'package:flutter_utils/charts/bar_chart/bar_chart.dart';
 import 'package:flutter_utils/charts/pie_donut_chart/pie_donut_chart.dart';
@@ -49,36 +50,25 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   xAxisLabels: ["One", "Two", "Three", "Four"],
                 ),
               ),
+              // Padding(
+              //   padding: EdgeInsets.symmetric(vertical: 10),
+              //   child: SistchPieDonutChart(
+              //     chartTitle: "Donut Chart",
+              //     dataSeries: [50, 60, 70, 80],
+              //     pieLabels: ["One", "Two", "Three", "Four"],
+              //     donutCenterRadius: 20,
+              //     chartDirection: Axis.horizontal,
+              //   ),
+              // ),
               Divider(),
               Padding(
                 padding: EdgeInsets.symmetric(vertical: 10),
-                child: SistchPieDonutChart(
+                child: SistchPieDonutChartBeta(
                   chartTitle: "Donut Chart",
                   dataSeries: [50, 60, 70, 80],
                   pieLabels: ["One", "Two", "Three", "Four"],
                   donutCenterRadius: 20,
                   chartDirection: Axis.horizontal,
-                ),
-              ),
-              Divider(),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: SistchPieDonutChart(
-                  chartTitle: "Pie Chart",
-                  dataSeries: [50, 60, 70, 80],
-                  pieLabels: ["One", "Two", "Three", "Four"],
-                  donutCenterRadius: 0,
-                ),
-              ),
-              Divider(),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                child: SistchPieDonutChart(
-                  chartTitle: "Pie Chart",
-                  dataSeries: [50, 60, 70],
-                  pieLabels: ["Household", "Shopping", "Tech"],
-                  useIndIcons: true,
-                  donutCenterRadius: 0,
                 ),
               ),
               Divider(),
