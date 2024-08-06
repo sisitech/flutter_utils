@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_utils/charts/bar_chart_beta/bar_chart_controller_beta.dart';
+import 'package:flutter_utils/charts/bar_chart/bar_chart_controller.dart';
 import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -31,7 +31,7 @@ class SistchBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final barChartCtrl = Get.put(BarChartControllerBeta(
+    final barChartCtrl = Get.put(BarChartController(
       dataSeries: dataSeries,
       seriesColors: seriesColors,
       xAxisLabels: xAxisLabels,
