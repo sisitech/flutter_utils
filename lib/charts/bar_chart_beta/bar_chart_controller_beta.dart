@@ -40,7 +40,7 @@ class SistchBarChartDataBeta {
   }
 }
 
-class BarChartController extends GetxController {
+class BarChartControllerBeta extends GetxController {
   Rx<SistchBarChartDataBeta> chartData = SistchBarChartDataBeta(
     barGroupData: [],
     xAxisLabels: [],
@@ -60,7 +60,7 @@ class BarChartController extends GetxController {
   List<Color>? seriesColors;
   List<String>? seriesLabels;
 
-  BarChartController({
+  BarChartControllerBeta({
     required List<List<double>> dataSeries,
     required List<String> xAxisLabels,
     this.seriesColors,
