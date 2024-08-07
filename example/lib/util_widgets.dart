@@ -54,6 +54,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
               const SistchTextCarousel(
+                viewDuration: 2,
                 texts: ["Text One", "Text Two", "Text Three"],
               ),
             ],

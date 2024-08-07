@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 // View
 //
-class SistchTextCarousel extends StatefulWidget {
+class SistchTextCarousel extends StatelessWidget {
   final List<String> texts;
   final int? viewDuration;
   final Color? bgColor;
@@ -28,39 +28,20 @@ class SistchTextCarousel extends StatefulWidget {
   });
 
   @override
-  State<SistchTextCarousel> createState() => _SistchTextCarouselState();
-}
-
-class _SistchTextCarouselState extends State<SistchTextCarousel> {
-  late TextCarouselController textCarouselCtrl;
-
-  @override
-  void initState() {
-    super.initState();
-    textCarouselCtrl = Get.put(
-      TextCarouselController(
-        viewDuration: widget.viewDuration,
-        textsLength: widget.texts.length,
-      ),
-      tag: widget.key.toString(),
-    );
-    textCarouselCtrl.startCarousel();
-  }
-
-  @override
-  void dispose() {
-    textCarouselCtrl.stopCarousel();
-    Get.delete<TextCarouselController>(tag: widget.key.toString());
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return widget.texts.isNotEmpty
+    final TextCarouselController textCarouselCtrl = Get.put(
+      TextCarouselController(
+        viewDuration: viewDuration,
+        textsLength: texts.length,
+      ),
+      tag: key.toString(),
+    );
+
+    return texts.isNotEmpty
         ? Container(
             decoration: BoxDecoration(
-              color: widget.bgColor ?? colorScheme.primary,
+              color: bgColor ?? colorScheme.primary,
               borderRadius: BorderRadius.circular(5),
             ),
             padding: const EdgeInsets.all(10),
@@ -75,7 +56,7 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
                       color: colorScheme.primaryContainer,
                     ),
                     Icon(
-                      widget.icon ?? Icons.stars,
+                      icon ?? Icons.stars,
                       color: colorScheme.primaryContainer,
                       size: 14,
                     ),
@@ -84,11 +65,11 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
                 const SizedBox(width: 10),
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.65,
-                  height: widget.height,
+                  height: height,
                   child: Obx(
                     () => FadeInDownText(
-                      currentText:
-                          widget.texts[textCarouselCtrl.currentIndex.value],
+                      currentText: texts[textCarouselCtrl.currentIndex.value],
+                      textColor: textColor,
                     ),
                   ),
                 ),
@@ -99,7 +80,7 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
   }
 }
 
-class FadeInDownText extends StatefulWidget {
+class FadeInDownText extends StatelessWidget {
   final String currentText;
   final Color? textColor;
 
@@ -110,85 +91,82 @@ class FadeInDownText extends StatefulWidget {
   });
 
   @override
-  State<FadeInDownText> createState() => _FadeInDownTextState();
-}
-
-class _FadeInDownTextState extends State<FadeInDownText>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _offsetAnimation;
-  late Animation<double> _opacityAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
+  Widget build(BuildContext context) {
+    final TextAnimationController textAnimationCtrl = Get.put(
+      TextAnimationController(),
+      tag: key.toString(),
     );
 
-    _offsetAnimation = Tween<Offset>(
-      begin: const Offset(0.0, -0.05),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
+    textAnimationCtrl.startAnimation();
 
-    _opacityAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOut,
-    ));
-
-    _controller.forward();
-  }
-
-  @override
-  void didUpdateWidget(FadeInDownText oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.currentText != widget.currentText) {
-      _controller.reset();
-      _controller.forward();
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: _controller,
+      animation: textAnimationCtrl.controller,
       builder: (context, child) {
         return Opacity(
-          opacity: _opacityAnimation.value,
+          opacity: textAnimationCtrl.opacityAnimation.value,
           child: Transform.translate(
-            offset: _offsetAnimation.value,
+            offset: textAnimationCtrl.offsetAnimation.value,
             child: child,
           ),
         );
       },
       child: Text(
-        widget.currentText,
+        currentText,
         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
               fontStyle: FontStyle.italic,
-              color:
-                  widget.textColor ?? Theme.of(context).colorScheme.onPrimary,
+              color: textColor ?? Theme.of(context).colorScheme.onPrimary,
             ),
       ),
     );
   }
 }
 
-// Controller
+// Text Animation Controller
 //
+class TextAnimationController extends GetxController
+    with SingleGetTickerProviderMixin {
+  late AnimationController controller;
+  late Animation<Offset> offsetAnimation;
+  late Animation<double> opacityAnimation;
 
+  @override
+  void onInit() {
+    super.onInit();
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, -0.05),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: controller,
+      curve: Curves.easeOut,
+    ));
+
+    opacityAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: controller,
+      curve: Curves.easeOut,
+    ));
+  }
+
+  void startAnimation() {
+    controller.forward(from: 0.0);
+  }
+
+  @override
+  void onClose() {
+    controller.dispose();
+    super.onClose();
+  }
+}
+
+// Text Carousel Controller
+//
 class TextCarouselController extends GetxController {
   var currentIndex = 0.obs;
   var progressValue = 0.0.obs;
@@ -196,7 +174,7 @@ class TextCarouselController extends GetxController {
   RxBool showText = false.obs;
 
   //--- Passed variables
-  int viewTimerDuration = 7;
+  int viewTimerDuration = 5;
   int textsLength;
 
   TextCarouselController({
@@ -221,7 +199,7 @@ class TextCarouselController extends GetxController {
       progressValue.value = 0.0;
     });
 
-    timer = Timer.periodic(const Duration(seconds: 2), (timer) {
+    timer = Timer.periodic(Duration(seconds: viewTimerDuration), (timer) {
       if (progressValue.value < 1.0) {
         showText.value = true;
         progressValue.value += 1 / viewTimerDuration;
@@ -235,5 +213,11 @@ class TextCarouselController extends GetxController {
 
   void stopCarousel() {
     timer?.cancel();
+  }
+
+  @override
+  void onClose() {
+    stopCarousel();
+    super.onClose();
   }
 }
