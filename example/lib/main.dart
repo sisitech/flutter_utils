@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_utils/internalization/language_controller.dart';
 import 'package:flutter_utils/internalization/models.dart';
 import 'package:flutter_utils/local_nofitications/local_notification_controller.dart';
+import 'package:flutter_utils/lock_screen/lock_controller.dart';
 import 'package:flutter_utils/mixpanel/mixpanel_controller.dart';
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/network_status/network_status_controller.dart';
@@ -108,6 +109,8 @@ void main() async {
       ),
     ),
   );
+
+  Get.put(LocalAuthController());
 
   runApp(MyApp());
 }

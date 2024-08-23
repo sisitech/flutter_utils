@@ -5,6 +5,7 @@ import 'package:flutter_utils/date_dropdown/models.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/internalization/extensions.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
+import 'package:flutter_utils/sistch_text_carousel/text_carousel.dart';
 import 'package:get/get.dart';
 
 class UtilWidgetsScreen extends StatefulWidget {
@@ -48,6 +49,14 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 ),
               ),
               const Divider(),
+              Text(
+                'Text Carousel Widget'.ctr,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SistchTextCarousel(
+                viewDuration: 2,
+                texts: ["Text One", "Text Two", "Text Three"],
+              ),
             ],
           ),
         ),

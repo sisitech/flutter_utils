@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/internalization/extensions.dart';
+import 'package:flutter_utils/sisitech_themes/format_theme_name.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:get/get.dart';
 
@@ -13,20 +14,31 @@ class SistchThemePicker extends StatefulWidget {
 
 class _SistchThemePickerState extends State<SistchThemePicker> {
   final ThemeController themeController = Get.find<ThemeController>();
+  final String title = "Choose a Theme";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          title.ctr,
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
+        iconTheme: IconThemeData(
+          color: Theme.of(context)
+              .colorScheme
+              .onPrimary, // Use onPrimary for adaptive icon color
+        ),
+      ),
       body: SingleChildScrollView(
         padding:
             const EdgeInsets.only(top: 45, right: 25, bottom: 25, left: 25),
         child: Center(
           child: Column(
             children: [
-              Text(
-                'Choose a Theme'.ctr,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Wrap(
@@ -37,6 +49,21 @@ class _SistchThemePickerState extends State<SistchThemePicker> {
                       .toList(),
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              SizedBox(
+                width: 300,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                    Get.back();
+                  },
+                  child: const Text(
+                    'Apply Theme',
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -57,7 +84,7 @@ class _SistchThemePickerState extends State<SistchThemePicker> {
           ),
           Obx(
             () => Text(
-              m3Theme.flexScheme.toString().split(".").last,
+              formatThemeName(m3Theme.flexScheme.toString().split(".").last),
               style: TextStyle(
                   color:
                       themeController.currentScheme.value == m3Theme.flexScheme

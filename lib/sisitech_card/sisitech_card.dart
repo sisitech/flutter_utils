@@ -26,6 +26,7 @@ class SisitechCard extends StatelessWidget {
   final SisitechCardController? controller;
   final IconData? lockedIcon;
   final IconData? unlockedIcon;
+  final Widget? topRightWidget;
 
   SisitechCard({
     super.key,
@@ -45,6 +46,7 @@ class SisitechCard extends StatelessWidget {
     required this.controller, // Make it required and remove the initialization
     this.lockedIcon,
     this.unlockedIcon,
+    this.topRightWidget,
   });
 
   @override
@@ -64,6 +66,11 @@ class SisitechCard extends StatelessWidget {
                 mainAxisAlignment:
                     cardMainAxisAlignment ?? MainAxisAlignment.center,
                 children: [
+                  if (topRightWidget != null)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [topRightWidget!],
+                    ),
                   if (assetImage != null)
                     Image.asset(
                       assetImage!,

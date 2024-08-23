@@ -7,137 +7,149 @@ var dateRanges = [
     displayName: 'Today',
     value: 1,
     startDate: () {
-      var now = DateTime.now();
       return DateTime(now.year, now.month, now.day);
     },
     endDate: () {
-      var now = DateTime.now();
       return DateTime(now.year, now.month, now.day + 1);
     },
+    type: DateRangeType.day,
   ),
   TimePeriod(
     displayName: 'Yesterday',
     value: 2,
     startDate: () {
-      var now = DateTime.now();
       return DateTime(now.year, now.month, now.day - 1);
     },
     endDate: () {
-      var now = DateTime.now();
       return DateTime(now.year, now.month, now.day);
     },
+    type: DateRangeType.day,
   ),
   TimePeriod(
-    displayName: 'Last 7 Days',
+    displayName: 'This Week',
     value: 3,
     // displayName: "Week of @start_date_display#",
     startDate: () {
-      var now = DateTime.now();
-      return DateTime(now.year, now.month, now.day - 7);
+      return getFirstDayOfCurrentWeek();
     },
     endDate: () {
-      var now = DateTime.now();
-      return DateTime(now.year, now.month, now.day + 1);
+      DateTime firstWeekDay = getFirstDayOfCurrentWeek();
+      return firstWeekDay.add(const Duration(days: 7));
     },
+    type: DateRangeType.week,
   ),
   TimePeriod(
-    // displayName: "This Month",
-    displayName: "@start_date_display#",
-    dateFormat: "MMMM y",
+    displayName: 'Last Week',
     value: 4,
+    // displayName: "Week of @start_date_display#",
     startDate: () {
-      var now = DateTime.now();
-      return DateTime(now.year, now.month, 1);
+      DateTime firstWeekDay = getFirstDayOfCurrentWeek();
+      return firstWeekDay.subtract(const Duration(days: 7));
     },
     endDate: () {
-      var now = DateTime.now();
-      return DateTime(now.year, now.month + 1, 1);
+      return getFirstDayOfCurrentWeek();
     },
+    type: DateRangeType.week,
   ),
   TimePeriod(
-    // displayName: 'Last Month',
-    displayName: "@start_date_display#",
+    displayName: "This Month",
+    // displayName: "@start_date_display#",
     dateFormat: "MMMM y",
     value: 5,
     startDate: () {
-      var now = DateTime.now();
+      return DateTime(now.year, now.month, 1);
+    },
+    endDate: () {
+      return DateTime(now.year, now.month + 1, 1);
+    },
+    type: DateRangeType.month,
+  ),
+  TimePeriod(
+    displayName: 'Last Month',
+    // displayName: "@start_date_display#",
+    dateFormat: "MMMM y",
+    value: 6,
+    startDate: () {
       return DateTime(now.year, now.month - 1, 1);
     },
     endDate: () {
-      var now = DateTime.now();
       return DateTime(now.year, now.month);
     },
+    type: DateRangeType.month,
   ),
   TimePeriod(
     // displayName: 'Last Month But 2 :)',
     displayName: "@start_date_display#",
     dateFormat: "MMMM y",
-    value: 11,
+    value: 7,
     startDate: () {
       return DateTime(now.year, now.month - 2, 1);
     },
     endDate: () {
       return DateTime(now.year, now.month - 1);
     },
+    type: DateRangeType.month,
   ),
   TimePeriod(
     // displayName: 'Last Month But 3 :)',
     displayName: "@start_date_display#",
     dateFormat: "MMMM y",
-    value: 10,
+    value: 8,
     startDate: () {
       return DateTime(now.year, now.month - 3, 1);
     },
     endDate: () {
       return DateTime(now.year, now.month - 2);
     },
+    type: DateRangeType.month,
   ),
   TimePeriod(
     displayName: 'Last 3 months ',
-    value: 6,
+    value: 9,
     startDate: () {
-      return DateTime(now.year, now.month, 1 - 90);
+      return DateTime(now.year, now.month - 3, 1);
     },
     endDate: () {
       return DateTime(now.year, now.month, now.day);
     },
+    type: DateRangeType.quarterYr,
   ),
   TimePeriod(
     displayName: 'Last 6 months ',
-    value: 7,
+    value: 10,
     dateFormat: "E, dd MMM,y",
     startDate: () {
-      return DateTime(now.year, now.month, 1 - 180);
+      return DateTime(now.year, now.month - 6, 1);
     },
     endDate: () {
       return DateTime(now.year, now.month, now.day);
     },
+    type: DateRangeType.halfYr,
   ),
   TimePeriod(
-    // displayName: 'This Year',
-    // displayName: "@start_date_display#",
-    displayName: "@start_date_display# - Today",
-
+    displayName: 'This Year',
+    // displayName: "@start_date_display# - Today",
     dateFormat: "MMM y",
-    value: 8,
-
+    value: 11,
     startDate: () {
       return DateTime(now.year, 1, 1);
     },
     endDate: () {
       return DateTime(now.year, now.month, now.day + 1);
     },
+    type: DateRangeType.year,
   ),
   TimePeriod(
-    // displayName: 'Last 1 Year',
-    displayName: "@start_date_display# - @end_date_display#",
+    displayName: 'Last Year',
+    // displayName: "@start_date_display# - @end_date_display#",
     dateFormat: "MMM y",
-    value: 9,
+    value: 12,
     startDate: () {
       return DateTime(now.year - 1, 1, 1);
     },
     endDate: () {
       return DateTime(now.year, 1, 1);
     },
+    type: DateRangeType.year,
   ),
 ];
