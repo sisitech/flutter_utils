@@ -5,8 +5,9 @@ import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:get/get.dart';
 
 class SistchThemePicker extends StatefulWidget {
+  final Function(M3Theme m3Theme)? onThemeChange;
   static const routeName = "/theme-picker";
-  const SistchThemePicker({super.key});
+  const SistchThemePicker({super.key, this.onThemeChange});
 
   @override
   State<SistchThemePicker> createState() => _SistchThemePickerState();
@@ -45,7 +46,8 @@ class _SistchThemePickerState extends State<SistchThemePicker> {
                   spacing: 20.0,
                   runSpacing: 20.0,
                   children: themeController.m3Themes
-                      .map((m3Theme) => themeBox(m3Theme))
+                      .map((m3Theme) => themeBox(m3Theme,
+                          onThemeChange: widget.onThemeChange))
                       .toList(),
                 ),
               ),
@@ -71,10 +73,13 @@ class _SistchThemePickerState extends State<SistchThemePicker> {
     );
   }
 
-  Widget themeBox(M3Theme m3Theme) {
+  Widget themeBox(M3Theme m3Theme, {Function(M3Theme m3Theme)? onThemeChange}) {
     return GestureDetector(
       onTap: () {
         themeController.changeTheme(m3Theme.flexScheme);
+        if (onThemeChange != null) {
+          onThemeChange(m3Theme);
+        }
       },
       child: Column(
         children: [
