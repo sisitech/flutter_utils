@@ -5,7 +5,7 @@ import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:get/get.dart';
 
 class SistchThemePicker extends StatefulWidget {
-  final Function({M3Theme? m3Theme})? onThemeChange;
+  final Function()? onThemeChange;
   static const routeName = "/theme-picker";
   const SistchThemePicker({super.key, this.onThemeChange});
 
