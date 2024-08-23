@@ -39,9 +39,8 @@ class TimePeriod {
     return displayName.ctr.interpolate(toJson() ?? {});
   }
 
-
   TimePeriod({
-    this.displayName = "This Month",
+    this.displayName = "This Month @start_date# ",
     this.value = 0,
     DateTime Function()? startDate,
     DateTime Function()? endDate,

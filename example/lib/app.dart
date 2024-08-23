@@ -331,13 +331,16 @@ class MyApp extends StatelessWidget {
                               label: const Text("Send Notification")),
                           Text(
                             "@name of @you# "
-                                    "\nSimple List: @details#"
+                                    "\n hesahbu: @details.0#"
+                                    "\n Map Age: @map.name.age#"
+                                    "\n Map Detauks: @mapadeed#"
+                                    "\nRahisi orodha: @details#"
                                     "\nSimple List Index: @details.0#"
                                     "\nMap: @map.name.year# "
                                     "\nMap - List: @map.name.names# "
                                     "\nMap - List: @map.name.details#"
                                     "\n List<dynamic>: @studs.0.name#"
-                                    "\n List<dynamic>2 : @studs..name#"
+                                    "\n List<dynamic>2 : @studs..name#".ctr
                                 .interpolate({
                               "name": "Micha",
                               "you": "Iu",
@@ -346,7 +349,7 @@ class MyApp extends StatelessWidget {
                                 "name": {
                                   "age": 10,
                                   "names": [],
-                                  "details": ["Math", "Eng"],
+                                  "details": ["Math", "Swahili"],
                                   "year": "1999",
                                 },
                               },

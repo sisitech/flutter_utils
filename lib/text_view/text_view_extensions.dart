@@ -6,7 +6,7 @@ import 'package:slugify/slugify.dart';
 var charachtersToRemove = [" ", "@", "#"];
 
 getFieldValue(Map<String, dynamic>? row, String? message,
-    {String listSeparator = ","}) {
+    {String listSeparator = ",", String? defaultValue = null}) {
   if (message == null) {
     return "Noa";
   }
@@ -28,7 +28,8 @@ getFieldValue(Map<String, dynamic>? row, String? message,
       return {
         "match": match.trim(),
         "name": name,
-        "value": getMatchValue(row, name, listSeparator: listSeparator)
+        "value": getMatchValue(row, name,
+            listSeparator: listSeparator, defaultValue: defaultValue)
       };
     },
     // (e) => e.,
@@ -50,7 +51,8 @@ getMapValue(
   Map<String, dynamic>? row,
 ) {}
 
-getMatchValue(dynamic? row, String matchName, {String listSeparator = ","}) {
+getMatchValue(dynamic? row, String matchName,
+    {String listSeparator = ",", String? defaultValue}) {
   if (row == null) {
     if (kDebugMode) {
       return "@${matchName}# No Data";
@@ -152,8 +154,10 @@ getMatchValue(dynamic? row, String matchName, {String listSeparator = ","}) {
 }
 
 extension MyStringExt on String {
-  String interpolate(Map<String, dynamic> row, {String listSeparator = ", "}) {
-    return getFieldValue(row, this, listSeparator: listSeparator);
+  String interpolate(Map<String, dynamic> row,
+      {String listSeparator = ", ", String? defaultValue = null}) {
+    return getFieldValue(row, this,
+        listSeparator: listSeparator, defaultValue: defaultValue);
   }
 
   String get slug {
