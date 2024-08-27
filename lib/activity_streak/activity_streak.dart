@@ -26,6 +26,11 @@ class SistchTagStreakIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var percent = 0.0;
+    var balance = totalCount - currentCount;
+    try {
+      percent = totalCount > 0 ? currentCount / totalCount : 0.0;
+    } catch (e) {}
     return GestureDetector(
       onTap: () {
         Get.dialog(SistchTagStreakDialog(
@@ -35,6 +40,8 @@ class SistchTagStreakIndicator extends StatelessWidget {
           activitySubTitle: activitySubTitle,
           currentCount: currentCount,
           totalCount: totalCount,
+          percent: percent,
+          balanceCount: balance,
         ));
       },
       child: Column(
@@ -44,21 +51,21 @@ class SistchTagStreakIndicator extends StatelessWidget {
             lineWidth: 5.0,
             animation: true,
             animationDuration: 1000,
-            percent: 1,
+            percent: percent,
             center: Icon(
               FontAwesomeIcons.fire,
               color: Theme.of(context).colorScheme.primary,
               size: 20,
             ),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            progressColor: Theme.of(context).colorScheme.primaryContainer,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            progressColor: Theme.of(context).colorScheme.primary,
             circularStrokeCap: CircularStrokeCap.round,
           ),
           const SizedBox(height: 2),
           RichText(
             textAlign: TextAlign.center,
             text: TextSpan(
-              text: formatNumber(currentCount),
+              text: formatNumber(balance),
               style: Get.theme.textTheme.labelSmall?.copyWith(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.bold,
@@ -86,6 +93,8 @@ class SistchTagStreakDialog extends StatelessWidget {
   final String activitySubTitle;
   final int currentCount;
   final int totalCount;
+  final double percent;
+  final int balanceCount;
 
   const SistchTagStreakDialog({
     super.key,
@@ -95,11 +104,12 @@ class SistchTagStreakDialog extends StatelessWidget {
     this.activitySubTitle = " done",
     this.activitySeparator = " / ",
     this.totalCount = 1,
+    this.percent = 0.0,
+    this.balanceCount = 0,
   });
 
   @override
   Widget build(BuildContext context) {
-    var balanceCount = totalCount - currentCount;
     return Dialog(
       insetPadding: const EdgeInsets.all(30),
       child: SingleChildScrollView(
@@ -145,14 +155,14 @@ class SistchTagStreakDialog extends StatelessWidget {
                 lineWidth: 15.0,
                 animation: true,
                 animationDuration: 1000,
-                percent: 1,
+                percent: percent,
                 center: Icon(
                   FontAwesomeIcons.fire,
                   color: Theme.of(context).colorScheme.primary,
                   size: 60,
                 ),
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                progressColor: Theme.of(context).colorScheme.primaryContainer,
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                progressColor: Theme.of(context).colorScheme.primary,
                 circularStrokeCap: CircularStrokeCap.round,
               ),
               const SizedBox(height: 30),

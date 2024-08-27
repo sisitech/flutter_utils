@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/activity_streak/activity_streak.dart';
 import 'package:flutter_utils/date_dropdown/constants.dart';
 import 'package:flutter_utils/date_dropdown/date_dropdown.dart';
 import 'package:flutter_utils/date_dropdown/models.dart';
@@ -47,6 +48,10 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                   datePeriod: datePeriod,
                   onDatePeriodChange: onDatePeriodChange,
                 ),
+              ),
+              const SistchTagStreakIndicator(
+                totalCount: 10,
+                currentCount: 3,
               ),
               const Divider(),
               Text(
