@@ -28,7 +28,14 @@ class SistchTagStreakIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.dialog(const SistchTagStreakDialog());
+        Get.dialog(SistchTagStreakDialog(
+          activityTitle: activityTitle,
+          activityDescription: activityDescription,
+          activitySeparator: activitySeparator,
+          activitySubTitle: activitySubTitle,
+          currentCount: currentCount,
+          totalCount: totalCount,
+        ));
       },
       child: Column(
         children: [
