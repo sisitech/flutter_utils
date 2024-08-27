@@ -1,35 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/date_dropdown/constants.dart';
 import 'package:flutter_utils/date_dropdown/models.dart';
+import 'package:flutter_utils/flutter_utils.dart';
+import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class SistchDateDropdown extends StatefulWidget {
+class SisitechDateDropdownSerializer extends GetxController {
+  final formGroup = FormGroup({
+    'duration': FormControl<int>(),
+  });
+}
+
+class SistchDateDropdown extends StatelessWidget {
   final bool isFullWidth;
   final TimePeriod datePeriod;
-  final dynamic onDatePeriodChange;
-  const SistchDateDropdown({
+  final Function? onDatePeriodChange;
+  final Function(TimePeriod timePeriod)? onTimePeriodChange;
+  final String? name;
+  late List<TimePeriod> finalTimePeriods;
+
+  SistchDateDropdown({
     super.key,
     this.isFullWidth = true,
     required this.datePeriod,
-    required this.onDatePeriodChange,
-  });
+    this.onDatePeriodChange,
+    this.onTimePeriodChange,
+    List<TimePeriod> timePeriods = const [],
+    this.name,
+  }) {
+    if (timePeriods.length < 1) {
+      finalTimePeriods = dateRanges;
+    } else {
+      finalTimePeriods = timePeriods;
+    }
+  }
 
-  @override
-  State<SistchDateDropdown> createState() => _SistchDateDropdownState();
-}
-
-class _SistchDateDropdownState extends State<SistchDateDropdown> {
-  var formGroup = FormGroup({
-    'duration': FormControl<int>(),
-  });
   @override
   Widget build(BuildContext context) {
+    var cont = Get.put(SisitechDateDropdownSerializer(), tag: name);
     return SizedBox(
-      width: widget.isFullWidth
-          ? double.infinity
-          : MediaQuery.of(context).size.width / 2,
+      width:
+          isFullWidth ? double.infinity : MediaQuery.of(context).size.width / 2,
       child: ReactiveForm(
-        formGroup: formGroup,
+        formGroup: cont.formGroup,
         child: Column(
           children: <Widget>[
             ReactiveDropdownField<int>(
@@ -38,13 +51,23 @@ class _SistchDateDropdownState extends State<SistchDateDropdown> {
               ),
               formControlName: 'duration',
               hint: Text(
-                widget.datePeriod.displayText,
+                datePeriod.displayText,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               onChanged: (FormControl formControl) async {
-                await widget.onDatePeriodChange(formControl.value);
+                if (onDatePeriodChange != null) {
+                  await onDatePeriodChange!(formControl.value);
+                }
+                if (onTimePeriodChange != null) {
+                  var selectedTimePeriod = finalTimePeriods
+                      .where((element) => element.value == formControl.value)
+                      .firstOrNull;
+                  if (selectedTimePeriod != null) {
+                    await onTimePeriodChange!(selectedTimePeriod);
+                  }
+                }
               },
-              items: dateRanges.map((e) => e.dropDownItem).toList(),
+              items: finalTimePeriods.map((e) => e.dropDownItem).toList(),
             ),
           ],
         ),

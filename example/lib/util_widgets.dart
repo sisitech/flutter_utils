@@ -46,7 +46,10 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: SistchDateDropdown(
                   datePeriod: datePeriod,
-                  onDatePeriodChange: onDatePeriodChange,
+                  // onDatePeriodChange: onDatePeriodChange,
+                  onTimePeriodChange: (TimePeriod timePeriod) {
+                    dprint(timePeriod.toJson());
+                  },
                 ),
               ),
               const SistchTagStreakIndicator(
