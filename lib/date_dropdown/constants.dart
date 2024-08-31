@@ -2,7 +2,7 @@ import 'package:flutter_utils/date_dropdown/models.dart';
 
 var now = DateTime.now();
 
-var dateRanges = [
+List<TimePeriod> dateRanges = [
   TimePeriod(
     displayName: 'Today',
     value: 1,

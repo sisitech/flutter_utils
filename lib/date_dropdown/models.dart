@@ -55,7 +55,7 @@ class TimePeriod {
   }
 
   TimePeriod({
-    this.displayName = "This Month",
+    this.displayName = "This Month @start_date# ",
     this.value = 0,
     this.type = DateRangeType.month,
     DateTime Function()? startDate,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/activity_streak/activity_streak.dart';
 import 'package:flutter_utils/date_dropdown/constants.dart';
 import 'package:flutter_utils/date_dropdown/date_dropdown.dart';
 import 'package:flutter_utils/date_dropdown/models.dart';
@@ -45,8 +46,29 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: SistchDateDropdown(
                   datePeriod: datePeriod,
-                  onDatePeriodChange: onDatePeriodChange,
+                  timePeriods: [
+                    TimePeriod(
+                      displayName: 'Today',
+                      value: 1,
+                      startDate: () {
+                        var now = DateTime.now();
+                        return DateTime(now.year, now.month, now.day);
+                      },
+                      endDate: () {
+                        var now = DateTime.now();
+                        return DateTime(now.year, now.month, now.day + 1);
+                      },
+                    ),
+                  ],
+                  // onDatePeriodChange: onDatePeriodChange,
+                  onTimePeriodChange: (TimePeriod timePeriod) {
+                    dprint(timePeriod.toJson());
+                  },
                 ),
+              ),
+              const SistchTagStreakIndicator(
+                totalCount: 10,
+                currentCount: 3,
               ),
               const Divider(),
               Text(

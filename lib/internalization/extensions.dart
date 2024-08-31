@@ -45,8 +45,8 @@ extension TranslationExt on String {
 
     var hasSpace = contains(" ");
     if (!hasSpace && split("").first == "@" && split("").last == "#") {
-      dprint("Ignore interpilation string only");
-      dprint(value);
+      // dprint("Ignore interpilation string only");
+      // dprint(value);
       return;
     }
 

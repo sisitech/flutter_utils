@@ -5,8 +5,9 @@ import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:get/get.dart';
 
 class SistchThemePicker extends StatefulWidget {
+  final Function()? onThemeChange;
   static const routeName = "/theme-picker";
-  const SistchThemePicker({super.key});
+  const SistchThemePicker({super.key, this.onThemeChange});
 
   @override
   State<SistchThemePicker> createState() => _SistchThemePickerState();
@@ -56,8 +57,9 @@ class _SistchThemePickerState extends State<SistchThemePicker> {
                 width: 300,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.back();
-                    Get.back();
+                    if (widget.onThemeChange != null) {
+                      widget.onThemeChange!();
+                    }
                   },
                   child: const Text(
                     'Apply Theme',

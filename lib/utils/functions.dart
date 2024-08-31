@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
 import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 void showSnackbar(
     {required String title,
@@ -18,6 +19,14 @@ void showSnackbar(
         color: colorScheme.onPrimary,
       ),
       snackPosition: snackPosition);
+}
+
+var formatter = NumberFormat('###,###');
+
+formatNumber(dynamic value) {
+  if (value == null) return "0";
+  var formattedValue = formatter.format(value);
+  return "$formattedValue";
 }
 
 Widget loadingWidget(String loadingTxt) {

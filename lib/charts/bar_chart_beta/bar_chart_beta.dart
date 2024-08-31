@@ -15,6 +15,7 @@ class SistchBarChartBeta extends StatelessWidget {
   final double? chartHeight;
   final String? tipPreText;
   final String? chartTitle;
+  final String? name;
 
   const SistchBarChartBeta({
     super.key,
@@ -25,19 +26,22 @@ class SistchBarChartBeta extends StatelessWidget {
     this.bgColor,
     this.textColor,
     this.chartTitle,
+    this.name,
     this.chartHeight = 200,
     this.tipPreText = "KES.",
   });
 
   @override
   Widget build(BuildContext context) {
-    final barChartCtrl = Get.put(BarChartControllerBeta(
-      dataSeries: dataSeries,
-      seriesColors: seriesColors,
-      xAxisLabels: xAxisLabels,
-      textColor: textColor,
-      seriesLabels: seriesLabels,
-    ));
+    final barChartCtrl = Get.put(
+        BarChartControllerBeta(
+          dataSeries: dataSeries,
+          seriesColors: seriesColors,
+          xAxisLabels: xAxisLabels,
+          textColor: textColor,
+          seriesLabels: seriesLabels,
+        ),
+        tag: name);
 
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
