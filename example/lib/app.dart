@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
       Get.find<OfflineHttpCacheController>();
 
   MixPanelController mixCont = Get.find<MixPanelController>();
+
   // final LockScreenController lockScreenController =
   //     Get.put(LockScreenController());
 
