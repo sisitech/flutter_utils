@@ -178,7 +178,7 @@ class SistchTagStreakDialog extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                        text: " UNTAGGED".ctr,
+                        text: " LEFT".ctr,
                         style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),
