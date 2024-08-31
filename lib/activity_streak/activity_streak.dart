@@ -178,30 +178,30 @@ class SistchTagStreakDialog extends StatelessWidget {
                       ),
                     ),
                     TextSpan(
-                        text: " TO GO".ctr,
+                        text: " UNTAGGED".ctr,
                         style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                child: Text(
-                  activityDescription,
-                  // "Keep tagging your transactions to get the most out of Wavvy Wallet's insights and features!",
-                  style: const TextStyle(fontSize: 12),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    // await taggingCtrl.getUnTaggedTransactions();
-                    // Get.off(() => const UnTaggedTransactionsScreen());
-                  },
-                  child: Text('Tag Transactions'.ctr),
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(vertical: 15),
+              //   child: Text(
+              //     activityDescription,
+              //     // "Keep tagging your transactions to get the most out of Wavvy Wallet's insights and features!",
+              //     style: const TextStyle(fontSize: 12),
+              //     textAlign: TextAlign.center,
+              //   ),
+              // ),
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: ElevatedButton(
+              //     onPressed: () async {
+              //       // await taggingCtrl.getUnTaggedTransactions();
+              //       // Get.off(() => const UnTaggedTransactionsScreen());
+              //     },
+              //     child: Text('Tag Transactions'.ctr),
+              //   ),
+              // ),
             ],
           ),
         ),
