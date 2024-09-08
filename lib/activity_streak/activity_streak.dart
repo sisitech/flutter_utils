@@ -72,7 +72,7 @@ class SistchTagStreakIndicator extends StatelessWidget {
               ),
               children: <TextSpan>[
                 TextSpan(
-                  text: " left".ctr,
+                  text: " untagged".ctr,
                   style: Get.theme.textTheme.labelSmall?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
