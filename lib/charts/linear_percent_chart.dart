@@ -40,7 +40,7 @@ class SistchLinearPercentChart extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     List<Color> chtColors =
-        tileColors != null ? [...tileColors!] : [...chartColors];
+        tileColors != null ? [...tileColors!] : [...defaultChartColors];
 
     double total = dataSeries.fold(0, (sum, item) => sum + item);
     List<double> percentages = total != 0
@@ -114,7 +114,7 @@ class SistchLinearPercentChart extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                   color: percent < 0.6
                                       ? colorScheme.onBackground
-                                      : textChartColors[chtColors[idx]],
+                                      : defaultTextChartColors[chtColors[idx]],
                                 ),
                               ),
                             ),

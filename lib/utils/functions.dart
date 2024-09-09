@@ -120,7 +120,7 @@ List<Widget> getChartIndicators(List<String> labels, List<Color> colors,
 }
 
 List<Color> getChartColors(int seriesLength) {
-  return chartColors.sublist(0, seriesLength);
+  return defaultChartColors.sublist(0, seriesLength);
 }
 
 double getListOfDoublesSum(List<double> items) {
@@ -132,7 +132,7 @@ double getListOfDoublesSum(List<double> items) {
 }
 
 // chart constants
-List<Color> chartColors = const [
+List<Color> defaultChartColors = const [
   Color(0xFF18A558),
   Color(0xFF0292B7),
   Color(0xFFE59349),
@@ -149,7 +149,7 @@ List<Color> chartColors = const [
   Color(0xFFF3E1C0),
 ];
 
-Map<Color, Color> textChartColors = {
+Map<Color, Color> defaultTextChartColors = {
   const Color(0xFFDB668D): Colors.white,
   const Color(0xFF955670): Colors.white,
   const Color(0xFF0292B7): Colors.white,

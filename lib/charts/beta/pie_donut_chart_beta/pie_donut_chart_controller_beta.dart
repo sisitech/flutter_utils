@@ -38,6 +38,8 @@ class PieDonutChartControllerBeta extends GetxController {
     _initializeChart();
   }
 
+  List<Color> chartColors = defaultChartColors;
+
   void _initializeChart() {
     isPieChartLoading.value = true;
 
@@ -97,7 +99,7 @@ class PieDonutChartControllerBeta extends GetxController {
         value: dataSeries[i],
         title: hideIndicators == true ? sectionTitle : "",
         titleStyle: TextStyle(
-          color: textChartColors[chartColors[i]],
+          color: defaultTextChartColors[chartColors[i]],
           fontWeight: FontWeight.bold,
           fontSize: 13,
         ),
