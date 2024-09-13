@@ -68,14 +68,12 @@ class MixPanelController extends GetxController {
     Map<String, dynamic> profile;
     if (authController.isAuthenticated$.value != null) {
       profile = authController.profile.value ?? anymousProfile;
-      dprint(
-          "Mixpanel User ${authController.profile.value?["username"]} initialized.");
     } else {
       profile = anymousProfile;
     }
     if (options.enableAnonymous) {
       anymousProfile["username"] = generateMd5(anymousProfile["username"]!);
-      dprint("Anontmous ${anymousProfile["username"]}");
+      dprint("Username: ${anymousProfile["username"]}");
     } else {
       dprint("Username: ${anymousProfile["username"]}");
     }
