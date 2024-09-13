@@ -71,11 +71,12 @@ class MixPanelController extends GetxController {
     } else {
       profile = anymousProfile;
     }
+
     if (options.enableAnonymous) {
-      anymousProfile["username"] = generateMd5(anymousProfile["username"]!);
-      dprint("Username: ${anymousProfile["username"]}");
+      profile["username"] = generateMd5(anymousProfile["username"]!);
+      dprint("Username: ${profile["username"]}");
     } else {
-      dprint("Username: ${anymousProfile["username"]}");
+      dprint("Username: ${profile["username"]}");
     }
 
     return profile;
