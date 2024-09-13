@@ -24,6 +24,7 @@ mixpanelTrackEvent(String eventName, {Map<String, dynamic>? properties}) {
 mixpanelLogin() {
   try {
     MixPanelController? mixCont = Get.find<MixPanelController>();
+    mixCont.logoutUser();
     mixCont.setLoggedInUser();
   } catch (e) {
     dprint(e);
