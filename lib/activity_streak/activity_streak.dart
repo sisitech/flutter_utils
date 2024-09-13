@@ -38,7 +38,7 @@ class SistchTagStreakIndicator extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (enableMixpanel) {
-          mixpanelTrackEvent(slug);
+          mixpanelTrackEvent('tag_streak_${slug}_clicked');
         }
         Get.dialog(SistchTagStreakDialog(
           activityTitle: activityTitle,
