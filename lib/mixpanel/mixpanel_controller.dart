@@ -97,6 +97,12 @@ class MixPanelController extends GetxController {
     dprint(profile);
   }
 
+  logoutUser() {
+    if (_mixpanel != null) {
+      _mixpanel?.reset();
+    }
+  }
+
   initializeMixPanel() async {
     dprint("Initializing Mixpanel");
     if (isDisAbled) {

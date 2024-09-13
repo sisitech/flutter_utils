@@ -21,6 +21,24 @@ mixpanelTrackEvent(String eventName, {Map<String, dynamic>? properties}) {
   }
 }
 
+mixpanelLogin() {
+  try {
+    MixPanelController? mixCont = Get.find<MixPanelController>();
+    mixCont.setLoggedInUser();
+  } catch (e) {
+    dprint(e);
+  }
+}
+
+mixpanelLogout() {
+  try {
+    MixPanelController? mixCont = Get.find<MixPanelController>();
+    mixCont.logoutUser();
+  } catch (e) {
+    dprint(e);
+  }
+}
+
 String generateMd5(String input) {
   return md5.convert(utf8.encode(input)).toString();
 }
