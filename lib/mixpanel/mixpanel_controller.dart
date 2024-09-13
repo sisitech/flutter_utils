@@ -88,10 +88,9 @@ class MixPanelController extends GetxController {
     }
     var profile = getUser();
 
-    if (!options.enableAnonymous) {
-      _mixpanel?.identify(profile["username"]);
-      _mixpanel?.getPeople().set('username', profile["username"]);
-    }
+    _mixpanel?.identify(profile["username"]);
+    _mixpanel?.getPeople().set('username', profile["username"]);
+
     _mixpanel?.getPeople().set('last_login', DateTime.now().toWeekDayDate);
     // dprint("Mixpanel Set Profile");
     dprint(profile);
