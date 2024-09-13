@@ -4,6 +4,22 @@ import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../flutter_utils.dart';
+import '../mixpanel/mixpanel_controller.dart';
+
+mixpanelTrackEvent(String eventName, {Map<String, dynamic>? properties}) {
+  try {
+    MixPanelController? mixCont = Get.find<MixPanelController>();
+    mixCont.track(
+      eventName,
+      properties: properties,
+    );
+    dprint("$eventName clicked");
+  } catch (e) {
+    dprint(e);
+  }
+}
+
 void showSnackbar(
     {required String title,
     required String subtitle,
