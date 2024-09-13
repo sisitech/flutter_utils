@@ -3,6 +3,7 @@ import 'package:flutter_auth/flutter_auth_controller.dart';
 import 'package:flutter_utils/extensions/date_extensions.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/mixpanel/mixpanel.dart';
+import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
@@ -15,7 +16,7 @@ class MixpanelOptions {
   // Requires manual calling of initializeMixPanel somewhere in your project if enabled
   final bool enableManualInit;
   const MixpanelOptions({
-    this.enableAnonymous = false,
+    this.enableAnonymous = true,
     this.flushNow = false,
     this.enabled = true,
     this.persistentAnonymous = true,
@@ -55,28 +56,15 @@ class MixPanelController extends GetxController {
 
   getSavedAnonymousId() {}
 
-  getAnonymouseuser() {
-    // Save a unique id to local storage and use it everytime
-    // The key should be passed when initializing.
-    if (options.enableAnonymous && options.persistentAnonymous) {
-      // Save or get
-    }
-    return "Anonymous";
-  }
-
   get isDisAbled {
     if (options.disableInDebug) {
       return false;
     }
-    // Check if anonymous mode enalbed
-    if (!authController.isAuthenticated$.value && !options.enableAnonymous) {
-      return false;
-    }
-    return options.enabled;
+    return !options.enabled;
   }
 
   getUser() {
-    var anymousProfile = {"username": getAnonymouseuser()};
+    var anymousProfile = {"username": "Anonymous"};
     Map<String, dynamic> profile;
     if (authController.isAuthenticated$.value != null) {
       profile = authController.profile.value ?? anymousProfile;
@@ -85,6 +73,13 @@ class MixPanelController extends GetxController {
     } else {
       profile = anymousProfile;
     }
+    if (options.enableAnonymous) {
+      anymousProfile["username"] = generateMd5(anymousProfile["username"]!);
+      dprint("Anontmous ${anymousProfile["username"]}");
+    } else {
+      dprint("Username: ${anymousProfile["username"]}");
+    }
+
     return profile;
   }
 
@@ -94,8 +89,11 @@ class MixPanelController extends GetxController {
       return;
     }
     var profile = getUser();
-    _mixpanel?.identify(profile["username"]);
-    _mixpanel?.getPeople().set('username', profile["username"]);
+
+    if (!options.enableAnonymous) {
+      _mixpanel?.identify(profile["username"]);
+      _mixpanel?.getPeople().set('username', profile["username"]);
+    }
     _mixpanel?.getPeople().set('last_login', DateTime.now().toWeekDayDate);
     // dprint("Mixpanel Set Profile");
     dprint(profile);

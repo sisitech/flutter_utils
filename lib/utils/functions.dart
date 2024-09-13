@@ -3,7 +3,8 @@ import 'package:flutter_utils/text_view/text_view_extensions.dart';
 import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import '../flutter_utils.dart';
 import '../mixpanel/mixpanel_controller.dart';
 
@@ -18,6 +19,10 @@ mixpanelTrackEvent(String eventName, {Map<String, dynamic>? properties}) {
   } catch (e) {
     dprint(e);
   }
+}
+
+String generateMd5(String input) {
+  return md5.convert(utf8.encode(input)).toString();
 }
 
 void showSnackbar(

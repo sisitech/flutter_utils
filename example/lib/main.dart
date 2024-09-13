@@ -53,7 +53,12 @@ void main() async {
 
   Get.put(OfflineHttpCacheController());
   Get.put(
-    MixPanelController(mixpanelToken: "f3132cbb2645d462c7b2058cb6e8e8f6"),
+    MixPanelController(
+        mixpanelToken: "f3132cbb2645d462c7b2058cb6e8e8f6",
+        options: const MixpanelOptions(
+          enableAnonymous: true,
+          disableInDebug: false,
+        )),
   );
   Get.put(NetworkStatusController());
 
