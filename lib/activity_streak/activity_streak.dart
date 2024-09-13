@@ -13,6 +13,8 @@ class SistchTagStreakIndicator extends StatelessWidget {
   final String activitySubTitle;
   final int currentCount;
   final int totalCount;
+  final String slug;
+  final bool enableMixpanel;
 
   const SistchTagStreakIndicator({
     super.key,
@@ -21,6 +23,8 @@ class SistchTagStreakIndicator extends StatelessWidget {
     this.currentCount = 0,
     this.activitySubTitle = " done",
     this.activitySeparator = " / ",
+    this.slug = "defaultTagStreak",
+    this.enableMixpanel = true,
     this.totalCount = 1,
   });
 
@@ -33,6 +37,9 @@ class SistchTagStreakIndicator extends StatelessWidget {
     } catch (e) {}
     return GestureDetector(
       onTap: () {
+        if (enableMixpanel) {
+          mixpanelTrackEvent('tag_streak_${slug}_clicked');
+        }
         Get.dialog(SistchTagStreakDialog(
           activityTitle: activityTitle,
           activityDescription: activityDescription,
