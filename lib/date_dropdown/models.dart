@@ -66,7 +66,7 @@ class TimePeriod {
 
     // Apply the rules in order
     if (durationInDays <= 1) {
-      return 'hourly_8';
+      return 'time_of_day';
     } else if (durationInDays <= 9) {
       return 'daily';
     } else if (durationInDays <= 35) {
