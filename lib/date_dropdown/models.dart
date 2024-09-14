@@ -24,6 +24,59 @@ class TimePeriod {
   List<int>?
       timeIntervals; // list of timeInterval endDates in millisecondsSinceEpoch
   List<String>? intervalLabels;
+  TimePeriod({
+    this.displayName = "This Month @start_date# ",
+    this.value = 0,
+    this.type = DateRangeType.month,
+    DateTime Function()? startDate,
+    DateTime Function()? endDate,
+    this.dateFormat = "E, dd MMM",
+    bool allowAll = false,
+  }) {
+    if (allowAll) {
+    } else if (startDate != null) {
+      startDateFunc = startDate;
+    } else {
+      startDateFunc = getDefaultStartDate;
+    }
+    if (allowAll) {
+    } else if (endDate != null) {
+      endDateFunc = endDate;
+    } else {
+      endDateFunc = getDefaultEndDate;
+    }
+    prevStartDate = getPrevStartDate(startDateFunc!(), type!);
+    timeIntervals = getTimePeriodIntervals(startDateFunc!(), type!);
+    intervalLabels = getIntervalLabels(timeIntervals!, type!);
+  }
+
+  String getGroupingType() {
+    if (startDateFunc == null && endDateFunc == null) {
+      return "id";
+    }
+    DateTime startDate = startDateFunc!();
+    DateTime endDate = endDateFunc!();
+    return _getDurationCategory(startDate, endDate);
+  }
+
+  String _getDurationCategory(DateTime startDate, DateTime endDate) {
+    // Calculate the duration between the two dates
+    Duration duration = endDate.difference(startDate);
+    int durationInDays = duration.inDays;
+
+    // Apply the rules in order
+    if (durationInDays <= 1) {
+      return 'hourly';
+    } else if (durationInDays <= 7) {
+      return 'daily';
+    } else if (durationInDays <= 30) {
+      return 'weekly';
+    } else if (durationInDays <= 365) {
+      return 'monthly';
+    } else {
+      return 'yearly';
+    }
+  }
 
   DropdownMenuItem<int> get dropDownItem {
     return DropdownMenuItem(
@@ -52,32 +105,6 @@ class TimePeriod {
 
   get displayText {
     return displayName.ctr.interpolate(toJson() ?? {});
-  }
-
-  TimePeriod({
-    this.displayName = "This Month @start_date# ",
-    this.value = 0,
-    this.type = DateRangeType.month,
-    DateTime Function()? startDate,
-    DateTime Function()? endDate,
-    this.dateFormat = "E, dd MMM",
-    bool allowAll = false,
-  }) {
-    if (allowAll) {
-    } else if (startDate != null) {
-      startDateFunc = startDate;
-    } else {
-      startDateFunc = getDefaultStartDate;
-    }
-    if (allowAll) {
-    } else if (endDate != null) {
-      endDateFunc = endDate;
-    } else {
-      endDateFunc = getDefaultEndDate;
-    }
-    prevStartDate = getPrevStartDate(startDateFunc!(), type!);
-    timeIntervals = getTimePeriodIntervals(startDateFunc!(), type!);
-    intervalLabels = getIntervalLabels(timeIntervals!, type!);
   }
 
   get queryFilters {
