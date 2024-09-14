@@ -66,15 +66,15 @@ class TimePeriod {
 
     // Apply the rules in order
     if (durationInDays <= 1) {
-      return 'hourly';
-    } else if (durationInDays <= 7) {
+      return 'hourly_8';
+    } else if (durationInDays <= 9) {
       return 'daily';
-    } else if (durationInDays <= 30) {
-      return 'weekly';
-    } else if (durationInDays <= 365) {
-      return 'monthly';
+    } else if (durationInDays <= 35) {
+      return 'week_year';
+    } else if (durationInDays <= 370) {
+      return 'month_year';
     } else {
-      return 'yearly';
+      return 'year';
     }
   }
 

@@ -46,23 +46,24 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: SistchDateDropdown(
                   datePeriod: datePeriod,
-                  timePeriods: [
-                    TimePeriod(
-                      displayName: 'Today',
-                      value: 1,
-                      startDate: () {
-                        var now = DateTime.now();
-                        return DateTime(now.year, now.month, now.day);
-                      },
-                      endDate: () {
-                        var now = DateTime.now();
-                        return DateTime(now.year, now.month, now.day + 1);
-                      },
-                    ),
-                  ],
+                  // timePeriods: [
+                  //   TimePeriod(
+                  //     displayName: 'Today',
+                  //     value: 1,
+                  //     startDate: () {
+                  //       var now = DateTime.now();
+                  //       return DateTime(now.year, now.month, now.day);
+                  //     },
+                  //     endDate: () {
+                  //       var now = DateTime.now();
+                  //       return DateTime(now.year, now.month, now.day + 1);
+                  //     },
+                  //   ),
+                  // ],
                   // onDatePeriodChange: onDatePeriodChange,
                   onTimePeriodChange: (TimePeriod timePeriod) {
                     dprint(timePeriod.toJson());
+                    dprint(timePeriod.getGroupingType());
                   },
                 ),
               ),
