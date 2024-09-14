@@ -71,8 +71,10 @@ class TimePeriod {
       return 'daily';
     } else if (durationInDays <= 35) {
       return 'week_year';
-    } else if (durationInDays <= 370) {
+    } else if (durationInDays <= 140) {
       return 'month_year';
+    } else if (durationInDays <= 370) {
+      return 'quarter_year';
     } else {
       return 'year';
     }
