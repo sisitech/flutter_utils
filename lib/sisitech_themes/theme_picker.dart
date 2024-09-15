@@ -66,9 +66,10 @@ class SistchThemePicker extends StatelessWidget {
       ),
     );
 
-    // Conditionally return the content with or without Scaffold
     if (isPartOfAPage || isOnBoarding) {
-      return content;
+      return Scaffold(
+        body: content,
+      );
     } else {
       return Scaffold(
         appBar: AppBar(
