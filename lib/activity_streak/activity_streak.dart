@@ -15,6 +15,7 @@ class SistchTagStreakIndicator extends StatelessWidget {
   final int totalCount;
   final String slug;
   final bool enableMixpanel;
+  final String balanceLabel; // Added parameter
 
   const SistchTagStreakIndicator({
     super.key,
@@ -26,6 +27,7 @@ class SistchTagStreakIndicator extends StatelessWidget {
     this.slug = "defaultTagStreak",
     this.enableMixpanel = true,
     this.totalCount = 1,
+    this.balanceLabel = " un-tagged", // Default value
   });
 
   @override
@@ -49,6 +51,7 @@ class SistchTagStreakIndicator extends StatelessWidget {
           totalCount: totalCount,
           percent: percent,
           balanceCount: balance,
+          balanceTextLabel: balanceLabel, // Pass the label to the dialog
         ));
       },
       child: Column(
@@ -79,7 +82,7 @@ class SistchTagStreakIndicator extends StatelessWidget {
               ),
               children: <TextSpan>[
                 TextSpan(
-                  text: " un-tagged".ctr,
+                  text: balanceLabel.ctr,
                   style: Get.theme.textTheme.labelSmall?.copyWith(
                     color: Theme.of(context).colorScheme.outline,
                   ),
@@ -102,6 +105,7 @@ class SistchTagStreakDialog extends StatelessWidget {
   final int totalCount;
   final double percent;
   final int balanceCount;
+  final String balanceTextLabel; // Added parameter
 
   const SistchTagStreakDialog({
     super.key,
@@ -113,6 +117,7 @@ class SistchTagStreakDialog extends StatelessWidget {
     this.totalCount = 1,
     this.percent = 0.0,
     this.balanceCount = 0,
+    this.balanceTextLabel = "LEFT", // Default value
   });
 
   @override
@@ -151,7 +156,7 @@ class SistchTagStreakDialog extends StatelessWidget {
                         text: formatNumber(totalCount),
                         style: Theme.of(context).textTheme.bodySmall),
                     TextSpan(
-                        text: activitySubTitle, // " transactions tagged!",
+                        text: activitySubTitle,
                         style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),
@@ -178,37 +183,20 @@ class SistchTagStreakDialog extends StatelessWidget {
                 text: TextSpan(
                   children: <TextSpan>[
                     TextSpan(
-                      text: formatNumber(balanceCount), // "50",
+                      text: formatNumber(balanceCount),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                     TextSpan(
-                        text: " LEFT".ctr,
-                        style: Theme.of(context).textTheme.bodySmall),
+                      text: balanceTextLabel.ctr.toUpperCase(),
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
                   ],
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 15),
-              //   child: Text(
-              //     activityDescription,
-              //     // "Keep tagging your transactions to get the most out of Wavvy Wallet's insights and features!",
-              //     style: const TextStyle(fontSize: 12),
-              //     textAlign: TextAlign.center,
-              //   ),
-              // ),
-              // SizedBox(
-              //   width: double.infinity,
-              //   child: ElevatedButton(
-              //     onPressed: () async {
-              //       // await taggingCtrl.getUnTaggedTransactions();
-              //       // Get.off(() => const UnTaggedTransactionsScreen());
-              //     },
-              //     child: Text('Tag Transactions'.ctr),
-              //   ),
-              // ),
+              // Other widgets remain unchanged...
             ],
           ),
         ),
