@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/activity_streak/activity_streak.dart';
 import 'package:flutter_utils/date_dropdown/constants.dart';
-import 'package:flutter_utils/date_dropdown/date_dropdown.dart';
 import 'package:flutter_utils/date_dropdown/models.dart';
-import 'package:flutter_utils/date_pickers/date_range_picker.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/internalization/extensions.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
@@ -40,52 +38,19 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
         child: Center(
           child: Column(
             children: [
-              SistchDateRangePicker(
-                onDatesSelected: ((dates) => {}),
+              const SistchTagStreakIndicator(
+                totalCount: 10,
+                currentCount: 3,
               ),
               const Divider(),
-              //   Text(
-              //     'Date Dropdown Widget'.ctr,
-              //     style: Theme.of(context).textTheme.titleMedium,
-              //   ),
-              //   Padding(
-              //     padding: const EdgeInsets.symmetric(vertical: 20),
-              //     child: SistchDateDropdown(
-              //       datePeriod: datePeriod,
-              //       // timePeriods: [
-              //       //   TimePeriod(
-              //       //     displayName: 'Today',
-              //       //     value: 1,
-              //       //     startDate: () {
-              //       //       var now = DateTime.now();
-              //       //       return DateTime(now.year, now.month, now.day);
-              //       //     },
-              //       //     endDate: () {
-              //       //       var now = DateTime.now();
-              //       //       return DateTime(now.year, now.month, now.day + 1);
-              //       //     },
-              //       //   ),
-              //       // ],
-              //       // onDatePeriodChange: onDatePeriodChange,
-              //       onTimePeriodChange: (TimePeriod timePeriod) {
-              //         dprint(timePeriod.toJson());
-              //         dprint(timePeriod.getGroupingType());
-              //       },
-              //     ),
-              //   ),
-              //   const SistchTagStreakIndicator(
-              //     totalCount: 10,
-              //     currentCount: 3,
-              //   ),
-              //   const Divider(),
-              //   Text(
-              //     'Text Carousel Widget'.ctr,
-              //     style: Theme.of(context).textTheme.headlineSmall,
-              //   ),
-              //   const SistchTextCarousel(
-              //     viewDuration: 2,
-              //     texts: ["Text One", "Text Two", "Text Three"],
-              //   ),
+              Text(
+                'Text Carousel Widget'.ctr,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+              const SistchTextCarousel(
+                viewDuration: 2,
+                texts: ["Text One", "Text Two", "Text Three"],
+              ),
             ],
           ),
         ),

@@ -152,3 +152,20 @@ Widget getPopupScaffold(
     ),
   );
 }
+
+Widget getHeaderWidget({required String title, required ThemeData theme}) {
+  return Row(
+    children: [
+      Text(
+        title,
+        style: theme.textTheme.titleSmall,
+      ),
+      const SizedBox(width: 5),
+      Expanded(
+        child: Divider(
+          color: theme.colorScheme.primary,
+        ),
+      ),
+    ],
+  );
+}

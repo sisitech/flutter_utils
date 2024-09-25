@@ -14,6 +14,7 @@ class SistchDateRangePicker extends StatelessWidget {
   final int lastMnPicker;
   final DateRangeDefaults defaultPicker;
   final Function(SelectedDateRange dates) onDatesSelected;
+  final bool hideSuggestions;
 
   const SistchDateRangePicker({
     super.key,
@@ -22,6 +23,7 @@ class SistchDateRangePicker extends StatelessWidget {
     this.lastMnPicker = 6,
     this.defaultPicker = DateRangeDefaults.thisMonth,
     required this.onDatesSelected,
+    this.hideSuggestions = false,
   });
 
   @override
@@ -37,6 +39,7 @@ class SistchDateRangePicker extends StatelessWidget {
           chosenFormat: chosenFormat,
           lastMnPicker: lastMnPicker,
           lastYrPicker: lastYrPicker,
+          hideSuggestions: hideSuggestions,
         ),
       );
       if (val != null) {
@@ -45,8 +48,16 @@ class SistchDateRangePicker extends StatelessWidget {
       }
     }
 
-    return Padding(
+    return Container(
       padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: theme.colorScheme.outline,
+            width: 1.0,
+          ),
+        ),
+      ),
       child: Row(
         children: [
           Expanded(
@@ -75,11 +86,13 @@ class DateRangePickerPopup extends StatelessWidget {
   final DateFormat chosenFormat;
   final int lastYrPicker;
   final int lastMnPicker;
+  final bool hideSuggestions;
   const DateRangePickerPopup({
     super.key,
     required this.chosenFormat,
     required this.lastYrPicker,
     required this.lastMnPicker,
+    required this.hideSuggestions,
   });
 
   @override
@@ -212,7 +225,8 @@ class DateRangePickerPopup extends StatelessWidget {
         const Divider(),
         SistchTabBarScaffold(
           tabLabels: const ["Day", "Week", "Month", "Year"],
-          height: MediaQuery.sizeOf(context).height * 0.6,
+          height:
+              MediaQuery.sizeOf(context).height * (hideSuggestions ? 0.5 : 0.6),
           isScrollable: false,
           tabWidgets: [
             DateRangeTypes.day,
@@ -235,6 +249,7 @@ class DateRangePickerPopup extends StatelessWidget {
                     onYearSelected: onYearSelected,
                     onRangeSelected: onRangeSelected,
                     onSuggestionSelected: onSuggestionChipSelected,
+                    hideSuggestions: hideSuggestions,
                   ))
               .toList(),
         ),
@@ -275,6 +290,7 @@ class DateRangePickerPopup extends StatelessWidget {
     required Function(DateTime startMonth, DateTime lastMonth) onMonthSelected,
     required List<int> selectedYear,
     required Function(int year) onYearSelected,
+    required bool hideSuggestions,
   }) {
     /// Chip Suggestions Logic ==============================================
     List<String> dateSuggestions = defaultDateRanges
@@ -324,18 +340,21 @@ class DateRangePickerPopup extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         /// the suggestions
-        const SizedBox(height: 10),
-        Obx(
-          () => getChipsWidget(
-            theme: theme,
-            title: "Suggested",
-            chipLabels: dateSuggestions,
-            selectedIdx: selectedSuggestion.value,
-            onChipSelected: onSuggestionChipSelected,
-            width: width,
-            bgColor: theme.colorScheme.tertiaryContainer,
+        if (!hideSuggestions)
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Obx(
+              () => getChipsWidget(
+                theme: theme,
+                title: "Suggested",
+                chipLabels: dateSuggestions,
+                selectedIdx: selectedSuggestion.value,
+                onChipSelected: onSuggestionChipSelected,
+                width: width,
+                bgColor: theme.colorScheme.tertiaryContainer,
+              ),
+            ),
           ),
-        ),
 
         /// the range dropdowns
         Padding(
