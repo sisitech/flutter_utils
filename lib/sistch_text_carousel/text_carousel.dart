@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 // View
 //
-class SistchTextCarousel extends StatelessWidget {
+class SistchTextCarousel extends StatefulWidget {
   final List<String> texts;
   final int? viewDuration;
   final Color? bgColor;
@@ -28,48 +28,68 @@ class SistchTextCarousel extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final TextCarouselController textCarouselCtrl = Get.put(
-      TextCarouselController(
-        viewDuration: viewDuration,
-        textsLength: texts.length,
-      ),
-      tag: key.toString(),
-    );
+  State<SistchTextCarousel> createState() => _SistchTextCarouselState();
+}
 
-    return texts.isNotEmpty
+class _SistchTextCarouselState extends State<SistchTextCarousel> {
+  RxInt currentIndex = RxInt(0);
+  RxDouble progressValue = RxDouble(0.0);
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+    startCarousel();
+  }
+
+  void startCarousel() {
+    ever(currentIndex, (_) {
+      progressValue.value = 0.0;
+    });
+
+    timer =
+        Timer.periodic(Duration(seconds: widget.viewDuration ?? 5), (timer) {
+      progressValue.value = 0.0;
+      currentIndex.value = (currentIndex.value + 1) % widget.texts.length;
+    });
+  }
+
+  void stopCarousel() {
+    timer?.cancel();
+  }
+
+  @override
+  void dispose() {
+    stopCarousel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return widget.texts.isNotEmpty
         ? Container(
             decoration: BoxDecoration(
-              color: bgColor ?? colorScheme.primary,
+              color: widget.bgColor ?? theme.colorScheme.primary,
               borderRadius: BorderRadius.circular(5),
             ),
-            padding: const EdgeInsets.all(10),
+            width: MediaQuery.sizeOf(context).width,
+            height: widget.height ?? MediaQuery.sizeOf(context).height * 0.11,
+            padding: const EdgeInsets.all(5),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Stack(
-                  alignment: AlignmentDirectional.center,
-                  children: [
-                    CircularProgressIndicator(
-                      value: 100,
-                      color: colorScheme.primaryContainer,
-                    ),
-                    Icon(
-                      icon ?? Icons.stars,
-                      color: colorScheme.primaryContainer,
-                      size: 14,
-                    ),
-                  ],
+                Icon(
+                  widget.icon ?? Icons.lightbulb_circle_rounded,
+                  color: theme.colorScheme.primaryContainer,
+                  size: 32,
                 ),
-                const SizedBox(width: 10),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.65,
-                  height: height,
+                const SizedBox(width: 5),
+                Expanded(
                   child: Obx(
                     () => FadeInDownText(
-                      currentText: texts[textCarouselCtrl.currentIndex.value],
-                      textColor: textColor,
+                      currentText: widget.texts[currentIndex.value],
+                      textColor: widget.textColor,
                     ),
                   ),
                 ),
@@ -80,7 +100,7 @@ class SistchTextCarousel extends StatelessWidget {
   }
 }
 
-class FadeInDownText extends StatelessWidget {
+class FadeInDownText extends StatefulWidget {
   final String currentText;
   final Color? textColor;
 
@@ -91,47 +111,19 @@ class FadeInDownText extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final TextAnimationController textAnimationCtrl = Get.put(
-      TextAnimationController(),
-      tag: key.toString(),
-    );
-
-    textAnimationCtrl.startAnimation();
-
-    return AnimatedBuilder(
-      animation: textAnimationCtrl.controller,
-      builder: (context, child) {
-        return Opacity(
-          opacity: textAnimationCtrl.opacityAnimation.value,
-          child: Transform.translate(
-            offset: textAnimationCtrl.offsetAnimation.value,
-            child: child,
-          ),
-        );
-      },
-      child: Text(
-        currentText,
-        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              fontStyle: FontStyle.italic,
-              color: textColor ?? Theme.of(context).colorScheme.onPrimary,
-            ),
-      ),
-    );
-  }
+  State<FadeInDownText> createState() => _FadeInDownTextState();
 }
 
-// Text Animation Controller
-//
-class TextAnimationController extends GetxController
-    with SingleGetTickerProviderMixin {
+class _FadeInDownTextState extends State<FadeInDownText>
+    with SingleTickerProviderStateMixin {
   late AnimationController controller;
   late Animation<Offset> offsetAnimation;
   late Animation<double> opacityAnimation;
 
   @override
-  void onInit() {
-    super.onInit();
+  void initState() {
+    super.initState();
+
     controller = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
@@ -152,6 +144,17 @@ class TextAnimationController extends GetxController
       parent: controller,
       curve: Curves.easeOut,
     ));
+
+    startAnimation(); // Start animation for the first text
+  }
+
+  @override
+  void didUpdateWidget(covariant FadeInDownText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.currentText != widget.currentText) {
+      startAnimation(); // Start animation when text changes
+    }
   }
 
   void startAnimation() {
@@ -159,65 +162,35 @@ class TextAnimationController extends GetxController
   }
 
   @override
-  void onClose() {
-    controller.dispose();
-    super.onClose();
-  }
-}
-
-// Text Carousel Controller
-//
-class TextCarouselController extends GetxController {
-  var currentIndex = 0.obs;
-  var progressValue = 0.0.obs;
-  Timer? timer;
-  RxBool showText = false.obs;
-
-  //--- Passed variables
-  int viewTimerDuration = 5;
-  int textsLength;
-
-  TextCarouselController({
-    required this.textsLength,
-    int? viewDuration,
-  }) {
-    if (viewDuration != null) {
-      viewTimerDuration = viewDuration;
-    }
+  void dispose() {
+    controller.dispose(); // Dispose the controller to prevent memory leaks
+    super.dispose();
   }
 
   @override
-  void onInit() {
-    super.onInit();
-    if (textsLength > 0 && viewTimerDuration > 0) {
-      startCarousel();
-    }
-  }
-
-  void startCarousel() {
-    ever(currentIndex, (_) {
-      progressValue.value = 0.0;
-    });
-
-    timer = Timer.periodic(Duration(seconds: viewTimerDuration), (timer) {
-      if (progressValue.value < 1.0) {
-        showText.value = true;
-        progressValue.value += 1 / viewTimerDuration;
-      } else {
-        showText.value = false;
-        currentIndex.value = (currentIndex.value + 1) % textsLength;
-        progressValue.value = 0.0;
-      }
-    });
-  }
-
-  void stopCarousel() {
-    timer?.cancel();
-  }
-
-  @override
-  void onClose() {
-    stopCarousel();
-    super.onClose();
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        return Opacity(
+          opacity: opacityAnimation.value,
+          child: Transform.translate(
+            offset: offsetAnimation.value,
+            child: child,
+          ),
+        );
+      },
+      child: Text(
+        widget.currentText,
+        maxLines: 5,
+        overflow: TextOverflow.ellipsis,
+        style: theme.textTheme.bodySmall!.copyWith(
+          fontStyle: FontStyle.italic,
+          fontWeight: FontWeight.bold,
+          color: widget.textColor ?? Theme.of(context).colorScheme.onPrimary,
+        ),
+      ),
+    );
   }
 }

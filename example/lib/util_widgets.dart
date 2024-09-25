@@ -3,9 +3,9 @@ import 'package:flutter_utils/activity_streak/activity_streak.dart';
 import 'package:flutter_utils/date_dropdown/constants.dart';
 import 'package:flutter_utils/date_dropdown/models.dart';
 import 'package:flutter_utils/flutter_utils.dart';
-import 'package:flutter_utils/internalization/extensions.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:flutter_utils/sistch_text_carousel/text_carousel.dart';
+import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 
 class UtilWidgetsScreen extends StatefulWidget {
@@ -28,6 +28,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Util Widgets'),
@@ -38,18 +39,25 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
         child: Center(
           child: Column(
             children: [
-              const SistchTagStreakIndicator(
-                totalCount: 10,
-                currentCount: 3,
+              getHeaderWidget(theme: theme, title: "Text Carousel"),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: SistchTextCarousel(
+                  texts: [
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et enim hendrerit, aliquet sem quis, faucibus elit. Praesent neque ex, suscipit et condimentum nec, scelerisque ac dui.",
+                    "Nunc massa magna, laoreet eu diam nec, tincidunt porttitor nibh. Aenean fermentum, nulla eu molestie iaculis, enim ipsum ultricies libero, eget imperdiet nisi dolor eget risus. Morbi ac mi ex ultricies."
+                        "Mauris tincidunt ultricies mauris, sit amet molestie eros elementum dapibus. Nam ipsum dui. Suspendisse vel diam mauris.",
+                  ],
+                ),
               ),
-              const Divider(),
-              Text(
-                'Text Carousel Widget'.ctr,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              const SistchTextCarousel(
-                viewDuration: 2,
-                texts: ["Text One", "Text Two", "Text Three"],
+              SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+              getHeaderWidget(theme: theme, title: "Streak Indicator"),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: SistchTagStreakIndicator(
+                  totalCount: 10,
+                  currentCount: 3,
+                ),
               ),
             ],
           ),
