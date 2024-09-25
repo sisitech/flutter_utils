@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_utils/utils/functions.dart';
+import 'package:flutter_utils/charts/utils.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 

@@ -115,6 +115,15 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                 ),
               ),
               chartScaffold(
+                chartWidget: SistchPieDonutChart(
+                  chartTitle: "Half Arc Chart",
+                  isHalfArcChart: true,
+                  chartDirection: Axis.horizontal,
+                  dataSeries: chartData[currentChartIdx],
+                  pieLabels: chartLabels[currentChartIdx],
+                ),
+              ),
+              chartScaffold(
                 chartWidget: SistchLinearPercentChart(
                   chartTitle: "Linear Percent Chart",
                   dataSeries: chartData[currentChartIdx],
