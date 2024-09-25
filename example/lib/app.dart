@@ -239,7 +239,7 @@ class MyApp extends StatelessWidget {
               onTap: () {
                 Get.to(() => const UtilWidgetsScreen());
               },
-              leadingIcon: Icons.settings,
+              leadingIcon: Icons.work,
               trailingIcon: Icons.arrow_forward,
             ),
             SisitechDrawerItem(

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_utils/internalization/extensions.dart';
 import 'package:flutter_utils/extensions/date_extensions.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
-import 'package:intl/intl.dart';
 
-enum DateRangeType { day, week, month, quarterYr, halfYr, year }
+// enum DateRangeType { day, week, month, quarterYr, halfYr, year }
+
+enum DateRangeTypes { day, week, month, monthRange, year }
 
 ///[TimePeriod]
 /// Extra Classes:
@@ -19,15 +20,11 @@ class TimePeriod {
   late final String displayName;
   late final String dateFormat;
   late final int value;
-  late final DateRangeType? type;
-  DateTime? prevStartDate;
-  List<int>?
-      timeIntervals; // list of timeInterval endDates in millisecondsSinceEpoch
-  List<String>? intervalLabels;
+  late final DateRangeTypes? type;
   TimePeriod({
     this.displayName = "This Month @start_date# ",
     this.value = 0,
-    this.type = DateRangeType.month,
+    this.type = DateRangeTypes.month,
     DateTime Function()? startDate,
     DateTime Function()? endDate,
     this.dateFormat = "E, dd MMM",
@@ -45,9 +42,6 @@ class TimePeriod {
     } else {
       endDateFunc = getDefaultEndDate;
     }
-    prevStartDate = getPrevStartDate(startDateFunc!(), type!);
-    timeIntervals = getTimePeriodIntervals(startDateFunc!(), type!);
-    intervalLabels = getIntervalLabels(timeIntervals!, type!);
   }
 
   String getGroupingType() {
@@ -128,152 +122,20 @@ class TimePeriod {
   }
 
   DateTime getDefaultStartDate() {
-    return getTheFirstDayOfMonth(DateTime.now());
+    return DateTime.now();
   }
 
   DateTime getDefaultEndDate() {
-    return getTheLastDayOfMonth(DateTime.now());
+    return DateTime.now();
   }
 }
 
-DateTime getTheLastDayOfMonth(DateTime date) {
-  DateTime now = DateTime.now();
-  DateTime firstDayOfNextMonth = DateTime(now.year, now.month + 1, 1);
-  debugPrint('$firstDayOfNextMonth');
-  return DateTime(firstDayOfNextMonth.year, firstDayOfNextMonth.month,
-      firstDayOfNextMonth.day);
-}
-
-DateTime getTheFirstDayOfMonth(DateTime date) {
-  DateTime firstDayOfMonth = DateTime(date.year, date.month, 1);
-  return firstDayOfMonth;
-}
-
-/// Range Functions
-DateTime getPrevStartDate(DateTime startDate, DateRangeType type) {
-  switch (type) {
-    case DateRangeType.day:
-      return DateTime(startDate.year, startDate.month, startDate.day - 1);
-    case DateRangeType.week:
-      return DateTime(startDate.year, startDate.month, startDate.day - 7);
-    case DateRangeType.month:
-      return DateTime(startDate.year, startDate.month - 1, 1);
-
-    case DateRangeType.quarterYr:
-      return DateTime(startDate.year, startDate.month - 3, 1);
-
-    case DateRangeType.halfYr:
-      return DateTime(startDate.year, startDate.month - 6, 1);
-
-    case DateRangeType.year:
-      return DateTime(startDate.year - 1, 1, 1);
-    default:
-      return startDate;
-  }
-}
-
-List<int> getTimePeriodIntervals(DateTime startDate, DateRangeType type) {
-  int yearRangeIdx = 4;
-  switch (type) {
-    case DateRangeType.day:
-      return List.generate(13,
-          (i) => startDate.add(Duration(hours: i * 2)).millisecondsSinceEpoch);
-    case DateRangeType.week:
-      return List.generate(
-          8, (i) => startDate.add(Duration(days: i)).millisecondsSinceEpoch);
-    case DateRangeType.month:
-      return List.generate(5,
-          (i) => startDate.add(Duration(days: i * 7)).millisecondsSinceEpoch);
-    case DateRangeType.quarterYr:
-      yearRangeIdx = 4;
-      break;
-    case DateRangeType.halfYr:
-      yearRangeIdx = 7;
-      break;
-    case DateRangeType.year:
-      yearRangeIdx = 13;
-      break;
-  }
-  return List.generate(
-      yearRangeIdx,
-      (i) => DateTime(startDate.year, startDate.month + i, startDate.day)
-          .millisecondsSinceEpoch);
-}
-
-List<String> getIntervalLabels(
-    List<int> timeIntervals, DateRangeType rangeType) {
-  switch (rangeType) {
-    case DateRangeType.day:
-      return dayTitles;
-    case DateRangeType.week:
-      return weekDayTitles;
-    case DateRangeType.month:
-      return timeIntervals
-          .map((e) =>
-              "Week ${getWeekNumber(DateTime.fromMillisecondsSinceEpoch(e))}")
-          .toList()
-          .sublist(0, timeIntervals.length - 1);
-    case DateRangeType.year:
-      return yearMonthTitles;
-    case DateRangeType.quarterYr:
-      break;
-    case DateRangeType.halfYr:
-      break;
-  }
-  return timeIntervals
-      .map((e) =>
-          DateFormat("MMMM").format(DateTime.fromMillisecondsSinceEpoch(e)))
-      .toList()
-      .sublist(0, timeIntervals.length - 1);
-}
-
-DateTime getFirstDayOfCurrentWeek() {
-  DateTime today =
-      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-  int daysToSubtract = today.weekday - DateTime.monday;
+DateTime getFirstDayOfCurrentWeek(DateTime date) {
+  int daysToSubtract = date.weekday - DateTime.monday;
   // If today is Sunday, we subtract 6 days to get to the previous Monday
   if (daysToSubtract < 0) {
     daysToSubtract += 7;
   }
-  DateTime firstDayOfWeek = today.subtract(Duration(days: daysToSubtract));
+  DateTime firstDayOfWeek = date.subtract(Duration(days: daysToSubtract));
   return firstDayOfWeek;
 }
-
-int getWeekNumber(DateTime date) {
-  DateTime firstDayOfYear = DateTime(date.year, 1, 1);
-  int daysDifference = date.difference(firstDayOfYear).inDays;
-  int weekNumber = (daysDifference / 7).ceil() + 1;
-  return weekNumber;
-}
-
-List<String> dayTitles = [
-  '0h',
-  '2h',
-  '4h',
-  '6h',
-  '8h',
-  '10h',
-  '12h',
-  '14h',
-  '16h',
-  '18h',
-  '20h',
-  '22h',
-  '24h'
-];
-List<String> weekDayTitles = ['Mn', 'Te', 'Wd', 'Th', 'Fr', 'St', 'Su'];
-List<String> monthWeekTitles = ['Week'];
-List<String> yearMonthTitles = [
-  'Jn',
-  'Fb',
-  'Mr',
-  'Ap',
-  'My',
-  'Jun',
-  'Jl',
-  'Ag',
-  'Sp',
-  'Oc',
-  'Nv',
-  'Dc'
-];

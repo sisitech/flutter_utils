@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/date_dropdown/constants.dart';
 import 'package:flutter_utils/date_dropdown/models.dart';
-import 'package:flutter_utils/flutter_utils.dart';
 import 'package:get/get.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
@@ -29,7 +28,7 @@ class SistchDateDropdown extends StatelessWidget {
     this.name,
   }) {
     if (timePeriods.length < 1) {
-      finalTimePeriods = dateRanges;
+      finalTimePeriods = defaultDateRanges;
     } else {
       finalTimePeriods = timePeriods;
     }

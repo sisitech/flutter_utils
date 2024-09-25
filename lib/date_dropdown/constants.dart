@@ -1,99 +1,121 @@
 import 'package:flutter_utils/date_dropdown/models.dart';
+import 'package:intl/intl.dart';
 
 var now = DateTime.now();
+DateTime today = DateTime(now.year, now.month, now.day);
+DateTime tomorrow = DateTime(now.year, now.month, now.day + 1);
+DateTime yesterday = today.subtract(const Duration(days: 1));
+DateTime thisWeek = getFirstDayOfCurrentWeek(today);
+DateTime lastWeek =
+    getFirstDayOfCurrentWeek(today).subtract(const Duration(days: 7));
+DateTime thisMonth = DateTime(now.year, now.month, 1);
+DateTime lastMonth = DateTime(now.year, now.month - 1, 1);
+DateTime thisYear = DateTime(now.year, 1, 1);
+DateTime lastYear = DateTime(now.year - 1, 1, 1);
 
-List<TimePeriod> dateRanges = [
+DateFormat monthFormat = DateFormat('MMM');
+List<String> monthsList = monthFormat.dateSymbols.STANDALONESHORTMONTHS;
+List<String> allMonths = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sept',
+  'Oct',
+  'Nov',
+  'Dec'
+];
+
+var defaultDateRanges = [
   TimePeriod(
     displayName: 'Today',
+    type: DateRangeTypes.day,
     value: 1,
     startDate: () {
-      return DateTime(now.year, now.month, now.day);
+      return today;
     },
     endDate: () {
-      return DateTime(now.year, now.month, now.day + 1);
+      return tomorrow;
     },
-    type: DateRangeType.day,
   ),
   TimePeriod(
     displayName: 'Yesterday',
     value: 2,
+    type: DateRangeTypes.day,
     startDate: () {
-      return DateTime(now.year, now.month, now.day - 1);
+      return yesterday;
     },
     endDate: () {
-      return DateTime(now.year, now.month, now.day);
+      return today;
     },
-    type: DateRangeType.day,
   ),
   TimePeriod(
     displayName: 'This Week',
     value: 3,
-    // displayName: "Week of @start_date_display#",
+    type: DateRangeTypes.week,
     startDate: () {
-      return getFirstDayOfCurrentWeek();
+      return thisWeek;
     },
     endDate: () {
-      DateTime firstWeekDay = getFirstDayOfCurrentWeek();
-      return firstWeekDay.add(const Duration(days: 7));
+      return tomorrow;
     },
-    type: DateRangeType.week,
   ),
   TimePeriod(
     displayName: 'Last Week',
     value: 4,
-    // displayName: "Week of @start_date_display#",
+    type: DateRangeTypes.week,
     startDate: () {
-      DateTime firstWeekDay = getFirstDayOfCurrentWeek();
-      return firstWeekDay.subtract(const Duration(days: 7));
+      return lastWeek;
     },
     endDate: () {
-      return getFirstDayOfCurrentWeek();
+      return getFirstDayOfCurrentWeek(today);
     },
-    type: DateRangeType.week,
   ),
   TimePeriod(
+    // This Month
     displayName: "This Month",
-    // displayName: "@start_date_display#",
-    dateFormat: "MMMM y",
     value: 5,
+    type: DateRangeTypes.month,
     startDate: () {
-      return DateTime(now.year, now.month, 1);
+      return thisMonth;
     },
     endDate: () {
       return DateTime(now.year, now.month + 1, 1);
     },
-    type: DateRangeType.month,
   ),
   TimePeriod(
     displayName: 'Last Month',
-    // displayName: "@start_date_display#",
-    dateFormat: "MMMM y",
     value: 6,
+    type: DateRangeTypes.month,
     startDate: () {
-      return DateTime(now.year, now.month - 1, 1);
+      return lastMonth;
     },
     endDate: () {
-      return DateTime(now.year, now.month);
+      return thisMonth;
     },
-    type: DateRangeType.month,
   ),
   TimePeriod(
     // displayName: 'Last Month But 2 :)',
     displayName: "@start_date_display#",
     dateFormat: "MMMM y",
+    type: DateRangeTypes.month,
     value: 7,
     startDate: () {
       return DateTime(now.year, now.month - 2, 1);
     },
     endDate: () {
-      return DateTime(now.year, now.month - 1);
+      return lastMonth;
     },
-    type: DateRangeType.month,
   ),
   TimePeriod(
     // displayName: 'Last Month But 3 :)',
     displayName: "@start_date_display#",
     dateFormat: "MMMM y",
+    type: DateRangeTypes.month,
     value: 8,
     startDate: () {
       return DateTime(now.year, now.month - 3, 1);
@@ -101,55 +123,75 @@ List<TimePeriod> dateRanges = [
     endDate: () {
       return DateTime(now.year, now.month - 2);
     },
-    type: DateRangeType.month,
   ),
   TimePeriod(
     displayName: 'Last 3 months ',
     value: 9,
+    type: DateRangeTypes.monthRange,
     startDate: () {
-      return DateTime(now.year, now.month - 3, 1);
+      return DateTime(now.year, now.month, 1 - 90);
     },
     endDate: () {
       return DateTime(now.year, now.month, now.day);
     },
-    type: DateRangeType.quarterYr,
   ),
   TimePeriod(
     displayName: 'Last 6 months ',
     value: 10,
-    dateFormat: "E, dd MMM,y",
+    type: DateRangeTypes.monthRange,
     startDate: () {
-      return DateTime(now.year, now.month - 6, 1);
+      return DateTime(now.year, now.month, 1 - 180);
     },
     endDate: () {
       return DateTime(now.year, now.month, now.day);
     },
-    type: DateRangeType.halfYr,
   ),
   TimePeriod(
-    displayName: 'This Year',
-    // displayName: "@start_date_display# - Today",
-    dateFormat: "MMM y",
+    displayName: "This Year",
+    type: DateRangeTypes.year,
     value: 11,
     startDate: () {
-      return DateTime(now.year, 1, 1);
+      return thisYear;
     },
     endDate: () {
       return DateTime(now.year, now.month, now.day + 1);
     },
-    type: DateRangeType.year,
   ),
   TimePeriod(
-    displayName: 'Last Year',
-    // displayName: "@start_date_display# - @end_date_display#",
-    dateFormat: "MMM y",
+    displayName: "Last Year",
+    type: DateRangeTypes.year,
     value: 12,
     startDate: () {
-      return DateTime(now.year - 1, 1, 1);
+      return lastYear;
     },
     endDate: () {
-      return DateTime(now.year, 1, 1);
+      return thisYear;
     },
-    type: DateRangeType.year,
+  ),
+  TimePeriod(
+    // displayName: 'Last Year But 1',
+    displayName: "@start_date_display#",
+    dateFormat: "yyyy",
+    type: DateRangeTypes.year,
+    value: 13,
+    startDate: () {
+      return DateTime(now.year - 2, 1, 1);
+    },
+    endDate: () {
+      return DateTime(now.year - 1, 1, 1);
+    },
+  ),
+  TimePeriod(
+    // displayName: 'Last Year But 2',
+    displayName: "@start_date_display#",
+    dateFormat: "yyyy",
+    type: DateRangeTypes.year,
+    value: 14,
+    startDate: () {
+      return DateTime(now.year - 3, 1, 1);
+    },
+    endDate: () {
+      return DateTime(now.year - 2, 1, 1);
+    },
   ),
 ];
