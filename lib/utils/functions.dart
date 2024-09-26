@@ -98,3 +98,18 @@ String addThousandSeparators(double value) {
   return integerPart.replaceAllMapped(regExp, (Match match) => '${match[1]},') +
       decimalPart;
 }
+
+double getListOfDoublesSum(List<double> items) {
+  double sum = 0.0;
+  for (var item in items) {
+    sum += item;
+  }
+  return sum;
+}
+
+double? getListOfDoublesMax(List<double>? values) {
+  if (values == null || values.isEmpty) {
+    return null;
+  }
+  return values.reduce((a, b) => a > b ? a : b);
+}

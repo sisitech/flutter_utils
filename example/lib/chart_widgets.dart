@@ -3,6 +3,9 @@ import 'package:flutter_utils/charts/stacked_donut_chart.dart';
 import 'package:flutter_utils/charts/bar_chart.dart';
 import 'package:flutter_utils/charts/pie_donut_chart.dart';
 import 'package:flutter_utils/charts/linear_percent_chart.dart';
+import 'package:flutter_utils/charts/time_lapse_chart.dart';
+import 'package:flutter_utils/widgets/global_widgets.dart';
+import 'package:get/get.dart';
 
 class ChartWidgetsScreen extends StatefulWidget {
   final routeName = "/chart-widgets";
@@ -57,8 +60,14 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
     setState(() {});
   }
 
+  Rx<int> selectedTimeRange = Rx<int>(1);
+  onTimeRangeSelected(int? val) {}
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chart Widgets'),
@@ -130,6 +139,42 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   chartLabels: chartLabels[currentChartIdx],
                 ),
               ),
+              chartScaffold(
+                chartWidget: Padding(
+                  padding: const EdgeInsets.all(5),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          getDropDownFormField(
+                            theme: theme,
+                            width: width * 0.4,
+                            selectedValue: selectedTimeRange.value,
+                            items: getTimeRangeDrpValues(),
+                            onChanged: onTimeRangeSelected,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      const SistchTimeLapseChart(
+                        dataSeries: [1000, 60000, 400000, 30000, 1000000, 2000],
+                        timeLabels: [
+                          '6AM',
+                          '9AM',
+                          '12Noon',
+                          '3PM',
+                          '6PM',
+                          '9PM'
+                        ],
+                        prefix: 'KES.',
+                        // useSunColors: true,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -159,4 +204,18 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
       ],
     );
   }
+}
+
+List<DropdownMenuItem<int>> getTimeRangeDrpValues() {
+  List<DropdownMenuItem<int>> drpValues = [];
+  List<String> timeRanges = ['Hourly', 'Time of Day', 'Day of Week'];
+
+  for (int i = 0; i < timeRanges.length; i++) {
+    drpValues.add(DropdownMenuItem(
+      value: i,
+      child: Text(timeRanges[i]),
+    ));
+  }
+
+  return drpValues;
 }

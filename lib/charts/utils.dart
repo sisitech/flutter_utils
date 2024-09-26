@@ -65,14 +65,6 @@ List<Color> getChartColors(int seriesLength) {
   return defaultChartColors.sublist(0, seriesLength);
 }
 
-double getListOfDoublesSum(List<double> items) {
-  double sum = 0.0;
-  for (var item in items) {
-    sum += item;
-  }
-  return sum;
-}
-
 // chart constants
 List<Color> defaultChartColors = const [
   Color(0xFF18A558),
