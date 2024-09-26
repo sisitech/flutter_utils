@@ -31,13 +31,16 @@ class SistchTimeLapseChart extends StatelessWidget {
   final String prefix;
   final double chartHeight;
   final bool useSunColors;
-  const SistchTimeLapseChart(
-      {super.key,
-      required this.dataSeries,
-      required this.timeLabels,
-      this.chartHeight = 450,
-      this.prefix = "",
-      this.useSunColors = false});
+  final String? chartTitle;
+  const SistchTimeLapseChart({
+    super.key,
+    required this.dataSeries,
+    required this.timeLabels,
+    this.chartHeight = 450,
+    this.prefix = "",
+    this.chartTitle,
+    this.useSunColors = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -52,46 +55,63 @@ class SistchTimeLapseChart extends StatelessWidget {
       width: width,
       chartHeight: chartHeight,
     ).reversed.toList();
-    double timeTilesRadius = width * 0.42;
+    double timeTilesRadius = width * 0.44;
 
-    return SizedBox(
-      width: width,
-      height: chartHeight,
-      child: Stack(
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: Column(
         children: [
-          getSunBackground(
-            width: width,
-            theme: theme,
-            chartHeight: chartHeight,
-            useSunColors: useSunColors,
-          ),
-          Positioned(
-            left: -width * 0.5,
-            top: 22,
-            child: Transform.rotate(
-              angle: (pi / 2),
-              child: Container(
-                // color: Colors.lightGreen.withOpacity(0.2),
-                width: width * 1.21,
-                height: chartHeight,
-                child: Stack(
-                  children: sections.asMap().entries.map((entry) {
-                    int idx = entry.key;
-                    TimeLapseChartSection e = sections[idx];
-                    double angle = pi * idx / (sections.length - 1);
-
-                    return Positioned(
-                      left: (timeTilesRadius + timeTilesRadius * cos(angle)),
-                      top: timeTilesRadius - timeTilesRadius * sin(angle),
-                      child: getTimeRangeItem(
-                        theme: theme,
-                        timeTile: e,
-                        isHighlighted: e.value == maxValue,
-                      ),
-                    );
-                  }).toList(),
-                ),
+          if (chartTitle != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Text(
+                chartTitle!,
+                style: theme.textTheme.titleLarge!.copyWith(
+                    color: theme.colorScheme.primary,
+                    fontWeight: FontWeight.bold),
               ),
+            ),
+          SizedBox(
+            width: width,
+            height: chartHeight,
+            child: Stack(
+              children: [
+                getSunBackground(
+                  width: width,
+                  theme: theme,
+                  chartHeight: chartHeight,
+                  useSunColors: useSunColors,
+                ),
+                Positioned(
+                  left: -width * 0.5,
+                  top: 20,
+                  child: Transform.rotate(
+                    angle: (pi / 2),
+                    child: SizedBox(
+                      width: width * 1.21,
+                      height: chartHeight,
+                      child: Stack(
+                        children: sections.asMap().entries.map((entry) {
+                          int idx = entry.key;
+                          TimeLapseChartSection e = sections[idx];
+                          double angle = pi * idx / (sections.length - 1);
+
+                          return Positioned(
+                            left: (timeTilesRadius +
+                                timeTilesRadius * cos(angle)),
+                            top: timeTilesRadius - timeTilesRadius * sin(angle),
+                            child: getTimeRangeItem(
+                              theme: theme,
+                              timeTile: e,
+                              isHighlighted: e.value == maxValue,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
