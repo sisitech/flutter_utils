@@ -36,6 +36,7 @@ class SistchStackedDonutChart extends StatelessWidget {
   final Color? firstColor;
   final bool? useIndIcons;
   final double? firstStartAngle;
+  final String indicatorPrefix;
 
   ///[SistchStackedDonutChart] renders custom Sisitech Stack of Donut Charts
   /// Required Fields:
@@ -53,6 +54,7 @@ class SistchStackedDonutChart extends StatelessWidget {
     this.firstColor,
     this.useIndIcons,
     this.firstStartAngle,
+    this.indicatorPrefix = '',
   });
 
   /// [_createChartData]
@@ -85,10 +87,12 @@ class SistchStackedDonutChart extends StatelessWidget {
     }).toList();
 
     List<Widget> donutChartIndicators = getChartIndicators(
-        chartLabels, chartColors,
-        values: chartData.map((e) => e.percent * 100).toList(),
-        useIcons: useIndIcons,
-        isPercent: true);
+      chartLabels,
+      chartColors,
+      values: chartData.map((e) => e.percent * 100).toList(),
+      useIcons: useIndIcons,
+      indicatorPrefix: indicatorPrefix,
+    );
 
     return [chartData, donutChartIndicators];
   }

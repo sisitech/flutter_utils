@@ -153,17 +153,21 @@ Widget getPopupScaffold(
   );
 }
 
-Widget getHeaderWidget({required String title, required ThemeData theme}) {
+Widget getHeaderWidget({
+  required String title,
+  required ThemeData theme,
+  TextStyle? style,
+}) {
   return Row(
     children: [
       Text(
         title,
-        style: theme.textTheme.titleSmall,
+        style: style ?? theme.textTheme.titleSmall,
       ),
       const SizedBox(width: 5),
       Expanded(
         child: Divider(
-          color: theme.colorScheme.primary,
+          color: theme.colorScheme.outline,
         ),
       ),
     ],

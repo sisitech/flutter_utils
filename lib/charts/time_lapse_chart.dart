@@ -32,6 +32,7 @@ class SistchTimeLapseChart extends StatelessWidget {
   final double chartHeight;
   final bool useSunColors;
   final String? chartTitle;
+  final Color? highlightColor;
   const SistchTimeLapseChart({
     super.key,
     required this.dataSeries,
@@ -40,6 +41,7 @@ class SistchTimeLapseChart extends StatelessWidget {
     this.prefix = "",
     this.chartTitle,
     this.useSunColors = false,
+    this.highlightColor,
   });
 
   @override
@@ -84,7 +86,7 @@ class SistchTimeLapseChart extends StatelessWidget {
                 ),
                 Positioned(
                   left: -width * 0.5,
-                  top: 20,
+                  top: 15,
                   child: Transform.rotate(
                     angle: (pi / 2),
                     child: SizedBox(
@@ -132,7 +134,7 @@ class SistchTimeLapseChart extends StatelessWidget {
         children: [
           Icon(
             Icons.timelapse,
-            size: theme.textTheme.headlineMedium?.fontSize,
+            size: theme.textTheme.titleLarge?.fontSize,
             color: theme.colorScheme.secondary,
           ),
           const SizedBox(width: 5),
@@ -140,8 +142,8 @@ class SistchTimeLapseChart extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               color: isHighlighted
-                  ? theme.colorScheme.primaryContainer
-                  : theme.colorScheme.surfaceVariant.withOpacity(0.8),
+                  ? highlightColor ?? theme.colorScheme.primary
+                  : theme.colorScheme.surfaceVariant.withOpacity(0.2),
             ),
             padding: const EdgeInsets.all(4),
             child: Column(
@@ -150,15 +152,19 @@ class SistchTimeLapseChart extends StatelessWidget {
               children: [
                 Text(
                   timeTile.timeTile ?? "--",
-                  style: theme.textTheme.labelMedium!.copyWith(
+                  style: TextStyle(
+                    color: isHighlighted ? theme.colorScheme.onPrimary : null,
                     fontWeight: FontWeight.bold,
+                    fontSize: 10,
                   ),
                 ),
                 const SizedBox(height: 5),
                 Text(
                   timeTile.displayVal ?? "-",
-                  style: theme.textTheme.labelSmall!.copyWith(
+                  style: TextStyle(
+                    color: isHighlighted ? theme.colorScheme.onPrimary : null,
                     fontWeight: FontWeight.bold,
+                    fontSize: 10,
                   ),
                 ),
               ],
@@ -175,9 +181,9 @@ class SistchTimeLapseChart extends StatelessWidget {
     required double chartHeight,
     required bool useSunColors,
   }) {
-    double ringRadiusFactor = 0.85;
-    double sunRadiusFactor = 0.7;
-    double sunBgOffsetFactor = 0.35;
+    double ringRadiusFactor = 0.88;
+    double sunRadiusFactor = 0.72;
+    double sunBgOffsetFactor = 0.38;
     double ringRadius = width * ringRadiusFactor;
     double sunRadius = width * sunRadiusFactor;
 
@@ -205,7 +211,8 @@ class SistchTimeLapseChart extends StatelessWidget {
                     border: Border.all(
                       color: useSunColors
                           ? sunColors.last
-                          : theme.colorScheme.primary,
+                          : highlightColor ??
+                              theme.colorScheme.primaryContainer,
                       width: 2,
                     ),
                   ),

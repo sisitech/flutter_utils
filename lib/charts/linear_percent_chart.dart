@@ -109,7 +109,7 @@ class SistchLinearPercentChart extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.only(left: 5),
                               child: Text(
-                                "${chartLabels[idx]} (${(percent * 100).toStringAsFixed(1)}%)",
+                                "${chartLabels[idx]} • ${(percent * 100).toStringAsFixed(1)}%",
                                 style: textTheme.bodySmall!.copyWith(
                                   fontWeight: FontWeight.bold,
                                   color: percent < 0.6

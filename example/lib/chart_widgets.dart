@@ -64,9 +64,6 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final width = MediaQuery.sizeOf(context).width;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chart Widgets'),
@@ -120,6 +117,14 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   dataSeries: chartData[currentChartIdx],
                   pieLabels: chartLabels[currentChartIdx],
                   donutCenterRadius: 0,
+                  indicatorPrefix: 'KES. ',
+                  pieColors: const [
+                    Color(0xFFDF7A57),
+                    Color(0xFF3D5B59),
+                    Color(0xFFDB668D),
+                    Color(0xFF000C66),
+                    Color(0xFFF3E1C0),
+                  ],
                 ),
               ),
               chartScaffold(
@@ -127,6 +132,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   chartTitle: "Half Arc Chart",
                   isHalfArcChart: true,
                   chartDirection: Axis.horizontal,
+                  sectionsSpace: 0,
                   dataSeries: chartData[currentChartIdx],
                   pieLabels: chartLabels[currentChartIdx],
                 ),
@@ -139,16 +145,36 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                 ),
               ),
               chartScaffold(
-                chartWidget: Padding(
-                  padding: const EdgeInsets.all(5),
+                chartWidget:
+                    //
+                    const
+                    //
+                    Padding(
+                  padding: EdgeInsets.all(5),
                   child: SistchTimeLapseChart(
                     chartTitle: "Time Lapse Chart",
-                    // dataSeries: [1000, 60000, 400000, 30000, 1000000, 2000],
-                    // timeLabels: ['6AM', '9AM', '12Noon', '3PM', '6PM', '9PM'],
-                    dataSeries: chartData[currentChartIdx],
-                    timeLabels: chartLabels[currentChartIdx],
-                    prefix: 'KES.',
-                    // useSunColors: true,
+                    dataSeries: [
+                      1000,
+                      60000,
+                      400000,
+                      30000,
+                      1000000,
+                      2000,
+                      80000
+                    ],
+                    timeLabels: [
+                      '03AM - 06AM',
+                      '06AM - 09AM',
+                      '09AM - 12PM',
+                      '12PM - 03PM',
+                      '03PM - 06PM',
+                      '06PM - 09PM',
+                      '09PM - 12AM'
+                    ],
+                    // dataSeries: chartData[currentChartIdx],
+                    // timeLabels: chartLabels[currentChartIdx],
+                    prefix: 'KES. ',
+                    useSunColors: true,
                   ),
                 ),
               ),

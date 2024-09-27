@@ -159,18 +159,21 @@ class _SistchBarChartState extends State<SistchBarChart> {
             ),
           ),
         if (widget.dataSeries.length > 1)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Wrap(
-                children:
-                    chartIndicators.map((indicator) => indicator).toList(),
-              ),
-              IconButton(
-                onPressed: onSwapChartSeries,
-                icon: const Icon(Icons.swap_horiz),
-              )
-            ],
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Wrap(
+                  children:
+                      chartIndicators.map((indicator) => indicator).toList(),
+                ),
+                IconButton(
+                  onPressed: onSwapChartSeries,
+                  icon: const Icon(Icons.swap_horiz),
+                )
+              ],
+            ),
           ),
         SizedBox(
           height: widget.chartHeight,

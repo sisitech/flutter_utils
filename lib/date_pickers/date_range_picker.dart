@@ -225,6 +225,7 @@ class DateRangePickerPopup extends StatelessWidget {
         const Divider(),
         SistchTabBarScaffold(
           tabLabels: const ["Day", "Week", "Month", "Year"],
+          showUnViewedIndicator: false,
           height:
               MediaQuery.sizeOf(context).height * (hideSuggestions ? 0.5 : 0.6),
           isScrollable: false,

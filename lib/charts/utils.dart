@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_utils/text_view/text_view_extensions.dart';
 import 'package:flutter_utils/utils/functions.dart';
 import 'package:flutter_utils/utils/icon_mapper.dart';
 
-Widget chartIndicator(
-    {Color? color,
-    function,
-    required String label,
-    bool? useIcons,
-    required String rawLabel}) {
+Widget chartIndicator({
+  Color? color,
+  function,
+  String? extension,
+  bool? useIcons,
+  required String label,
+}) {
   return Padding(
     padding: const EdgeInsets.only(right: 8, bottom: 4),
     child: Row(
@@ -16,7 +16,7 @@ Widget chartIndicator(
       children: [
         useIcons == true
             ? Icon(
-                iconMapper[rawLabel] ?? Icons.circle,
+                iconMapper[label] ?? Icons.circle,
                 color: color,
                 size: 12,
               )
@@ -26,13 +26,20 @@ Widget chartIndicator(
               ),
         const SizedBox(width: 4),
         Flexible(
-          child: Text(
-            label,
+          child: Text.rich(
             maxLines: 2,
             overflow: TextOverflow.clip,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: label,
+                  style: const TextStyle(fontSize: 10),
+                ),
+                TextSpan(
+                  text: extension != null ? ' • $extension' : '',
+                  style: const TextStyle(fontSize: 8),
+                ),
+              ],
             ),
           ),
         ),
@@ -41,21 +48,23 @@ Widget chartIndicator(
   );
 }
 
-List<Widget> getChartIndicators(List<String> labels, List<Color> colors,
-    {List<double>? values, bool? isPercent = false, bool? useIcons}) {
+List<Widget> getChartIndicators(
+  List<String> labels,
+  List<Color> colors, {
+  List<double>? values,
+  bool? useIcons,
+  String? indicatorPrefix,
+}) {
   return List.generate(
     labels.length,
     (i) => chartIndicator(
       useIcons: useIcons,
-      rawLabel: labels[i],
-      label: "@label#@value#".interpolate({
-        "label": labels[i],
-        "value": values != null
-            ? isPercent == true
-                ? " (${values[i].toStringAsFixed(1)}%)"
-                : " (KES.${addThousandSeparators(values[i])})"
-            : "",
-      }),
+      label: labels[i],
+      extension: values != null
+          ? indicatorPrefix == null || indicatorPrefix.isEmpty
+              ? "${values[i].toStringAsFixed(1)}%"
+              : "$indicatorPrefix${addThousandSeparators(values[i])}"
+          : null,
       color: colors[i],
     ),
   );
