@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:example/chart_widgets.dart';
-import 'package:example/date_widgets.dart';
 import 'package:example/svg_widgets.dart';
 import 'package:example/util_widgets.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -232,7 +231,7 @@ class MyApp extends StatelessWidget {
               onTap: () {
                 Get.to(() => const SvgWidgetDemo());
               },
-              leadingIcon: Icons.settings,
+              leadingIcon: Icons.image,
               trailingIcon: Icons.arrow_forward,
             ),
             SisitechDrawerItem(
@@ -240,15 +239,7 @@ class MyApp extends StatelessWidget {
               onTap: () {
                 Get.to(() => const UtilWidgetsScreen());
               },
-              leadingIcon: Icons.work,
-              trailingIcon: Icons.arrow_forward,
-            ),
-            SisitechDrawerItem(
-              title: 'Date Widgets',
-              onTap: () {
-                Get.to(() => const DateWidgetsScreen());
-              },
-              leadingIcon: Icons.calendar_month,
+              leadingIcon: Icons.plumbing,
               trailingIcon: Icons.arrow_forward,
             ),
             SisitechDrawerItem(
