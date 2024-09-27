@@ -11,6 +11,7 @@ class SistchTextCarousel extends StatefulWidget {
   final Color? textColor;
   final IconData? icon;
   final double? height;
+  final TextStyle? textStyle;
 
   ///[SistchTextCarousel] renders an animated text carousel widget
   ///Required Fields:
@@ -25,6 +26,7 @@ class SistchTextCarousel extends StatefulWidget {
     this.textColor,
     this.icon,
     this.height,
+    this.textStyle,
   });
 
   @override
@@ -74,8 +76,8 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
               borderRadius: BorderRadius.circular(5),
             ),
             width: MediaQuery.sizeOf(context).width,
-            height: widget.height ?? MediaQuery.sizeOf(context).height * 0.11,
-            padding: const EdgeInsets.all(5),
+            height: widget.height ?? MediaQuery.sizeOf(context).height * 0.08,
+            padding: const EdgeInsets.all(10),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -84,12 +86,13 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
                   color: theme.colorScheme.primaryContainer,
                   size: 32,
                 ),
-                const SizedBox(width: 5),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Obx(
                     () => FadeInDownText(
                       currentText: widget.texts[currentIndex.value],
                       textColor: widget.textColor,
+                      textStyle: widget.textStyle,
                     ),
                   ),
                 ),
@@ -103,10 +106,12 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
 class FadeInDownText extends StatefulWidget {
   final String currentText;
   final Color? textColor;
+  final TextStyle? textStyle;
 
   const FadeInDownText({
     required this.currentText,
     this.textColor,
+    this.textStyle,
     super.key,
   });
 
@@ -185,11 +190,12 @@ class _FadeInDownTextState extends State<FadeInDownText>
         widget.currentText,
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
-        style: theme.textTheme.bodySmall!.copyWith(
-          fontStyle: FontStyle.italic,
-          fontWeight: FontWeight.bold,
-          color: widget.textColor ?? Theme.of(context).colorScheme.onPrimary,
-        ),
+        style: widget.textStyle ??
+            theme.textTheme.bodySmall!.copyWith(
+              fontWeight: FontWeight.w600,
+              color: widget.textColor ??
+                  Theme.of(context).colorScheme.primaryContainer,
+            ),
       ),
     );
   }

@@ -26,16 +26,19 @@ Map<DateRangeDefaults, SelectedDateRange> defaultRanges = {
     startDate: thisWeek,
     endDate: tomorrow,
     rangeLabel: "This Week",
+    rangeType: DateRangeTypes.week,
   ),
   DateRangeDefaults.thisMonth: SelectedDateRange(
     startDate: thisMonth,
     endDate: tomorrow,
     rangeLabel: "This Month",
+    rangeType: DateRangeTypes.month,
   ),
   DateRangeDefaults.thisYear: SelectedDateRange(
     startDate: thisYear,
     endDate: tomorrow,
     rangeLabel: "This Year",
+    rangeType: DateRangeTypes.year,
   ),
 };
 

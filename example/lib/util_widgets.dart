@@ -94,9 +94,9 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: SistchTextCarousel(
                   texts: [
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent et enim hendrerit, aliquet sem quis, faucibus elit. Praesent neque ex, suscipit et condimentum nec, scelerisque ac dui.",
-                    "Nunc massa magna, laoreet eu diam nec, tincidunt porttitor nibh. Aenean fermentum, nulla eu molestie iaculis, enim ipsum ultricies libero, eget imperdiet nisi dolor eget risus. Morbi ac mi ex ultricies."
-                        "Mauris tincidunt ultricies mauris, sit amet molestie eros elementum dapibus. Nam ipsum dui. Suspendisse vel diam mauris.",
+                    "Your highest earnings were in 2024-09-12, with a total of Kes.57,400. A notable 6.5 increase from the beginning of This Month",
+                    "2024-09-12 was your biggest spending day, with Kes.51,820 spent! Your biggest spend surged by 31.9 from the start of This Month",
+                    "You made an average of 5 transactions during This Month. Each day, you moved an average of Kes.3,868 through your transactions."
                   ],
                 ),
               ),

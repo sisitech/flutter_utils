@@ -69,7 +69,6 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
   @override
   void didUpdateWidget(SistchTabBarScaffold oldWidget) {
     super.didUpdateWidget(oldWidget);
-    debugPrint("777 :::::::: Running didUpdateWidget on SistchTabBarScaffold");
 
     if (widget.tabWidgets.length != oldWidget.tabWidgets.length ||
         widget.tabLabels.length != oldWidget.tabLabels.length) {

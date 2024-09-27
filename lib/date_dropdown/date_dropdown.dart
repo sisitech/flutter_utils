@@ -27,7 +27,7 @@ class SistchDateDropdown extends StatelessWidget {
     List<TimePeriod> timePeriods = const [],
     this.name,
   }) {
-    if (timePeriods.length < 1) {
+    if (timePeriods.isEmpty) {
       finalTimePeriods = defaultDateRanges;
     } else {
       finalTimePeriods = timePeriods;
