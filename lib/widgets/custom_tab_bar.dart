@@ -67,6 +67,28 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
   }
 
   @override
+  void didUpdateWidget(SistchTabBarScaffold oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    debugPrint("777 :::::::: Running didUpdateWidget on SistchTabBarScaffold");
+
+    if (widget.tabWidgets.length != oldWidget.tabWidgets.length ||
+        widget.tabLabels.length != oldWidget.tabLabels.length) {
+      tabController.dispose();
+      tabController = TabController(
+        vsync: this,
+        length: widget.tabLabels.length,
+        initialIndex: widget.startTabIdx,
+      );
+
+      viewedTabs.value = List.generate(
+        widget.tabWidgets.length,
+        (i) => widget.showUnViewedIndicator ? false : true,
+      );
+      updateViewedTabs(tabController.index);
+    }
+  }
+
+  @override
   bool get wantKeepAlive => widget.useWantKeepAlive;
 
   @override

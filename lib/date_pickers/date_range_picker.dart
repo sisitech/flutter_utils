@@ -15,6 +15,7 @@ class SistchDateRangePicker extends StatelessWidget {
   final DateRangeDefaults defaultPicker;
   final Function(SelectedDateRange dates) onDatesSelected;
   final bool hideSuggestions;
+  final SelectedDateRange selectedRange;
 
   const SistchDateRangePicker({
     super.key,
@@ -23,6 +24,7 @@ class SistchDateRangePicker extends StatelessWidget {
     this.lastMnPicker = 6,
     this.defaultPicker = DateRangeDefaults.thisMonth,
     required this.onDatesSelected,
+    required this.selectedRange,
     this.hideSuggestions = false,
   });
 
@@ -30,7 +32,6 @@ class SistchDateRangePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    Rx<SelectedDateRange?> selectedRange = Rx(defaultRanges[defaultPicker]);
     DateFormat chosenFormat = dateFormat ?? DateFormat("dd/MM/yyy");
 
     onOpenDatePickerPopup() async {
@@ -43,7 +44,6 @@ class SistchDateRangePicker extends StatelessWidget {
         ),
       );
       if (val != null) {
-        selectedRange.value = val;
         onDatesSelected(val);
       }
     }
@@ -61,12 +61,10 @@ class SistchDateRangePicker extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Obx(
-              () => getSelectedDatesWidget(
-                theme: theme,
-                dateFormat: chosenFormat,
-                dateRange: selectedRange.value,
-              ),
+            child: getSelectedDatesWidget(
+              theme: theme,
+              dateFormat: chosenFormat,
+              dateRange: selectedRange,
             ),
           ),
           const SizedBox(width: 10),
@@ -160,7 +158,7 @@ class DateRangePickerPopup extends StatelessWidget {
         rangeType:
             isMonthRange ? DateRangeTypes.monthRange : DateRangeTypes.month,
         rangeLabel: isMonthRange
-            ? "${monthFormat.format(startDate)} to ${monthFormat.format(endDate)}"
+            ? "${monthFormat.format(startDate)} to ${monthFormat.format(endDate.subtract(const Duration(days: 1)))}"
             : startDate == thisMonth
                 ? "This Month"
                 : startDate == lastMonth

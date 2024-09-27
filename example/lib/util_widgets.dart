@@ -23,6 +23,7 @@ class UtilWidgetsScreen extends StatefulWidget {
 class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
   TimePeriod datePeriod = defaultDateRanges[0];
   final ThemeController themeController = Get.find<ThemeController>();
+  Rx<SelectedDateRange> selectedRange = Rx(SelectedDateRange());
 
   Future<void> onDatePeriodChange(int newPeriod) async {
     datePeriod =
@@ -75,9 +76,14 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               getHeaderWidget(theme: theme, title: "Range Picker"),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
-                child: SistchDateRangePicker(
-                  onDatesSelected: ((SelectedDateRange val) => {}),
-                  hideSuggestions: true,
+                child: Obx(
+                  () => SistchDateRangePicker(
+                    onDatesSelected: (SelectedDateRange val) {
+                      selectedRange.value = val;
+                    },
+                    selectedRange: selectedRange.value,
+                    hideSuggestions: true,
+                  ),
                 ),
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),

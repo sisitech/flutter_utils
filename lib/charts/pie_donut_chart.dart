@@ -92,13 +92,15 @@ class SistchPieDonutChart extends StatelessWidget {
       String sectionTitle = hideIndicators == true && i < chartSeriesMax
           ? "${pieLabels[i]} • $percentTitle"
           : percentTitle;
+      Color? textColor =
+          i < chartSeriesMax ? defaultTextChartColors[chartColors[i]] : null;
 
       PieChartSectionData pieSection = PieChartSectionData(
-        color: i > chartSeries.length ? null : chartColors[i],
+        color: i < chartSeriesMax ? chartColors[i] : null,
         value: percent,
         title: hideIndicators == true ? sectionTitle : "",
         titleStyle: TextStyle(
-          color: defaultTextChartColors[chartColors[i]],
+          color: textColor,
           fontWeight: FontWeight.bold,
           fontSize: 10,
         ),
@@ -107,7 +109,7 @@ class SistchPieDonutChart extends StatelessWidget {
             : Text(
                 percentTitle,
                 style: TextStyle(
-                  color: defaultTextChartColors[chartColors[i]],
+                  color: textColor,
                   fontWeight: FontWeight.bold,
                   fontSize: 10,
                 ),

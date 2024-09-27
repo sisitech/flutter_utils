@@ -211,8 +211,7 @@ class SistchTimeLapseChart extends StatelessWidget {
                     border: Border.all(
                       color: useSunColors
                           ? sunColors.last
-                          : highlightColor ??
-                              theme.colorScheme.primaryContainer,
+                          : highlightColor ?? theme.colorScheme.secondary,
                       width: 2,
                     ),
                   ),
