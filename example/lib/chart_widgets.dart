@@ -4,6 +4,7 @@ import 'package:flutter_utils/charts/bar_chart.dart';
 import 'package:flutter_utils/charts/pie_donut_chart.dart';
 import 'package:flutter_utils/charts/linear_percent_chart.dart';
 import 'package:flutter_utils/charts/time_lapse_chart.dart';
+import 'package:flutter_utils/charts/block_chart.dart';
 import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:get/get.dart';
 
@@ -46,7 +47,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
   bool useFirstChartSeries = true;
   int currentChartIdx = 0;
   List<List<double>> chartData = [
-    [90, 80, 70, 60, 50], // series 0
+    [50, 80, 70, 90, 60], // series 0
     [40, 30, 20, 10] // series 1
   ];
   List<List<String>> chartLabels = [
@@ -82,7 +83,6 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chart Widgets'),
@@ -120,25 +120,6 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   centerWidget: const Text("Ola!"),
                   // hideIndicators: true,
                   // firstStartAngle: 335,
-                ),
-              ),
-              chartScaffold(
-                chartWidget: Obx(
-                  () => Column(
-                    children: [
-                      SistchStackedDonutChart(
-                        chartTitle: "Actionable Indicators",
-                        dataSeries: chartData[currentChartIdx],
-                        chartLabels: chartLabels[currentChartIdx],
-                        useIndIcons: true,
-                        centerWidget: const Text("Ola!"),
-                        selectedIndicator: selectedIndicator.value,
-                        onIndicatorTap: onIndicatorTap,
-                      ),
-                      const SizedBox(height: 4),
-                      Text('Selected: ${selectedIndicator.value}'),
-                    ],
-                  ),
                 ),
               ),
               chartScaffold(
@@ -241,6 +222,33 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                     // timeLabels: chartLabels[currentChartIdx],
                     prefix: 'KES. ',
                     useSunColors: true,
+                  ),
+                ),
+              ),
+              chartScaffold(
+                chartWidget: SistchDuoBlockChart(
+                  chartTitle: 'Two Block Chart',
+                  values: chartData[currentChartIdx].sublist(0, 2),
+                  labels: chartLabels[currentChartIdx].sublist(0, 2),
+                  valuePrefix: 'KES.',
+                ),
+              ),
+              chartScaffold(
+                chartWidget: Obx(
+                  () => Column(
+                    children: [
+                      SistchStackedDonutChart(
+                        chartTitle: "Actionable Indicators",
+                        dataSeries: chartData[currentChartIdx],
+                        chartLabels: chartLabels[currentChartIdx],
+                        useIndIcons: true,
+                        centerWidget: const Text("Ola!"),
+                        selectedIndicator: selectedIndicator.value,
+                        onIndicatorTap: onIndicatorTap,
+                      ),
+                      const SizedBox(height: 4),
+                      Text('Selected: ${selectedIndicator.value}'),
+                    ],
                   ),
                 ),
               ),

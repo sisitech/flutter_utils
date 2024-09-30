@@ -107,9 +107,20 @@ double getListOfDoublesSum(List<double> items) {
   return sum;
 }
 
-double? getListOfDoublesMax(List<double>? values) {
-  if (values == null || values.isEmpty) {
-    return null;
-  }
+String strToTitleCase(String input) {
+  return input
+      .split('_')
+      .map((word) => word[0].toUpperCase() + word.substring(1))
+      .join(' ');
+}
+
+double getListOfDoublesAvg(List<double>? values) {
+  if (values == null || values.isEmpty) return 0.0;
+  double sum = values.reduce((a, b) => a + b);
+  return sum / values.length;
+}
+
+double getListOfDoublesMax(List<double>? values) {
+  if (values == null || values.isEmpty) return 0.0;
   return values.reduce((a, b) => a > b ? a : b);
 }
