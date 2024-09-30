@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
-import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 // View
@@ -14,8 +13,8 @@ class SistchLinearPercentChart extends StatelessWidget {
   final List<double> dataSeries;
   final List<String> chartLabels;
   final List<Color>? tileColors;
-  final RxString? selectedTitle;
-  final Function(String)? onChartTileTap;
+  final String? selectedTile;
+  final Function(String val)? onChartTileTap;
   final List<Widget>? leadingWidgets;
   final List<Widget>? trailingWidgets;
   final Color? selectedColor;
@@ -25,7 +24,7 @@ class SistchLinearPercentChart extends StatelessWidget {
     required this.dataSeries,
     required this.chartLabels,
     this.tileColors,
-    this.selectedTitle,
+    this.selectedTile,
     this.onChartTileTap,
     this.leadingWidgets,
     this.trailingWidgets,
@@ -68,13 +67,12 @@ class SistchLinearPercentChart extends StatelessWidget {
               int idx = entry.key;
               double percent = percentages[idx];
 
-              bool isSelected = selectedTitle?.value == chartLabels[idx];
+              bool isSelected = selectedTile == chartLabels[idx];
               return Container(
-                padding: EdgeInsets.all(isSelected ? 10 : 4),
+                padding: EdgeInsets.all(isSelected ? 8 : 4),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? selectedColor ??
-                          colorScheme.onBackground.withOpacity(0.2)
+                      ? selectedColor ?? colorScheme.surfaceVariant
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(2),
                 ),
@@ -98,8 +96,7 @@ class SistchLinearPercentChart extends StatelessWidget {
                               lineHeight: 20.0,
                               animationDuration: 1000,
                               percent: percent,
-                              backgroundColor:
-                                  colorScheme.background.withOpacity(0.1),
+                              backgroundColor: colorScheme.background,
                               progressColor: chtColors[idx],
                               barRadius: const Radius.circular(10),
                               leading: leadingWidgets == null

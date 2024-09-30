@@ -135,14 +135,16 @@ class SistchTimeLapseChart extends StatelessWidget {
           Icon(
             Icons.timelapse,
             size: theme.textTheme.titleLarge?.fontSize,
-            color: theme.colorScheme.secondary,
+            color: useSunColors ? sunColors[1] : theme.colorScheme.secondary,
           ),
           const SizedBox(width: 5),
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               color: isHighlighted
-                  ? highlightColor ?? theme.colorScheme.primary
+                  ? useSunColors
+                      ? sunColors[1]
+                      : highlightColor ?? theme.colorScheme.primary
                   : theme.colorScheme.surfaceVariant.withOpacity(0.2),
             ),
             padding: const EdgeInsets.all(4),
@@ -153,7 +155,11 @@ class SistchTimeLapseChart extends StatelessWidget {
                 Text(
                   timeTile.timeTile ?? "--",
                   style: TextStyle(
-                    color: isHighlighted ? theme.colorScheme.onPrimary : null,
+                    color: isHighlighted
+                        ? useSunColors
+                            ? sunColors.last
+                            : theme.colorScheme.onPrimary
+                        : null,
                     fontWeight: FontWeight.bold,
                     fontSize: 10,
                   ),
@@ -162,7 +168,11 @@ class SistchTimeLapseChart extends StatelessWidget {
                 Text(
                   timeTile.displayVal ?? "-",
                   style: TextStyle(
-                    color: isHighlighted ? theme.colorScheme.onPrimary : null,
+                    color: isHighlighted
+                        ? useSunColors
+                            ? sunColors.last
+                            : theme.colorScheme.onPrimary
+                        : null,
                     fontWeight: FontWeight.bold,
                     fontSize: 10,
                   ),

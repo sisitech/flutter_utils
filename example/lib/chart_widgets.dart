@@ -4,6 +4,7 @@ import 'package:flutter_utils/charts/bar_chart.dart';
 import 'package:flutter_utils/charts/pie_donut_chart.dart';
 import 'package:flutter_utils/charts/linear_percent_chart.dart';
 import 'package:flutter_utils/charts/time_lapse_chart.dart';
+import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:get/get.dart';
 
 class ChartWidgetsScreen extends StatefulWidget {
@@ -59,11 +60,29 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
     setState(() {});
   }
 
-  Rx<int> selectedTimeRange = Rx<int>(1);
-  onTimeRangeSelected(int? val) {}
+  /// Linear Percent Chart
+  RxString selectedTile = RxString('');
+  onLinearPercChartTileTap(String val) {
+    if (selectedTile.value == val) {
+      selectedTile.value = '';
+      return;
+    }
+    selectedTile.value = val;
+  }
+
+  /// Actionable Indicators
+  RxString selectedIndicator = RxString('');
+  onIndicatorTap(String val) {
+    if (selectedIndicator.value == val) {
+      selectedIndicator.value = '';
+      return;
+    }
+    selectedIndicator.value = val;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chart Widgets'),
@@ -99,7 +118,27 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   chartLabels: chartLabels[currentChartIdx],
                   useIndIcons: true,
                   centerWidget: const Text("Ola!"),
-                  firstStartAngle: 30,
+                  // hideIndicators: true,
+                  // firstStartAngle: 335,
+                ),
+              ),
+              chartScaffold(
+                chartWidget: Obx(
+                  () => Column(
+                    children: [
+                      SistchStackedDonutChart(
+                        chartTitle: "Actionable Indicators",
+                        dataSeries: chartData[currentChartIdx],
+                        chartLabels: chartLabels[currentChartIdx],
+                        useIndIcons: true,
+                        centerWidget: const Text("Ola!"),
+                        selectedIndicator: selectedIndicator.value,
+                        onIndicatorTap: onIndicatorTap,
+                      ),
+                      const SizedBox(height: 4),
+                      Text('Selected: ${selectedIndicator.value}'),
+                    ],
+                  ),
                 ),
               ),
               chartScaffold(
@@ -112,12 +151,17 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                 ),
               ),
               chartScaffold(
-                chartWidget: SistchPieDonutChart(
+                chartWidget:
+                    //  Obx(
+                    //   () =>
+                    SistchPieDonutChart(
                   chartTitle: "Pie Chart",
                   dataSeries: chartData[currentChartIdx],
                   pieLabels: chartLabels[currentChartIdx],
                   donutCenterRadius: 0,
                   indicatorPrefix: 'KES. ',
+                  // selectedIndicator: selectedIndicator.value,
+                  // onIndicatorTap: onIndicatorTap,
                   pieColors: const [
                     Color(0xFFDF7A57),
                     Color(0xFF3D5B59),
@@ -125,6 +169,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                     Color(0xFF000C66),
                     Color(0xFFF3E1C0),
                   ],
+                  // ),
                 ),
               ),
               chartScaffold(
@@ -138,10 +183,31 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                 ),
               ),
               chartScaffold(
-                chartWidget: SistchLinearPercentChart(
-                  chartTitle: "Linear Percent Chart",
-                  dataSeries: chartData[currentChartIdx],
-                  chartLabels: chartLabels[currentChartIdx],
+                chartWidget: Obx(
+                  () => Column(
+                    children: [
+                      SistchLinearPercentChart(
+                        chartTitle: "Linear Percent Chart",
+                        dataSeries: chartData[currentChartIdx],
+                        chartLabels: chartLabels[currentChartIdx],
+                        selectedTile: selectedTile.value,
+                        onChartTileTap: onLinearPercChartTileTap,
+                        // selectedColor: theme.colorScheme.primaryContainer,
+                        leadingWidgets: iconMapper.values
+                            .toList()
+                            .sublist(0, chartData[currentChartIdx].length)
+                            .map((e) => Icon(e))
+                            .toList(),
+                        // trailingWidgets: iconMapper.values
+                        //     .toList()
+                        //     .sublist(0, chartData[currentChartIdx].length)
+                        //     .map((e) => Icon(e))
+                        //     .toList(),
+                      ),
+                      const SizedBox(height: 4),
+                      Text('Selected: ${selectedTile.value}'),
+                    ],
+                  ),
                 ),
               ),
               chartScaffold(

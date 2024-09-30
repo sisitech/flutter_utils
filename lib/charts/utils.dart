@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/utils/functions.dart';
 import 'package:flutter_utils/utils/icon_mapper.dart';
+import 'package:get/get.dart';
 
 Widget chartIndicator({
   Color? color,
   function,
   String? extension,
+  String? percentage,
   bool? useIcons,
   required String label,
 }) {
@@ -36,6 +38,10 @@ Widget chartIndicator({
                   style: const TextStyle(fontSize: 10),
                 ),
                 TextSpan(
+                  text: percentage == null ? '' : ' ($percentage)',
+                  style: const TextStyle(fontSize: 8),
+                ),
+                TextSpan(
                   text: extension != null ? ' • $extension' : '',
                   style: const TextStyle(fontSize: 8),
                 ),
@@ -48,26 +54,120 @@ Widget chartIndicator({
   );
 }
 
-List<Widget> getChartIndicators(
-  List<String> labels,
-  List<Color> colors, {
-  List<double>? values,
+Widget actionChartIndicator({
+  Color? color,
+  function,
+  String? extension,
+  String? percentage,
   bool? useIcons,
-  String? indicatorPrefix,
+  double? value,
+  required String label,
+  required Function(String val) onIndicatorTap,
+  required bool isSelected,
 }) {
-  return List.generate(
-    labels.length,
-    (i) => chartIndicator(
-      useIcons: useIcons,
-      label: labels[i],
-      extension: values != null
-          ? indicatorPrefix == null || indicatorPrefix.isEmpty
-              ? "${values[i].toStringAsFixed(1)}%"
-              : "$indicatorPrefix${addThousandSeparators(values[i])}"
-          : null,
-      color: colors[i],
+  return Container(
+    padding: EdgeInsets.all(isSelected ? 8 : 5),
+    decoration: BoxDecoration(
+      color: isSelected
+          ? Get.theme.colorScheme.surfaceVariant
+          : Colors.transparent,
+      borderRadius: BorderRadius.circular(2),
+    ),
+    width: Get.size.width * 0.5,
+    child: GestureDetector(
+      onTap: () => onIndicatorTap(label),
+      child: Row(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                useIcons == true
+                    ? Icon(
+                        iconMapper[label] ?? Icons.circle,
+                        color: color,
+                        size: 12,
+                      )
+                    : Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration:
+                            BoxDecoration(color: color, shape: BoxShape.circle),
+                      ),
+                const SizedBox(width: 5),
+                Text.rich(
+                  maxLines: 2,
+                  overflow: TextOverflow.clip,
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: label,
+                        style: const TextStyle(fontSize: 10),
+                      ),
+                      TextSpan(
+                        text: percentage == null ? '' : ' ($percentage)',
+                        style: const TextStyle(fontSize: 8),
+                      ),
+                      TextSpan(
+                        text: extension != null ? ' • $extension' : '',
+                        style: const TextStyle(fontSize: 8),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 5),
+          Icon(
+            Icons.read_more_rounded,
+            color: Get.theme.colorScheme.primary,
+            size: 22,
+          ),
+        ],
+      ),
     ),
   );
+}
+
+List<Widget> getChartIndicators(
+  List<String> labels,
+  List<Color> colors,
+  List<double> values, {
+  bool hidePerc = true,
+  bool? useIcons,
+  String? indicatorPrefix,
+  String? selectedIndicator,
+  Function(String val)? onIndicatorTap,
+}) {
+  double total = getListOfDoublesSum(values);
+  return List.generate(labels.length, (i) {
+    double? percentage =
+        (total != 0 && values.isNotEmpty) ? (values[i] / total) * 100 : null;
+    return onIndicatorTap != null
+        ? actionChartIndicator(
+            useIcons: useIcons,
+            percentage: hidePerc || percentage == null
+                ? null
+                : "${percentage.toStringAsFixed(1)}%",
+            label: labels[i],
+            extension: values.isNotEmpty
+                ? "${indicatorPrefix ?? ''}${addThousandSeparators(values[i])}"
+                : null,
+            color: colors[i],
+            onIndicatorTap: onIndicatorTap,
+            isSelected: selectedIndicator == labels[i],
+          )
+        : chartIndicator(
+            useIcons: useIcons,
+            percentage: hidePerc || percentage == null
+                ? null
+                : "${percentage.toStringAsFixed(1)}%",
+            label: labels[i],
+            extension: values.isNotEmpty
+                ? "${indicatorPrefix ?? ''}${addThousandSeparators(values[i])}"
+                : null,
+            color: colors[i],
+          );
+  });
 }
 
 List<Color> getChartColors(int seriesLength) {

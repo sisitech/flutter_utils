@@ -28,6 +28,8 @@ class SistchPieDonutChart extends StatelessWidget {
   final bool isHalfArcChart;
   final double? sectionsSpace;
   final String indicatorPrefix;
+  final String? selectedIndicator;
+  final Function(String val)? onIndicatorTap;
 
   ///[SistchPieDonutChart] renders custom Sisitech Pie or Donut Chart
   /// Required Fields:
@@ -54,6 +56,8 @@ class SistchPieDonutChart extends StatelessWidget {
     this.isHalfArcChart = false,
     this.sectionsSpace,
     this.indicatorPrefix = '',
+    this.onIndicatorTap,
+    this.selectedIndicator,
   });
 
   /// [_createChartData]
@@ -66,9 +70,11 @@ class SistchPieDonutChart extends StatelessWidget {
     List<Widget> pieChartIndicators = getChartIndicators(
       pieLabels,
       chartColors,
-      values: hideIndicatorExt == true ? null : chartSeries,
+      hideIndicatorExt == true ? [] : chartSeries,
       useIcons: useIndIcons,
       indicatorPrefix: indicatorPrefix,
+      selectedIndicator: selectedIndicator,
+      onIndicatorTap: chartDirection != Axis.horizontal ? onIndicatorTap : null,
     );
 
     List<PieChartSectionData> chartData =

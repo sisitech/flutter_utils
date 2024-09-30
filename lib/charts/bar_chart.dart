@@ -109,7 +109,7 @@ class _SistchBarChartState extends State<SistchBarChart> {
     }
 
     List<Widget> barChartIndicators = getChartIndicators(
-        currentSeriesLabels, currentSeriesColors,
+        currentSeriesLabels, currentSeriesColors, [],
         useIcons: widget.useIndIcons);
 
     final barGroupData = getBarGroupData(currentSeries, currentSeriesColors);
