@@ -12,6 +12,7 @@ class SistchDuoBlockChart extends StatelessWidget {
   final List<Color>? textColors;
   final String? chartTitle;
   final String? valuePrefix;
+  final double chartHeight;
 
   const SistchDuoBlockChart({
     super.key,
@@ -21,6 +22,7 @@ class SistchDuoBlockChart extends StatelessWidget {
     this.chartTitle,
     this.blockColors,
     this.textColors,
+    this.chartHeight = 60,
   });
 
   @override
@@ -72,6 +74,7 @@ class SistchDuoBlockChart extends StatelessWidget {
                   bgColor: ctColors[0],
                   textColor: txtColors[0],
                   isBiggerValue: true,
+                  height: chartHeight,
                 ),
               ),
               const SizedBox(width: 7),
@@ -85,6 +88,7 @@ class SistchDuoBlockChart extends StatelessWidget {
                 textColor: txtColors[1],
                 isBiggerValue: false,
                 hideSmaller: percentages[1] == 0,
+                height: chartHeight,
               ),
             ],
           ),
@@ -95,6 +99,7 @@ class SistchDuoBlockChart extends StatelessWidget {
 
   Widget _buildBlockSection({
     double? width,
+    required double height,
     required String label,
     required String value,
     required String percentage,
@@ -114,12 +119,13 @@ class SistchDuoBlockChart extends StatelessWidget {
           child: LinearPercentIndicator(
             key: blockKey,
             percent: 1.0,
-            lineHeight: Get.size.height * (isBiggerValue ? 0.09 : 0.07),
-            progressColor: hideSmaller ? Colors.transparent : bgColor,
-            backgroundColor: Get.theme.colorScheme.surfaceVariant,
             animation: true,
             animationDuration: 1000,
             padding: EdgeInsets.zero,
+            barRadius: const Radius.circular(5),
+            lineHeight: height * (isBiggerValue ? 0.9 : 0.7),
+            progressColor: hideSmaller ? Colors.transparent : bgColor,
+            backgroundColor: Get.theme.colorScheme.surfaceVariant,
             center: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -151,7 +157,8 @@ class SistchDuoBlockChart extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           percentage,
-          style: Get.theme.textTheme.titleLarge!.copyWith(
+          style: TextStyle(
+            fontSize: height * 0.35,
             fontWeight: FontWeight.w500,
           ),
         ),
