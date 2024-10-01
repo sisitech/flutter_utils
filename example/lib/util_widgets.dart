@@ -7,7 +7,8 @@ import 'package:flutter_utils/date_pickers/date_range_picker.dart';
 import 'package:flutter_utils/date_pickers/utils.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
-import 'package:flutter_utils/sistch_text_carousel/text_carousel.dart';
+import 'package:flutter_utils/sistch_text_widgets/animated_counter.dart';
+import 'package:flutter_utils/sistch_text_widgets/text_carousel.dart';
 import 'package:flutter_utils/widgets/custom_tab_bar.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
@@ -44,7 +45,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
         child: Center(
           child: Column(
             children: [
-              getHeaderWidget(theme: theme, title: "Date Dropdown"),
+              getHeaderWidget(title: "Date Dropdown"),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: SistchDateDropdown(
@@ -73,7 +74,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ///
-              getHeaderWidget(theme: theme, title: "Range Picker"),
+              getHeaderWidget(title: "Range Picker"),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Obx(
@@ -89,7 +90,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ///
-              getHeaderWidget(theme: theme, title: "Text Carousel"),
+              getHeaderWidget(title: "Text Carousel"),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: SistchTextCarousel(
@@ -103,7 +104,17 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ///
-              getHeaderWidget(theme: theme, title: "Streak Indicator"),
+              getHeaderWidget(title: "Animated Counter"),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: SistchAnimatedCounter(
+                  valueToAnimate: 415000,
+                ),
+              ),
+              SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+
+              ///
+              getHeaderWidget(title: "Streak Indicator"),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: SistchTagStreakIndicator(
@@ -114,7 +125,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ///
-              getHeaderWidget(theme: theme, title: "Tab Bar Scaffold"),
+              getHeaderWidget(title: "Tab Bar Scaffold"),
               Container(
                 color: theme.colorScheme.surfaceVariant,
                 margin: const EdgeInsets.symmetric(vertical: 20),

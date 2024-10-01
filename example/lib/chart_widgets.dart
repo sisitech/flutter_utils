@@ -161,6 +161,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   sectionsSpace: 0,
                   dataSeries: chartData[currentChartIdx],
                   pieLabels: chartLabels[currentChartIdx],
+                  centerWidget: Text('Ola'),
                 ),
               ),
               chartScaffold(

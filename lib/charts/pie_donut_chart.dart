@@ -30,6 +30,7 @@ class SistchPieDonutChart extends StatelessWidget {
   final String indicatorPrefix;
   final String? selectedIndicator;
   final Function(String val)? onIndicatorTap;
+  final Widget? centerWidget;
 
   ///[SistchPieDonutChart] renders custom Sisitech Pie or Donut Chart
   /// Required Fields:
@@ -58,6 +59,7 @@ class SistchPieDonutChart extends StatelessWidget {
     this.indicatorPrefix = '',
     this.onIndicatorTap,
     this.selectedIndicator,
+    this.centerWidget,
   });
 
   /// [_createChartData]
@@ -166,6 +168,7 @@ class SistchPieDonutChart extends StatelessWidget {
                         context: context,
                         pieSections: pieSections,
                         sectionsSpace: sectionsSpace,
+                        centerWidget: centerWidget,
                       ),
                     ),
                     hideIndicators == true
@@ -184,6 +187,7 @@ class SistchPieDonutChart extends StatelessWidget {
                       context: context,
                       pieSections: pieSections,
                       sectionsSpace: sectionsSpace,
+                      centerWidget: centerWidget,
                     ),
                     const SizedBox(height: 10),
                     hideIndicators == true
@@ -205,38 +209,45 @@ class SistchPieDonutChart extends StatelessWidget {
     required BuildContext context,
     required List<PieChartSectionData> pieSections,
     double? sectionsSpace,
+    Widget? centerWidget,
   }) {
-    return ClipRect(
-      child: Align(
-        alignment: Alignment.topCenter,
-        heightFactor: isHalfArcChart ? 0.5 : 1,
-        child: SizedBox(
-          height: chartHeight,
-          child: PieChart(
-            PieChartData(
-              sections: pieSections,
-              startDegreeOffset: 180,
-              sectionsSpace: sectionsSpace,
-              borderData: FlBorderData(show: false),
-              centerSpaceRadius: donutCenterRadius,
-              pieTouchData: PieTouchData(
-                touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                  // setState(() {
-                  //   if (!event.isInterestedForInteractions ||
-                  //       pieTouchResponse == null ||
-                  //       pieTouchResponse.touchedSection == null) {
-                  //     touchedIndex = -1;
-                  //     return;
-                  //   }
-                  //   touchedIndex =
-                  //       pieTouchResponse.touchedSection!.touchedSectionIndex;
-                  // });
-                },
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        ClipRect(
+          child: Align(
+            alignment: Alignment.topCenter,
+            heightFactor: isHalfArcChart ? 0.5 : 1,
+            child: SizedBox(
+              height: chartHeight,
+              child: PieChart(
+                PieChartData(
+                  sections: pieSections,
+                  startDegreeOffset: 180,
+                  sectionsSpace: sectionsSpace,
+                  borderData: FlBorderData(show: false),
+                  centerSpaceRadius: donutCenterRadius,
+                  pieTouchData: PieTouchData(
+                    touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                      // setState(() {
+                      //   if (!event.isInterestedForInteractions ||
+                      //       pieTouchResponse == null ||
+                      //       pieTouchResponse.touchedSection == null) {
+                      //     touchedIndex = -1;
+                      //     return;
+                      //   }
+                      //   touchedIndex =
+                      //       pieTouchResponse.touchedSection!.touchedSectionIndex;
+                      // });
+                    },
+                  ),
+                ),
               ),
             ),
           ),
         ),
-      ),
+        if (centerWidget != null) centerWidget
+      ],
     );
   }
 

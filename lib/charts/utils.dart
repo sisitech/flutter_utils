@@ -73,28 +73,31 @@ Widget actionChartIndicator({
           : Colors.transparent,
       borderRadius: BorderRadius.circular(2),
     ),
-    width: Get.size.width * 0.5,
+    width: Get.size.width * 0.6,
     child: GestureDetector(
       onTap: () => onIndicatorTap(label),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            child: Row(
-              children: [
-                useIcons == true
-                    ? Icon(
-                        iconMapper[label] ?? Icons.circle,
-                        color: color,
-                        size: 12,
-                      )
-                    : Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration:
-                            BoxDecoration(color: color, shape: BoxShape.circle),
-                      ),
-                const SizedBox(width: 5),
-                Text.rich(
-                  maxLines: 2,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              useIcons == true
+                  ? Icon(
+                      iconMapper[label] ?? Icons.circle,
+                      color: color,
+                      size: 12,
+                    )
+                  : Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration:
+                          BoxDecoration(color: color, shape: BoxShape.circle),
+                    ),
+              const SizedBox(width: 5),
+              SizedBox(
+                width: Get.size.width * 0.45,
+                child: Text.rich(
+                  maxLines: 3,
                   overflow: TextOverflow.clip,
                   TextSpan(
                     children: [
@@ -113,10 +116,9 @@ Widget actionChartIndicator({
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          const SizedBox(width: 5),
           Icon(
             Icons.read_more_rounded,
             color: Get.theme.colorScheme.primary,
