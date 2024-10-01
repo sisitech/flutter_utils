@@ -48,7 +48,7 @@ class SistchTimeLapseChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final width = MediaQuery.sizeOf(context).width;
-    double maxValue = getListOfDoublesMax(dataSeries) ?? 0;
+    double maxValue = getListOfDoublesMax(dataSeries);
 
     List<TimeLapseChartSection> sections = getTimeLapseChartSections(
       timeTitles: timeLabels,
@@ -96,7 +96,9 @@ class SistchTimeLapseChart extends StatelessWidget {
                         children: sections.asMap().entries.map((entry) {
                           int idx = entry.key;
                           TimeLapseChartSection e = sections[idx];
-                          double angle = pi * idx / (sections.length - 1);
+                          int divFactor = sections.length - 1;
+                          double angle =
+                              pi * idx / (divFactor == 0 ? 1 : divFactor);
 
                           return Positioned(
                             left: (timeTilesRadius +

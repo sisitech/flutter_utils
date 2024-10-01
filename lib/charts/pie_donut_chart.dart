@@ -72,7 +72,7 @@ class SistchPieDonutChart extends StatelessWidget {
     List<Widget> pieChartIndicators = getChartIndicators(
       pieLabels,
       chartColors,
-      hideIndicatorExt == true ? [] : chartSeries,
+      hideIndicatorExt == true ? [] : dataSeries,
       useIcons: useIndIcons,
       indicatorPrefix: indicatorPrefix,
       selectedIndicator: selectedIndicator,
