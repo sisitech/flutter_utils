@@ -19,6 +19,7 @@ class SistchLinearPercentChart extends StatelessWidget {
   final List<Widget>? trailingWidgets;
   final Color? selectedColor;
   final String? chartTitle;
+  final double tileHeight;
 
   const SistchLinearPercentChart({
     required this.dataSeries,
@@ -30,6 +31,7 @@ class SistchLinearPercentChart extends StatelessWidget {
     this.trailingWidgets,
     this.selectedColor,
     this.chartTitle,
+    this.tileHeight = 30.0,
     Key? key,
   }) : super(key: key);
 
@@ -83,9 +85,6 @@ class SistchLinearPercentChart extends StatelessWidget {
                     }
                   },
                   child: Row(
-                    mainAxisAlignment: trailingWidgets != null
-                        ? MainAxisAlignment.spaceBetween
-                        : MainAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Stack(
@@ -93,12 +92,12 @@ class SistchLinearPercentChart extends StatelessWidget {
                           children: [
                             LinearPercentIndicator(
                               animation: true,
-                              lineHeight: 20.0,
+                              lineHeight: tileHeight,
                               animationDuration: 1000,
                               percent: percent,
                               backgroundColor: colorScheme.background,
                               progressColor: chtColors[idx],
-                              barRadius: const Radius.circular(10),
+                              barRadius: const Radius.circular(5),
                               leading: leadingWidgets == null
                                   ? null
                                   : leadingWidgets![idx],

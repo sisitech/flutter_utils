@@ -96,7 +96,7 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
     final theme = Theme.of(context);
 
     return SizedBox(
-      height: widget.height ?? MediaQuery.sizeOf(context).height * 0.9,
+      height: widget.height ?? MediaQuery.sizeOf(context).height * 0.5,
       child: SafeArea(
         child: CustomScrollView(
           shrinkWrap: widget.isScrollable ? false : true,

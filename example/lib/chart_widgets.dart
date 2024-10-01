@@ -47,7 +47,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
   bool useFirstChartSeries = true;
   int currentChartIdx = 0;
   List<List<double>> chartData = [
-    [50, 80, 70, 90, 60], // series 0
+    [120, 100, 70, 90, 60], // series 0
     [40, 30, 20, 10] // series 1
   ];
   List<List<String>> chartLabels = [
@@ -173,16 +173,15 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                         chartLabels: chartLabels[currentChartIdx],
                         selectedTile: selectedTile.value,
                         onChartTileTap: onLinearPercChartTileTap,
+                        // tileHeight: 50.0,
                         // selectedColor: theme.colorScheme.primaryContainer,
                         leadingWidgets: iconMapper.values
                             .toList()
                             .sublist(0, chartData[currentChartIdx].length)
                             .map((e) => Icon(e))
                             .toList(),
-                        // trailingWidgets: iconMapper.values
-                        //     .toList()
-                        //     .sublist(0, chartData[currentChartIdx].length)
-                        //     .map((e) => Icon(e))
+                        // trailingWidgets: chartData[currentChartIdx]
+                        //     .map((e) => Text('KES. ${e.toString()}'))
                         //     .toList(),
                       ),
                       const SizedBox(height: 4),
