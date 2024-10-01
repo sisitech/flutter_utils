@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 /// Widget Functions ==============================================
 
 Widget getDayWeekView({
-  required ThemeData theme,
   required DateRangeTypes rangeType,
   required DateTime currentPickerDt,
   required Function(DateTime day) onDaySelected,
@@ -21,7 +20,7 @@ Widget getDayWeekView({
 
   return Column(
     children: [
-      _buildDayHeaders(theme, rangeType == DateRangeTypes.week),
+      _buildDayHeaders(rangeType == DateRangeTypes.week),
       GridView.builder(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: rangeType == DateRangeTypes.week ? 8 : 7,
@@ -38,7 +37,6 @@ Widget getDayWeekView({
               : calendarDayDates[index];
           return Obx(
             () => _buildDayItem(
-              theme: theme,
               date: date,
               dateIdx: index,
               currentPickers: currentPickerDt,
@@ -55,7 +53,7 @@ Widget getDayWeekView({
   );
 }
 
-Widget _buildDayHeaders(ThemeData theme, bool isWeekView) {
+Widget _buildDayHeaders(bool isWeekView) {
   List<String> daysOfWeek =
       DateFormat('EEE').dateSymbols.STANDALONESHORTWEEKDAYS;
   daysOfWeek = daysOfWeek.sublist(1)
@@ -71,10 +69,10 @@ Widget _buildDayHeaders(ThemeData theme, bool isWeekView) {
       int idx = entry.key;
       String day = daysOfWeek[idx];
       return Text(day,
-          style: theme.textTheme.labelMedium!.copyWith(
+          style: Get.theme.textTheme.labelMedium!.copyWith(
               color: isWeekView && idx > 0
-                  ? theme.colorScheme.onBackground
-                  : theme.colorScheme.primary));
+                  ? Get.theme.colorScheme.onBackground
+                  : Get.theme.colorScheme.primary));
     }).toList(),
   );
 }
@@ -82,12 +80,12 @@ Widget _buildDayHeaders(ThemeData theme, bool isWeekView) {
 Widget _buildDayItem({
   required DateTime currentPickers,
   required DateTime date,
-  required ThemeData theme,
   required Function(DateTime val) onDateSelected,
   required bool? isSelected,
   required bool isWeekView,
   required int dateIdx,
 }) {
+  final theme = Get.theme;
   List<int> weekIndices = [0, 8, 16, 24, 32, 40]; // startWeekDates Indices
   bool isNotInCurrentPickerDate = date.isBefore(currentPickers) ||
       date.isAfter(
@@ -141,7 +139,6 @@ Widget _buildDayItem({
 
 ///
 Widget getMonthView({
-  required ThemeData theme,
   required DateRangeTypes rangeType,
   required int currentPickerYr,
   required int selectedMonthRange,
@@ -160,7 +157,6 @@ Widget getMonthView({
       DateTime month = calendarMonthDates[index];
       return Obx(
         () => _buildMonthItem(
-          theme: theme,
           date: month,
           isStartMonth: startEndMonthDates.isEmpty
               ? false
@@ -181,7 +177,6 @@ Widget getMonthView({
 }
 
 Widget _buildMonthItem({
-  required ThemeData theme,
   required bool isStartMonth,
   required int currentPickerYr,
   required bool isSelected,
@@ -190,6 +185,7 @@ Widget _buildMonthItem({
   required List<DateTime> startEndMonthDates,
   required Function(DateTime startMonth, DateTime lastMonth) onMonthsSelected,
 }) {
+  final theme = Get.theme;
   bool isNotInCurrentPickerDate = date.isAfter(today);
 
   return GestureDetector(
@@ -236,7 +232,6 @@ Widget _buildMonthItem({
 
 ///
 Widget getYearView({
-  required ThemeData theme,
   required int selectedDecade,
   required List<int> selectedYear,
   required Function(int year) onYearSelected,
@@ -256,7 +251,6 @@ Widget getYearView({
       int year = yearList[index];
       return Obx(
         () => _buildYearItem(
-          theme: theme,
           year: year,
           isSelected: selectedYear.isEmpty ? false : selectedYear.first == year,
           onYearSelected: onYearSelected,
@@ -268,12 +262,12 @@ Widget getYearView({
 }
 
 Widget _buildYearItem({
-  required ThemeData theme,
   required bool isSelected,
   required int year,
   required bool isNotInCurrentPickerDate,
   required Function(int val) onYearSelected,
 }) {
+  final theme = Get.theme;
   return GestureDetector(
     onTap: () {
       if (isNotInCurrentPickerDate) return;
@@ -308,12 +302,11 @@ Widget _buildYearItem({
 
 ///
 Widget getSelectedDatesWidget({
-  required ThemeData theme,
   SelectedDateRange? dateRange,
   required DateFormat dateFormat,
 }) {
-  final textTheme = theme.textTheme;
-  final colorScheme = theme.colorScheme;
+  final textTheme = Get.theme.textTheme;
+  final colorScheme = Get.theme.colorScheme;
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [

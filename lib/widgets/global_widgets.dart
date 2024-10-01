@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 Widget getIconBtn(
     {Color? bgColor,
@@ -28,7 +29,6 @@ Widget getIconBtn(
 }
 
 Widget getChipsWidget({
-  required ThemeData theme,
   required List<String> chipLabels,
   required Function(int val) onChipSelected,
   required int? selectedIdx,
@@ -40,7 +40,7 @@ Widget getChipsWidget({
   return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(5),
-      color: bgColor ?? theme.colorScheme.primaryContainer,
+      color: bgColor ?? Get.theme.colorScheme.primaryContainer,
     ),
     width: width,
     margin: const EdgeInsets.all(5),
@@ -51,7 +51,7 @@ Widget getChipsWidget({
         if (title != null)
           Text(
             title,
-            style: theme.textTheme.labelMedium!.copyWith(
+            style: Get.theme.textTheme.labelMedium!.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -63,7 +63,7 @@ Widget getChipsWidget({
             return ChoiceChip(
               label: Text(
                 label,
-                style: theme.textTheme.labelSmall,
+                style: Get.theme.textTheme.labelSmall,
               ),
               labelPadding: EdgeInsets.zero,
               avatar: (chipIcons != null &&
@@ -84,7 +84,6 @@ Widget getChipsWidget({
 }
 
 Widget getDropDownFormField({
-  required ThemeData theme,
   required int? selectedValue,
   required List<DropdownMenuItem<int>> items,
   required Function(int? val) onChanged,
@@ -109,7 +108,7 @@ Widget getDropDownFormField({
                 filled: true,
                 isDense: true,
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintStyle: theme.textTheme.displaySmall,
+                hintStyle: Get.theme.textTheme.displaySmall,
                 border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ),
@@ -117,7 +116,7 @@ Widget getDropDownFormField({
               ),
               value: selectedValue,
               icon: const Icon(Icons.keyboard_arrow_down),
-              style: theme.textTheme.bodyMedium,
+              style: Get.theme.textTheme.bodyMedium,
               onChanged: (int? value) {
                 onChanged(value);
               },
@@ -133,14 +132,13 @@ Widget getDropDownFormField({
   );
 }
 
-Widget getPopupScaffold(
-    {required List<Widget> widgetList, required ThemeData theme}) {
+Widget getPopupScaffold({required List<Widget> widgetList}) {
   return Dialog(
     insetPadding: const EdgeInsets.symmetric(horizontal: 20),
     child: SingleChildScrollView(
       child: Container(
         decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
+          color: Get.theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(10),
         ),
         padding: const EdgeInsets.all(15),
@@ -155,19 +153,18 @@ Widget getPopupScaffold(
 
 Widget getHeaderWidget({
   required String title,
-  required ThemeData theme,
   TextStyle? style,
 }) {
   return Row(
     children: [
       Text(
         title,
-        style: style ?? theme.textTheme.titleSmall,
+        style: style ?? Get.theme.textTheme.titleSmall,
       ),
       const SizedBox(width: 5),
       Expanded(
         child: Divider(
-          color: theme.colorScheme.outline,
+          color: Get.theme.colorScheme.outline,
         ),
       ),
     ],

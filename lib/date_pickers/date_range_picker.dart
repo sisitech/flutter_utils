@@ -62,7 +62,6 @@ class SistchDateRangePicker extends StatelessWidget {
         children: [
           Expanded(
             child: getSelectedDatesWidget(
-              theme: theme,
               dateFormat: chosenFormat,
               dateRange: selectedRange,
             ),
@@ -199,14 +198,12 @@ class DateRangePickerPopup extends StatelessWidget {
     }
 
     return getPopupScaffold(
-      theme: theme,
       widgetList: [
         Row(
           children: [
             Expanded(
               child: Obx(
                 () => getSelectedDatesWidget(
-                  theme: theme,
                   dateRange: selectedDateRange.value,
                   dateFormat: chosenFormat,
                 ),
@@ -234,11 +231,9 @@ class DateRangePickerPopup extends StatelessWidget {
             DateRangeTypes.year
           ]
               .map((e) => getRangePickerScaffold(
-                    theme: theme,
                     rangeType: e,
                     firstYearPicker: lastYrPicker,
                     maxMonthRange: lastMnPicker,
-                    width: MediaQuery.sizeOf(context).width,
                     selectedDays: selectedDays,
                     onDaySelected: onDaySelected,
                     onWeekSelected: onWeekSelected,
@@ -275,9 +270,7 @@ class DateRangePickerPopup extends StatelessWidget {
   }
 
   Widget getRangePickerScaffold({
-    required ThemeData theme,
     required DateRangeTypes rangeType,
-    required double width,
     required int firstYearPicker,
     required int maxMonthRange,
     required Function(SelectedDateRange selection) onRangeSelected,
@@ -291,6 +284,8 @@ class DateRangePickerPopup extends StatelessWidget {
     required Function(int year) onYearSelected,
     required bool hideSuggestions,
   }) {
+    final width = Get.size.width;
+
     /// Chip Suggestions Logic ==============================================
     List<String> dateSuggestions = defaultDateRanges
         .where((element) => element.type == rangeType)
@@ -344,13 +339,12 @@ class DateRangePickerPopup extends StatelessWidget {
             padding: const EdgeInsets.only(top: 10),
             child: Obx(
               () => getChipsWidget(
-                theme: theme,
                 title: "Suggested",
                 chipLabels: dateSuggestions,
                 selectedIdx: selectedSuggestion.value,
                 onChipSelected: onSuggestionChipSelected,
                 width: width,
-                bgColor: theme.colorScheme.tertiaryContainer,
+                bgColor: Get.theme.colorScheme.tertiaryContainer,
               ),
             ),
           ),
@@ -364,7 +358,6 @@ class DateRangePickerPopup extends StatelessWidget {
                   ? [
                       Obx(
                         () => getDropDownFormField(
-                          theme: theme,
                           width: width * 0.26,
                           selectedValue: selectedDecade.value,
                           items: getPickerDecades(firstYearPicker),
@@ -377,14 +370,12 @@ class DateRangePickerPopup extends StatelessWidget {
                         () => [DateRangeTypes.month, DateRangeTypes.monthRange]
                                 .contains(rangeType)
                             ? getDropDownFormField(
-                                theme: theme,
                                 width: width * 0.28,
                                 selectedValue: selectedMonthRange.value,
                                 items: getPickerMonthRanges(maxMonthRange),
                                 onChanged: (val) => onMonthRangeSelected(val),
                               )
                             : getDropDownFormField(
-                                theme: theme,
                                 width: width * 0.25,
                                 selectedValue: selectedDrpMonth.value,
                                 items: getPickerMonths(selectedDrpYear.value),
@@ -395,7 +386,6 @@ class DateRangePickerPopup extends StatelessWidget {
                       const SizedBox(width: 7),
                       Obx(
                         () => getDropDownFormField(
-                          theme: theme,
                           width: width * 0.25,
                           selectedValue: selectedDrpYear.value,
                           items: getPickerYears(firstYearPicker),
@@ -412,7 +402,6 @@ class DateRangePickerPopup extends StatelessWidget {
           child: [DateRangeTypes.day, DateRangeTypes.week].contains(rangeType)
               ? Obx(
                   () => getDayWeekView(
-                    theme: theme,
                     currentPickerDt: DateTime(
                         selectedDrpYear.value, selectedDrpMonth.value, 1),
                     rangeType: rangeType,
@@ -425,7 +414,6 @@ class DateRangePickerPopup extends StatelessWidget {
                       .contains(rangeType)
                   ? Obx(
                       () => getMonthView(
-                          theme: theme,
                           currentPickerYr: selectedDrpYear.value,
                           rangeType: rangeType,
                           selectedMonthRange: selectedMonthRange.value,
@@ -434,7 +422,6 @@ class DateRangePickerPopup extends StatelessWidget {
                     )
                   : Obx(
                       () => getYearView(
-                        theme: theme,
                         selectedYear: selectedYear,
                         onYearSelected: onYearSelected,
                         selectedDecade: selectedDecade.value,

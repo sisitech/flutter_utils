@@ -110,7 +110,7 @@ double getListOfDoublesSum(List<double> items) {
 String strToTitleCase(String input) {
   return input
       .split('_')
-      .map((word) => word[0].toUpperCase() + word.substring(1))
+      .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
       .join(' ');
 }
 
