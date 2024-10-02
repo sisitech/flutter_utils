@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/activity_streak/activity_streak.dart';
-import 'package:flutter_utils/date_dropdown/constants.dart';
-import 'package:flutter_utils/date_dropdown/date_dropdown.dart';
-import 'package:flutter_utils/date_dropdown/models.dart';
-import 'package:flutter_utils/date_pickers/date_range_picker.dart';
-import 'package:flutter_utils/date_pickers/utils.dart';
+import 'package:flutter_utils/date_widgets/date_dropdown/constants.dart';
+import 'package:flutter_utils/date_widgets/date_dropdown/date_dropdown.dart';
+import 'package:flutter_utils/date_widgets/date_dropdown/models.dart';
+import 'package:flutter_utils/date_widgets/date_range_picker/date_range_picker.dart';
+import 'package:flutter_utils/date_widgets/date_range_picker/utils.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
-import 'package:flutter_utils/sistch_text_widgets/animated_counter.dart';
-import 'package:flutter_utils/sistch_text_widgets/text_carousel.dart';
-import 'package:flutter_utils/widgets/custom_tab_bar.dart';
+import 'package:flutter_utils/text_widgets/text_carousel.dart';
+import 'package:flutter_utils/text_widgets/animated_counter.dart';
+import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 
