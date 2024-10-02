@@ -132,21 +132,15 @@ Widget getDropDownFormField({
   );
 }
 
-Widget getPopupScaffold({required List<Widget> widgetList}) {
-  return Dialog(
-    insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-    child: SingleChildScrollView(
-      child: Container(
-        decoration: BoxDecoration(
-          color: Get.theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: widgetList,
-        ),
-      ),
+Widget getBottomSheetScaffold(
+    {required List<Widget> widgetList, required double height}) {
+  return Container(
+    height: height,
+    decoration: BoxDecoration(color: Get.theme.colorScheme.surface),
+    padding: const EdgeInsets.all(15),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgetList,
     ),
   );
 }
@@ -154,6 +148,7 @@ Widget getPopupScaffold({required List<Widget> widgetList}) {
 Widget getHeaderWidget({
   required String title,
   TextStyle? style,
+  Widget? trailingWidget,
 }) {
   return Row(
     children: [
@@ -161,12 +156,15 @@ Widget getHeaderWidget({
         title,
         style: style ?? Get.theme.textTheme.titleSmall,
       ),
-      const SizedBox(width: 5),
       Expanded(
-        child: Divider(
-          color: Get.theme.colorScheme.outline,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Divider(
+            color: Get.theme.colorScheme.outline,
+          ),
         ),
       ),
+      if (trailingWidget != null) trailingWidget,
     ],
   );
 }

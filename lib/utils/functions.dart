@@ -99,6 +99,30 @@ String addThousandSeparators(double value) {
       decimalPart;
 }
 
+String getThousandsNumber(double number) {
+  if (number < 10000) return number.toStringAsFixed(0);
+
+  double divisor = 1;
+  String suffix = '';
+
+  if (number < 1000000) {
+    divisor = 1000;
+    suffix = 'K';
+  } else if (number < 1000000000) {
+    divisor = 1000000;
+    suffix = 'M';
+  } else if (number < 1000000000000) {
+    divisor = 1000000000;
+    suffix = 'B';
+  } else {
+    divisor = 1000000000000;
+    suffix = 'T';
+  }
+
+  double val = number / divisor;
+  return val.toStringAsFixed(val % 1 == 0 ? 0 : 1) + suffix;
+}
+
 double getListOfDoublesSum(List<double> items) {
   double sum = 0.0;
   for (var item in items) {

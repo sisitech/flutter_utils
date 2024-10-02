@@ -34,9 +34,15 @@ class SistchDateRangePicker extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     DateFormat chosenFormat = dateFormat ?? DateFormat("dd/MM/yyy");
 
-    onOpenDatePickerPopup() async {
-      SelectedDateRange? val = await Get.dialog(
-        DateRangePickerPopup(
+    onOpenDatePickerBottomSheet() async {
+      SelectedDateRange? val = await Get.bottomSheet(
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20.0),
+          ),
+        ),
+        DateRangePickerBottomSheet(
           chosenFormat: chosenFormat,
           lastMnPicker: lastMnPicker,
           lastYrPicker: lastYrPicker,
@@ -70,7 +76,7 @@ class SistchDateRangePicker extends StatelessWidget {
           getIconBtn(
             bgColor: colorScheme.primary,
             fgColor: colorScheme.onPrimary,
-            action: onOpenDatePickerPopup,
+            action: onOpenDatePickerBottomSheet,
             iconPath: Icons.calendar_month,
           ),
         ],
@@ -79,12 +85,12 @@ class SistchDateRangePicker extends StatelessWidget {
   }
 }
 
-class DateRangePickerPopup extends StatelessWidget {
+class DateRangePickerBottomSheet extends StatelessWidget {
   final DateFormat chosenFormat;
   final int lastYrPicker;
   final int lastMnPicker;
   final bool hideSuggestions;
-  const DateRangePickerPopup({
+  const DateRangePickerBottomSheet({
     super.key,
     required this.chosenFormat,
     required this.lastYrPicker,
@@ -197,7 +203,8 @@ class DateRangePickerPopup extends StatelessWidget {
       }
     }
 
-    return getPopupScaffold(
+    return getBottomSheetScaffold(
+      height: Get.height * (hideSuggestions ? 0.7 : 0.8),
       widgetList: [
         Row(
           children: [
@@ -221,8 +228,7 @@ class DateRangePickerPopup extends StatelessWidget {
         SistchTabBarScaffold(
           tabLabels: const ["Day", "Week", "Month", "Year"],
           showUnViewedIndicator: false,
-          height:
-              MediaQuery.sizeOf(context).height * (hideSuggestions ? 0.5 : 0.6),
+          height: Get.height * (hideSuggestions ? 0.5 : 0.6),
           isScrollable: false,
           tabWidgets: [
             DateRangeTypes.day,

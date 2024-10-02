@@ -90,7 +90,9 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ///
-              getHeaderWidget(title: "Text Carousel"),
+              getHeaderWidget(
+                  title: "Text Carousel",
+                  trailingWidget: const Icon(Icons.menu_book)),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: SistchTextCarousel(

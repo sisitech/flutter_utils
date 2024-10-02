@@ -217,6 +217,10 @@ class _SistchBarChartState extends State<SistchBarChart> {
               groupsSpace: 6.0,
               barTouchData: BarTouchData(
                 touchTooltipData: BarTouchTooltipData(
+                  tooltipBgColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceVariant
+                      .withOpacity(0.4),
                   getTooltipItem: (BarChartGroupData group, int groupIndex,
                       BarChartRodData rod, int rodIndex) {
                     final NumberFormat currencyFormat = NumberFormat.currency(
