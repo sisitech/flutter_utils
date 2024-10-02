@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/stacked_donut_chart.dart';
 import 'package:flutter_utils/charts/bar_chart.dart';
+import 'package:flutter_utils/charts/card_grid_chart.dart';
 import 'package:flutter_utils/charts/pie_donut_chart.dart';
 import 'package:flutter_utils/charts/linear_percent_chart.dart';
 import 'package:flutter_utils/charts/time_lapse_chart.dart';
 import 'package:flutter_utils/charts/block_chart.dart';
+import 'package:flutter_utils/charts/utils.dart';
 import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:get/get.dart';
 
@@ -47,11 +49,11 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
   bool useFirstChartSeries = true;
   int currentChartIdx = 0;
   List<List<double>> chartData = [
-    [120, 100, 70, 90, 60], // series 0
+    [100, 90, 80, 70], // series 0
     [40, 30, 20, 10] // series 1
   ];
   List<List<String>> chartLabels = [
-    ["One", "Two", "Three", "Four", "Five"], // series 0
+    ["One", "Two", "Three", "Four"], // series 0
     ["Six", "Seven", "Eight", "Nine"] // series 1
   ];
   void updateChart() {
@@ -136,22 +138,18 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                     //  Obx(
                     //   () =>
                     SistchPieDonutChart(
-                  chartTitle: "Pie Chart",
-                  dataSeries: chartData[currentChartIdx],
-                  pieLabels: chartLabels[currentChartIdx],
-                  donutCenterRadius: 0,
-                  indicatorPrefix: 'KES. ',
-                  // selectedIndicator: selectedIndicator.value,
-                  // onIndicatorTap: onIndicatorTap,
-                  pieColors: const [
-                    Color(0xFFDF7A57),
-                    Color(0xFF3D5B59),
-                    Color(0xFFDB668D),
-                    Color(0xFF000C66),
-                    Color(0xFFF3E1C0),
-                  ],
-                  // ),
-                ),
+                        chartTitle: "Pie Chart",
+                        dataSeries: chartData[currentChartIdx],
+                        pieLabels: chartLabels[currentChartIdx],
+                        donutCenterRadius: 0,
+                        indicatorPrefix: 'KES. ',
+                        // selectedIndicator: selectedIndicator.value,
+                        // onIndicatorTap: onIndicatorTap,
+                        pieColors: defaultChartColors.reversed
+                            .toList()
+                            .sublist(0, chartData[currentChartIdx].length)
+                        // ),
+                        ),
               ),
               chartScaffold(
                 chartWidget: SistchPieDonutChart(
@@ -250,6 +248,19 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                       Text('Selected: ${selectedIndicator.value}'),
                     ],
                   ),
+                ),
+              ),
+              chartScaffold(
+                chartWidget: SistchCardGridView(
+                  chartTitle: "Card Grid Chart",
+                  valuePrefix: 'KES.',
+                  dataSeries: chartData[currentChartIdx],
+                  chartLabels: chartLabels[currentChartIdx],
+                  cardIcons: iconMapper.values
+                      .toList()
+                      .sublist(0, chartData[currentChartIdx].length),
+                  onCardTap: (val) => {},
+                  // showPercentages: false,
                 ),
               ),
             ],

@@ -195,18 +195,18 @@ List<Color> defaultChartColors = const [
 ];
 
 Map<Color, Color> defaultTextChartColors = {
-  const Color(0xFFDB668D): Colors.white,
-  const Color(0xFF955670): Colors.white,
-  const Color(0xFF0292B7): Colors.white,
-  const Color(0xFFDF7A57): Colors.white,
-  const Color(0xFF7A77E9): Colors.white,
-  const Color(0xFFF9E56A): Colors.black,
-  const Color(0xFF5C99F0): Colors.white,
-  const Color(0xFFF54D3D): Colors.white,
-  const Color(0xFF84D3C5): Colors.black,
-  const Color(0xFFE59349): Colors.white,
-  const Color(0xFF18A558): Colors.white,
-  const Color(0xFF3D5B59): Colors.white,
-  const Color(0xFF000C66): Colors.white,
-  const Color(0xFFF3E1C0): Colors.black,
+  const Color(0xFF18A558): Colors.white, // Green
+  const Color(0xFF0292B7): Colors.white, // Blue
+  const Color(0xFFE59349): Colors.white, // Orange
+  const Color(0xFF7A77E9): Colors.white, // Purple
+  const Color(0xFFF9E56A): Colors.black, // Yellow
+  const Color(0xFF84D3C5): Colors.black, // Light teal
+  const Color(0xFF5C99F0): Colors.white, // Sky blue
+  const Color(0xFFF54D3D): Colors.white, // Red
+  const Color(0xFF955670): Colors.white, // Dark purple
+  const Color(0xFFDF7A57): Colors.white, // Peach
+  const Color(0xFF3D5B59): Colors.white, // Dark teal
+  const Color(0xFFDB668D): Colors.white, // Pink
+  const Color(0xFF000C66): Colors.white, // Navy
+  const Color(0xFFF3E1C0): Colors.black, // Beige
 };
