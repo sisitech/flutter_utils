@@ -9,6 +9,7 @@ class SistchAnimatedCounter extends StatefulWidget {
   final List<TextSpan>? preTexts;
   final List<TextSpan>? postTexts;
   final int durationInUs;
+  final bool useWantKeepAlive;
 
   const SistchAnimatedCounter({
     super.key,
@@ -18,19 +19,20 @@ class SistchAnimatedCounter extends StatefulWidget {
     this.durationInUs = 1,
     this.preTexts,
     this.postTexts,
+    this.useWantKeepAlive = true,
   });
 
   @override
   State<SistchAnimatedCounter> createState() => _SistchAnimatedCounterState();
 }
 
-class _SistchAnimatedCounterState extends State<SistchAnimatedCounter> {
+class _SistchAnimatedCounterState extends State<SistchAnimatedCounter>
+    with AutomaticKeepAliveClientMixin {
   RxInt currentVal = RxInt(0);
 
   @override
   void initState() {
     super.initState();
-
     runAnimation();
   }
 
@@ -54,6 +56,7 @@ class _SistchAnimatedCounterState extends State<SistchAnimatedCounter> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Obx(
       () => Text.rich(
         TextSpan(
@@ -73,4 +76,7 @@ class _SistchAnimatedCounterState extends State<SistchAnimatedCounter> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => widget.useWantKeepAlive;
 }

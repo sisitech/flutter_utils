@@ -30,9 +30,7 @@ class SistchTabBarScaffold extends StatefulWidget {
 }
 
 class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
-    with
-        SingleTickerProviderStateMixin,
-        AutomaticKeepAliveClientMixin<SistchTabBarScaffold> {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late TabController tabController;
   RxList<bool> viewedTabs = RxList([]);
 
@@ -86,9 +84,6 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
       updateViewedTabs(tabController.index);
     }
   }
-
-  @override
-  bool get wantKeepAlive => widget.useWantKeepAlive;
 
   @override
   Widget build(BuildContext context) {
@@ -150,4 +145,7 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => widget.useWantKeepAlive;
 }

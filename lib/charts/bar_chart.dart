@@ -63,6 +63,7 @@ class SistchBarChart extends StatefulWidget {
   final String? chartTitle;
   final String? name;
   final bool? useIndIcons;
+  final bool useWantKeepAlive;
 
   const SistchBarChart({
     super.key,
@@ -77,13 +78,15 @@ class SistchBarChart extends StatefulWidget {
     this.chartHeight = 200,
     this.tipPreText = "KES.",
     this.useIndIcons,
+    this.useWantKeepAlive = true,
   });
 
   @override
   State<SistchBarChart> createState() => _SistchBarChartState();
 }
 
-class _SistchBarChartState extends State<SistchBarChart> {
+class _SistchBarChartState extends State<SistchBarChart>
+    with AutomaticKeepAliveClientMixin {
   int currentSeriesIdx = -1;
 
   /// [_createChartData]
@@ -140,6 +143,7 @@ class _SistchBarChartState extends State<SistchBarChart> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
@@ -259,6 +263,9 @@ class _SistchBarChartState extends State<SistchBarChart> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => widget.useWantKeepAlive;
 
   List<BarChartGroupData> getBarGroupData(
       List<List<double>> series, List<Color> colors) {

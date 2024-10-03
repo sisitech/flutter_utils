@@ -138,10 +138,19 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                   // showUnViewedIndicator: false,
                   height: 200,
                   isScrollable: false,
-                  useWantKeepAlive: false,
+                  // useWantKeepAlive: false,
                   tabWidgets: [
-                    Center(child: Icon(Icons.one_k)),
-                    Center(child: Icon(Icons.two_k)),
+                    Center(
+                      child: SistchAnimatedCounter(
+                        valueToAnimate: 9999,
+                      ),
+                    ),
+                    Center(
+                      child: SistchAnimatedCounter(
+                        valueToAnimate: 99999,
+                        // useWantKeepAlive: false,
+                      ),
+                    ),
                     Center(child: Icon(Icons.three_k)),
                   ],
                 ),
@@ -149,9 +158,13 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ///
-              getHeaderWidget(title: "Tab Bar Scaffold"),
+              getHeaderWidget(title: "Collapsible Sections Scaffold"),
               SistchCollapsibleScaffold(
-                sectionTitles: const ["Tab One", "Tab Two", "Tab Three"],
+                sectionTitles: const [
+                  "Section One",
+                  "Section Two",
+                  "Section Three"
+                ],
                 sections: const [
                   Center(child: Icon(Icons.one_k)),
                   Center(child: Icon(Icons.two_k)),
