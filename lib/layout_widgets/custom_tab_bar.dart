@@ -126,16 +126,12 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(label),
+                          const SizedBox(width: 4),
                           if (!viewedTabs[index])
-                            Container(
-                              width: 4,
-                              height: 4,
-                              margin: const EdgeInsets.only(left: 5.0),
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.primary,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
+                            CircleAvatar(
+                              radius: 2.5,
+                              backgroundColor: theme.colorScheme.primary,
+                            )
                         ],
                       ),
                     );

@@ -18,7 +18,7 @@ Widget chartIndicator({
       children: [
         useIcons == true
             ? Icon(
-                iconMapper[label] ?? Icons.circle,
+                defaultIconMapper[label] ?? Icons.circle,
                 color: color,
                 size: 12,
               )
@@ -84,7 +84,7 @@ Widget actionChartIndicator({
             children: [
               useIcons == true
                   ? Icon(
-                      iconMapper[label] ?? Icons.circle,
+                      defaultIconMapper[label] ?? Icons.circle,
                       color: color,
                       size: 12,
                     )

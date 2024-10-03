@@ -10,6 +10,8 @@ import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:flutter_utils/text_widgets/text_carousel.dart';
 import 'package:flutter_utils/text_widgets/animated_counter.dart';
 import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
+import 'package:flutter_utils/layout_widgets/collapsible_scaffold.dart';
+import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 
@@ -143,6 +145,20 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                     Center(child: Icon(Icons.three_k)),
                   ],
                 ),
+              ),
+              SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+
+              ///
+              getHeaderWidget(title: "Tab Bar Scaffold"),
+              SistchCollapsibleScaffold(
+                sectionTitles: const ["Tab One", "Tab Two", "Tab Three"],
+                sections: const [
+                  Center(child: Icon(Icons.one_k)),
+                  Center(child: Icon(Icons.two_k)),
+                  Center(child: Icon(Icons.three_k)),
+                ],
+                sectionIcons: defaultIconMapper.values.toList().sublist(0, 3),
+                onlyFirstExpanded: true,
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 

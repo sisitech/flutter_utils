@@ -148,10 +148,16 @@ Widget getBottomSheetScaffold(
 Widget getHeaderWidget({
   required String title,
   TextStyle? style,
+  Widget? leadingWidget,
   Widget? trailingWidget,
 }) {
   return Row(
     children: [
+      if (leadingWidget != null)
+        Padding(
+          padding: const EdgeInsets.only(right: 5),
+          child: leadingWidget,
+        ),
       Text(
         title,
         style: style ?? Get.theme.textTheme.titleSmall,

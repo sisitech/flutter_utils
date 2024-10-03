@@ -174,7 +174,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                         onChartTileTap: onLinearPercChartTileTap,
                         // tileHeight: 50.0,
                         // selectedColor: theme.colorScheme.primaryContainer,
-                        leadingWidgets: iconMapper.values
+                        leadingWidgets: defaultIconMapper.values
                             .toList()
                             .sublist(0, chartData[currentChartIdx].length)
                             .map((e) => Icon(e))
@@ -256,7 +256,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                   valuePrefix: 'KES.',
                   dataSeries: chartData[currentChartIdx],
                   chartLabels: chartLabels[currentChartIdx],
-                  cardIcons: iconMapper.values
+                  cardIcons: defaultIconMapper.values
                       .toList()
                       .sublist(0, chartData[currentChartIdx].length),
                   onCardTap: (val) => {},
