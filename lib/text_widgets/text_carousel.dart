@@ -45,15 +45,17 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
   }
 
   void startCarousel() {
-    ever(currentIndex, (_) {
-      progressValue.value = 0.0;
-    });
+    if (widget.texts.isNotEmpty) {
+      ever(currentIndex, (_) {
+        progressValue.value = 0.0;
+      });
 
-    timer =
-        Timer.periodic(Duration(seconds: widget.viewDuration ?? 5), (timer) {
-      progressValue.value = 0.0;
-      currentIndex.value = (currentIndex.value + 1) % widget.texts.length;
-    });
+      timer =
+          Timer.periodic(Duration(seconds: widget.viewDuration ?? 5), (timer) {
+        progressValue.value = 0.0;
+        currentIndex.value = (currentIndex.value + 1) % widget.texts.length;
+      });
+    }
   }
 
   void stopCarousel() {
