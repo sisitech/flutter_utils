@@ -162,11 +162,7 @@ class SistchCollapsibleScaffold extends StatelessWidget {
                           ),
                         );
                       },
-                      body: Container(
-                        color: colorScheme.surfaceVariant,
-                        padding: const EdgeInsets.all(10),
-                        child: e.child,
-                      ),
+                      body: e.child ?? const SizedBox(),
                     ),
                   )
                   .toList(),

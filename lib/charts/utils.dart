@@ -29,7 +29,7 @@ Widget chartIndicator({
         const SizedBox(width: 4),
         Flexible(
           child: Text.rich(
-            maxLines: 2,
+            maxLines: 3,
             overflow: TextOverflow.clip,
             TextSpan(
               children: [

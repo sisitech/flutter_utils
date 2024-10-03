@@ -76,6 +76,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
   /// Actionable Indicators
   RxString selectedIndicator = RxString('');
   onIndicatorTap(String val) {
+    print('called onIndicatorTap');
     if (selectedIndicator.value == val) {
       selectedIndicator.value = '';
       return;

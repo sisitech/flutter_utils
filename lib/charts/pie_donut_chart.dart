@@ -239,22 +239,22 @@ class SistchPieDonutChart extends StatelessWidget {
                   borderData: FlBorderData(show: false),
                   centerSpaceRadius: isHalfArcChart ? null : donutCenterRadius,
                   pieTouchData: PieTouchData(
-                    touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                      if (!event.isInterestedForInteractions ||
-                          pieTouchResponse == null ||
-                          pieTouchResponse.touchedSection == null ||
-                          onIndicatorTap == null) {
-                        return;
-                      }
+                      touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                    if (event is FlLongPressEnd ||
+                        event is FlTapUpEvent ||
+                        pieTouchResponse == null ||
+                        pieTouchResponse.touchedSection == null ||
+                        onIndicatorTap == null) {
+                      return;
+                    }
 
-                      int? touchedIndex =
-                          pieTouchResponse.touchedSection?.touchedSectionIndex;
+                    int? touchedIndex =
+                        pieTouchResponse.touchedSection?.touchedSectionIndex;
 
-                      if (touchedIndex != null && touchedIndex != -1) {
-                        onIndicatorTap!(chartLabels[touchedIndex]);
-                      }
-                    },
-                  ),
+                    if (touchedIndex != null && touchedIndex != -1) {
+                      onIndicatorTap!(chartLabels[touchedIndex]);
+                    }
+                  }),
                 ),
               ),
             ),

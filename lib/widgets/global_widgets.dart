@@ -136,17 +136,23 @@ Widget getBottomSheetScaffold(
     {required List<Widget> widgetList,
     required double height,
     bool isScrollable = true}) {
+  final scrollCtrl = ScrollController();
   return Container(
     height: height,
     decoration: BoxDecoration(color: Get.theme.colorScheme.surface),
     padding: const EdgeInsets.all(15),
-    child: SingleChildScrollView(
-      physics: isScrollable
-          ? const ClampingScrollPhysics()
-          : const NeverScrollableScrollPhysics(),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: widgetList,
+    child: Scrollbar(
+      controller: scrollCtrl,
+      thumbVisibility: isScrollable,
+      child: SingleChildScrollView(
+        controller: scrollCtrl,
+        physics: isScrollable
+            ? const ClampingScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: widgetList,
+        ),
       ),
     ),
   );
