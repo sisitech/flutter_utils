@@ -125,41 +125,56 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                 ),
               ),
               chartScaffold(
-                chartWidget: SistchPieDonutChart(
+                chartWidget:
+                    //
+                    //   Obx(
+                    // () =>
+                    SistchPieDonutChart(
                   chartTitle: "Donut Chart",
                   dataSeries: chartData[currentChartIdx],
                   pieLabels: chartLabels[currentChartIdx],
-                  donutCenterRadius: 20,
+                  donutCenterRadius: 50,
+                  // selectedIndicator: selectedIndicator.value,
+                  // onIndicatorTap: onIndicatorTap,
+                  // hideIndicators: true,
                   chartDirection: Axis.horizontal,
+                ),
+                // ),
+              ),
+              chartScaffold(
+                chartWidget:
+                    //
+                    Obx(
+                  () => SistchPieDonutChart(
+                    chartTitle: "Pie Chart",
+                    dataSeries: chartData[currentChartIdx],
+                    pieLabels: chartLabels[currentChartIdx],
+                    donutCenterRadius: 0,
+                    indicatorPrefix: 'KES. ',
+                    selectedIndicator: selectedIndicator.value,
+                    onIndicatorTap: onIndicatorTap,
+                    // hideIndicators: true,
+                    pieColors: defaultChartColors.reversed
+                        .toList()
+                        .sublist(0, chartData[currentChartIdx].length),
+                  ),
                 ),
               ),
               chartScaffold(
                 chartWidget:
-                    //  Obx(
-                    //   () =>
-                    SistchPieDonutChart(
-                        chartTitle: "Pie Chart",
-                        dataSeries: chartData[currentChartIdx],
-                        pieLabels: chartLabels[currentChartIdx],
-                        donutCenterRadius: 0,
-                        indicatorPrefix: 'KES. ',
-                        // selectedIndicator: selectedIndicator.value,
-                        // onIndicatorTap: onIndicatorTap,
-                        pieColors: defaultChartColors.reversed
-                            .toList()
-                            .sublist(0, chartData[currentChartIdx].length)
-                        // ),
-                        ),
-              ),
-              chartScaffold(
-                chartWidget: SistchPieDonutChart(
-                  chartTitle: "Half Arc Chart",
-                  isHalfArcChart: true,
-                  chartDirection: Axis.horizontal,
-                  sectionsSpace: 0,
-                  dataSeries: chartData[currentChartIdx],
-                  pieLabels: chartLabels[currentChartIdx],
-                  centerWidget: const Text('Ola'),
+                    //
+                    Obx(
+                  () => SistchPieDonutChart(
+                    chartTitle: "Half Arc Chart",
+                    isHalfArcChart: true,
+                    chartDirection: Axis.horizontal,
+                    sectionsSpace: 0,
+                    dataSeries: chartData[currentChartIdx],
+                    pieLabels: chartLabels[currentChartIdx],
+                    centerWidget: const Text('Ola'),
+                    selectedIndicator: selectedIndicator.value,
+                    onIndicatorTap: onIndicatorTap,
+                  ),
                 ),
               ),
               chartScaffold(
@@ -251,16 +266,24 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                 ),
               ),
               chartScaffold(
-                chartWidget: SistchCardGridView(
-                  chartTitle: "Card Grid Chart",
-                  valuePrefix: 'KES.',
-                  dataSeries: chartData[currentChartIdx],
-                  chartLabels: chartLabels[currentChartIdx],
-                  cardIcons: defaultIconMapper.values
-                      .toList()
-                      .sublist(0, chartData[currentChartIdx].length),
-                  onCardTap: (val) => {},
-                  // showPercentages: false,
+                chartWidget: Obx(
+                  () => Column(
+                    children: [
+                      SistchCardGridView(
+                        chartTitle: "Card Grid Chart",
+                        valuePrefix: 'KES.',
+                        dataSeries: chartData[currentChartIdx],
+                        chartLabels: chartLabels[currentChartIdx],
+                        cardIcons: defaultIconMapper.values
+                            .toList()
+                            .sublist(0, chartData[currentChartIdx].length),
+                        onCardTap: onIndicatorTap,
+                        // showPercentages: false,
+                      ),
+                      const SizedBox(height: 4),
+                      Text('Selected: ${selectedIndicator.value}'),
+                    ],
+                  ),
                 ),
               ),
             ],

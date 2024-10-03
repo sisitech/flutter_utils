@@ -47,14 +47,15 @@ class SistchCardGridView extends StatelessWidget {
 
     return Column(
       children: [
-        const SizedBox(height: 10),
         if (chartTitle != null)
-          Text(
-            chartTitle!,
-            style: textTheme.titleLarge!.copyWith(
-                color: colorScheme.primary, fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Text(
+              chartTitle!,
+              style: textTheme.titleLarge!.copyWith(
+                  color: colorScheme.primary, fontWeight: FontWeight.bold),
+            ),
           ),
-        const SizedBox(height: 10),
         GridView.count(
           crossAxisCount: crossCount,
           childAspectRatio: cardAspectRatio ?? 1.3,

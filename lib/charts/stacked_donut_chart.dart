@@ -184,15 +184,20 @@ class SistchStackedDonutChart extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           ...chartData.map(
-            (e) => CircularPercentIndicator(
-              radius: e.radius,
-              lineWidth: selectedIndicator == e.label ? 6.5 : 5.0,
-              startAngle: e.startAngle,
-              animation: true,
-              animationDuration: 1000,
-              percent: e.percent,
-              backgroundColor: colorScheme.background,
-              progressColor: e.sectionColor,
+            (e) => GestureDetector(
+              onTap: onIndicatorTap == null
+                  ? null
+                  : () => onIndicatorTap!(e.label),
+              child: CircularPercentIndicator(
+                radius: e.radius,
+                lineWidth: selectedIndicator == e.label ? 6.5 : 5.0,
+                startAngle: e.startAngle,
+                animation: true,
+                animationDuration: 1000,
+                percent: e.percent,
+                backgroundColor: colorScheme.background,
+                progressColor: e.sectionColor,
+              ),
             ),
           ),
           centerWidget ?? const SizedBox()
