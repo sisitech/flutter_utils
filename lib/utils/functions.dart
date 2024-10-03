@@ -100,7 +100,7 @@ String addThousandSeparators(double value) {
 }
 
 String getThousandsNumber(double number) {
-  if (number < 10000) return number.toStringAsFixed(0);
+  if (number < 10000) return addThousandSeparators(number);
 
   double divisor = 1;
   String suffix = '';

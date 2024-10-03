@@ -133,14 +133,21 @@ Widget getDropDownFormField({
 }
 
 Widget getBottomSheetScaffold(
-    {required List<Widget> widgetList, required double height}) {
+    {required List<Widget> widgetList,
+    required double height,
+    bool isScrollable = true}) {
   return Container(
     height: height,
     decoration: BoxDecoration(color: Get.theme.colorScheme.surface),
     padding: const EdgeInsets.all(15),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: widgetList,
+    child: SingleChildScrollView(
+      physics: isScrollable
+          ? const ClampingScrollPhysics()
+          : const NeverScrollableScrollPhysics(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: widgetList,
+      ),
     ),
   );
 }
