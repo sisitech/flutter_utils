@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
 import 'package:flutter_utils/utils/functions.dart';
+import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 // Constants
@@ -190,12 +191,12 @@ class SistchStackedDonutChart extends StatelessWidget {
                   : () => onIndicatorTap!(e.label),
               child: CircularPercentIndicator(
                 radius: e.radius,
-                lineWidth: selectedIndicator == e.label ? 6.5 : 5.0,
+                lineWidth: selectedIndicator == e.label ? 7 : 5.0,
                 startAngle: e.startAngle,
                 animation: true,
                 animationDuration: 1000,
                 percent: e.percent,
-                backgroundColor: colorScheme.background,
+                backgroundColor: colorScheme.surface,
                 progressColor: e.sectionColor,
               ),
             ),

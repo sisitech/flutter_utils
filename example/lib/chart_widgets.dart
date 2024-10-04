@@ -53,7 +53,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
     [40, 30, 20, 10] // series 1
   ];
   List<List<String>> chartLabels = [
-    ["One", "Two", "Three", "Four"], // series 0
+    ["Government Services", "Two", "Three", "Four"], // series 0
     ["Six", "Seven", "Eight", "Nine"] // series 1
   ];
   void updateChart() {
@@ -76,7 +76,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
   /// Actionable Indicators
   RxString selectedIndicator = RxString('');
   onIndicatorTap(String val) {
-    print('called onIndicatorTap');
+    debugPrint('called onIndicatorTap with val = $val');
     if (selectedIndicator.value == val) {
       selectedIndicator.value = '';
       return;

@@ -26,7 +26,7 @@ class SistchCollapsibleScaffold extends StatelessWidget {
   final List<Widget> sections;
   final List<String> sectionTitles;
   final List<IconData>? sectionIcons;
-  final bool onlyFirstExpanded;
+  final int? initialExpandedIdx;
   final bool allExpandedAtStart;
   final double sectionsGapSize;
   final bool hideCollapseAllToggle;
@@ -36,7 +36,7 @@ class SistchCollapsibleScaffold extends StatelessWidget {
     required this.sections,
     required this.sectionTitles,
     this.sectionIcons,
-    this.onlyFirstExpanded = false,
+    this.initialExpandedIdx,
     this.allExpandedAtStart = false,
     this.hideCollapseAllToggle = false,
     this.sectionsGapSize = 16.0,
@@ -44,7 +44,7 @@ class SistchCollapsibleScaffold extends StatelessWidget {
 
   List<CollapsibleSection> _createSections() {
     return List.generate(sections.length, (i) {
-      bool viewToggle = onlyFirstExpanded ? i == 0 : allExpandedAtStart;
+      bool viewToggle = initialExpandedIdx == i ? true : allExpandedAtStart;
       return CollapsibleSection(
         title: sectionTitles[i],
         titleIcon: sectionIcons?[i],

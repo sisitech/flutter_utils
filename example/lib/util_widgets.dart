@@ -171,7 +171,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                   Center(child: Icon(Icons.three_k)),
                 ],
                 sectionIcons: defaultIconMapper.values.toList().sublist(0, 3),
-                onlyFirstExpanded: true,
+                initialExpandedIdx: 1,
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 

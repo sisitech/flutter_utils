@@ -109,7 +109,7 @@ class SistchCardGridView extends StatelessWidget {
                 if (iconPath != null)
                   Icon(
                     iconPath,
-                    size: 20,
+                    size: 18,
                     color: fgColor,
                   ),
                 Column(
@@ -125,7 +125,7 @@ class SistchCardGridView extends StatelessWidget {
                           ),
                           TextSpan(
                             text: getThousandsNumber(value),
-                            style: textTheme.titleLarge!.copyWith(
+                            style: textTheme.titleMedium!.copyWith(
                               fontWeight: FontWeight.bold,
                               color: fgColor,
                             ),
@@ -153,12 +153,12 @@ class SistchCardGridView extends StatelessWidget {
                   : MainAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: Get.width * 0.2,
+                  width: Get.width * 0.3,
                   child: Text(
                     label,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: textTheme.titleMedium!.copyWith(
+                    style: textTheme.titleSmall!.copyWith(
                       fontWeight: FontWeight.bold,
                       color: fgColor,
                     ),
@@ -167,11 +167,11 @@ class SistchCardGridView extends StatelessWidget {
                 if (onCardTap != null)
                   CircleAvatar(
                     backgroundColor: colorScheme.primaryContainer,
-                    radius: 16,
+                    radius: 12,
                     child: Icon(
                       actionIconPath,
                       color: colorScheme.onPrimaryContainer,
-                      size: 16,
+                      size: 12,
                     ),
                   ),
               ],
