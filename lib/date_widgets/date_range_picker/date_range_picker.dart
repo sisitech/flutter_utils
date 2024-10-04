@@ -204,7 +204,7 @@ class DateRangePickerBottomSheet extends StatelessWidget {
     }
 
     return getBottomSheetScaffold(
-      height: Get.height * (hideSuggestions ? 0.7 : 0.8),
+      height: Get.height * (hideSuggestions ? 0.75 : 0.85),
       widgetList: [
         Row(
           children: [
