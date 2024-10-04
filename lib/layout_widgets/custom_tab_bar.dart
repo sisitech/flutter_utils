@@ -43,12 +43,21 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
       initialIndex: widget.startTabIdx,
     );
 
-    // set viewed notification dots
+    // Add listener to the TabController to detect tab changes
+    tabController.addListener(() {
+      if (!tabController.indexIsChanging &&
+          tabController.index != tabController.previousIndex) {
+        onTabIndexChange(tabController.index);
+      }
+    });
+
+    // Set viewed notification dots
     viewedTabs.value = List.generate(
       widget.tabWidgets.length,
       (i) => widget.showUnViewedIndicator ? false : true,
     );
     updateViewedTabs(widget.startTabIdx);
+    setUpTabControllerListener();
   }
 
   onTabIndexChange(int? val) {
@@ -61,6 +70,25 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
   updateViewedTabs(int idx) {
     if (idx >= 0 && idx < viewedTabs.length) {
       viewedTabs[idx] = true;
+    }
+  }
+
+  setUpTabControllerListener() {
+    if (tabController.animation != null) {
+      tabController.animation!.addListener(() {
+        int indexChange = tabController.offset.round();
+        int index = tabController.index + indexChange;
+        if (index == tabController.index) {
+          return;
+        }
+        onTabIndexChange(index);
+        if (tabController.indexIsChanging) {
+          return;
+        }
+        tabController.animateTo(index,
+            duration: const Duration(milliseconds: 1), curve: Curves.linear);
+      });
+      return;
     }
   }
 

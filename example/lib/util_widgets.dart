@@ -34,6 +34,13 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
     dprint(datePeriod.displayName);
   }
 
+  RxInt currentTabIdx = RxInt(0);
+  onTabChange(int? val) {
+    if (val != null) {
+      currentTabIdx.value = val;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -133,26 +140,29 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               Container(
                 color: theme.colorScheme.surfaceVariant,
                 margin: const EdgeInsets.symmetric(vertical: 20),
-                child: const SistchTabBarScaffold(
-                  tabLabels: ["Tab One", "Tab Two", "Tab Three"],
-                  // showUnViewedIndicator: false,
-                  height: 200,
-                  isScrollable: false,
-                  // useWantKeepAlive: false,
-                  tabWidgets: [
-                    Center(
-                      child: SistchAnimatedCounter(
-                        valueToAnimate: 9999,
+                child: Obx(
+                  () => SistchTabBarScaffold(
+                    tabLabels: const ["Tab One", "Tab Two", "Tab Three"],
+                    // showUnViewedIndicator: false,
+                    height: currentTabIdx.value == 1 ? 250 : 150,
+                    isScrollable: false,
+                    // useWantKeepAlive: false,
+                    onIndexChange: onTabChange,
+                    tabWidgets: const [
+                      Center(
+                        child: SistchAnimatedCounter(
+                          valueToAnimate: 9999,
+                        ),
                       ),
-                    ),
-                    Center(
-                      child: SistchAnimatedCounter(
-                        valueToAnimate: 99999,
-                        // useWantKeepAlive: false,
+                      Center(
+                        child: SistchAnimatedCounter(
+                          valueToAnimate: 99999,
+                          // useWantKeepAlive: false,
+                        ),
                       ),
-                    ),
-                    Center(child: Icon(Icons.three_k)),
-                  ],
+                      Center(child: Icon(Icons.three_k)),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
