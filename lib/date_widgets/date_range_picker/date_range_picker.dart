@@ -228,8 +228,8 @@ class DateRangePickerBottomSheet extends StatelessWidget {
         SistchTabBarScaffold(
           tabLabels: const ["Day", "Week", "Month", "Year"],
           showUnViewedIndicator: false,
-          height: Get.height * (hideSuggestions ? 0.5 : 0.6),
-          isScrollable: false,
+          height: Get.height * (hideSuggestions ? 0.55 : 0.65),
+          isScrollable: true,
           tabWidgets: [
             DateRangeTypes.day,
             DateRangeTypes.week,
