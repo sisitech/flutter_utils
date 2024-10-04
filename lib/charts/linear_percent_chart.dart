@@ -20,6 +20,7 @@ class SistchLinearPercentChart extends StatelessWidget {
   final Color? selectedColor;
   final String? chartTitle;
   final double tileHeight;
+  final List<Color>? textColors;
 
   const SistchLinearPercentChart({
     required this.dataSeries,
@@ -32,6 +33,7 @@ class SistchLinearPercentChart extends StatelessWidget {
     this.selectedColor,
     this.chartTitle,
     this.tileHeight = 30.0,
+    this.textColors,
     Key? key,
   }) : super(key: key);
 
@@ -110,7 +112,10 @@ class SistchLinearPercentChart extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                   color: percent < 0.6
                                       ? colorScheme.onBackground
-                                      : defaultTextChartColors[chtColors[idx]],
+                                      : textColors != null
+                                          ? textColors![idx]
+                                          : defaultTextChartColors[
+                                              chtColors[idx]],
                                 ),
                               ),
                             ),

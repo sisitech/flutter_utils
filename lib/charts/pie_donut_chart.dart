@@ -31,6 +31,7 @@ class SistchPieDonutChart extends StatelessWidget {
   final String? selectedIndicator;
   final Function(String val)? onIndicatorTap;
   final Widget? centerWidget;
+  final List<Color>? textColors;
 
   ///[SistchPieDonutChart] renders custom Sisitech Pie or Donut Chart
   /// Required Fields:
@@ -60,6 +61,7 @@ class SistchPieDonutChart extends StatelessWidget {
     this.onIndicatorTap,
     this.selectedIndicator,
     this.centerWidget,
+    this.textColors,
   });
 
   /// [_createChartData]
@@ -107,8 +109,11 @@ class SistchPieDonutChart extends StatelessWidget {
       String sectionTitle = hideIndicators == true && i < chartSeriesMax
           ? "${chartLabels[i]} • $percentTitle"
           : chartLabels[i];
-      Color? textColor =
-          i < chartSeriesMax ? defaultTextChartColors[chartColors[i]] : null;
+      Color? textColor = i < chartSeriesMax
+          ? textColors != null
+              ? textColors![i]
+              : defaultTextChartColors[chartColors[i]]
+          : null;
       TextStyle chartTxtStyle = TextStyle(
         color: textColor,
         fontWeight: FontWeight.bold,
