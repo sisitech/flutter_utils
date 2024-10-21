@@ -8,6 +8,7 @@ import 'package:flutter_utils/date_widgets/date_range_picker/utils.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:flutter_utils/text_widgets/text_carousel.dart';
+import 'package:flutter_utils/text_widgets/carousel.dart';
 import 'package:flutter_utils/text_widgets/animated_counter.dart';
 import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
 import 'package:flutter_utils/layout_widgets/collapsible_scaffold.dart';
@@ -181,6 +182,44 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 ],
                 sectionIcons: defaultIconMapper.values.toList().sublist(0, 3),
                 initialExpandedIdx: 1,
+              ),
+              SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+
+              ///
+              getHeaderWidget(title: "Mini Cards"),
+              const SizedBox(height: 10),
+              SistchCarousel(
+                // autoPlay: false,
+                // waitTime: 5,
+                children: [
+                  Container(
+                    width: 150,
+                    height: 70,
+                    color: Colors.pink,
+                    child: const Center(child: Text('Box 1')),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    width: 150,
+                    height: 70,
+                    color: Colors.green,
+                    child: const Center(child: Text('Box 2')),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    width: 150,
+                    height: 70,
+                    color: Colors.blue,
+                    child: const Center(child: Text('Box 3')),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    width: 150,
+                    height: 70,
+                    color: Colors.yellow,
+                    child: const Center(child: Text('Box 4')),
+                  ),
+                ],
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
