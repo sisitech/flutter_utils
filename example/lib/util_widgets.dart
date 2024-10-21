@@ -92,7 +92,6 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                       selectedRange.value = val;
                     },
                     selectedRange: selectedRange.value,
-                    hideSuggestions: true,
                   ),
                 ),
               ),
