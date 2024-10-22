@@ -148,3 +148,8 @@ double getListOfDoublesMax(List<double>? values) {
   if (values == null || values.isEmpty) return 0.0;
   return values.reduce((a, b) => a > b ? a : b);
 }
+
+double getListOfDoublesMin(List<double>? values) {
+  if (values == null || values.isEmpty) return 0.0;
+  return values.reduce((a, b) => a < b ? a : b);
+}
