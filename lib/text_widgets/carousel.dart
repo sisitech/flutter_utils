@@ -7,11 +7,13 @@ class SistchCarousel extends StatefulWidget {
   final List<Widget> children;
   final int waitTime;
   final bool autoPlay;
+  final bool isScrollable;
   const SistchCarousel({
     super.key,
     required this.children,
     this.waitTime = 7,
     this.autoPlay = true,
+    this.isScrollable = true,
   });
 
   @override
@@ -27,7 +29,7 @@ class _SistchCarouselState extends State<SistchCarousel> {
   @override
   void initState() {
     super.initState();
-    if (widget.autoPlay) {
+    if (widget.autoPlay && widget.isScrollable) {
       _startAutoScroll();
     }
   }
@@ -63,6 +65,9 @@ class _SistchCarouselState extends State<SistchCarousel> {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       controller: _scrollController,
+      physics: widget.isScrollable
+          ? const BouncingScrollPhysics()
+          : const NeverScrollableScrollPhysics(),
       child: Row(
         children: widget.children,
       ),

@@ -197,6 +197,8 @@ Widget getSummaryCard({
   required Color mainColor,
   String? prefix,
   Function(String title)? onTap,
+  double? width,
+  Color? bgColor,
 }) {
   final textTheme = Get.theme.textTheme;
   return GestureDetector(
@@ -204,9 +206,10 @@ Widget getSummaryCard({
       if (onTap != null) onTap(title);
     },
     child: Card(
+      color: bgColor ?? Get.theme.cardColor,
       child: Container(
         padding: const EdgeInsets.all(10),
-        width: Get.width * 0.35,
+        width: width ?? Get.width * 0.35,
         height: Get.width * 0.3,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,7 +225,7 @@ Widget getSummaryCard({
                 ),
                 const SizedBox(width: 5),
                 SizedBox(
-                  width: Get.width * 0.2,
+                  width: (width ?? Get.width * 0.35) * 0.65,
                   child: Text(
                     title,
                     overflow: TextOverflow.clip,

@@ -191,6 +191,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               SistchCarousel(
                 // autoPlay: false,
                 // waitTime: 5,
+                // isScrollable: false,
                 children: [
                   Container(
                     width: 150,

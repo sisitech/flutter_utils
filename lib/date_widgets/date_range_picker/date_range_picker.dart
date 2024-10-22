@@ -142,7 +142,7 @@ class DatePickerScaffold extends StatelessWidget {
             getIconBtn(
               fgColor: colorScheme.primary,
               action: onSwitchPickers,
-              iconPath: Icons.shuffle_rounded,
+              iconPath: Icons.switch_access_shortcut,
             ),
           ],
         ),
@@ -217,6 +217,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
                       selectedOption.value = tp.displayText;
                       onRangeSelected(SelectedDateRange(
                         rangeLabel: tp.displayText,
+                        rangeType: tp.type,
                         startDate: tp.startDateFunc!(),
                         endDate: tp.endDateFunc!(),
                       ));
