@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_utils/utils/functions.dart';
 
 // Constants
 //
@@ -75,7 +75,7 @@ class SistchBarChart extends StatefulWidget {
     this.chartTitle,
     this.name,
     this.chartHeight = 200,
-    this.tipPreText = "KES.",
+    this.tipPreText = "",
     this.useIndIcons,
   });
 
@@ -223,11 +223,6 @@ class _SistchBarChartState extends State<SistchBarChart> {
                       .withOpacity(0.4),
                   getTooltipItem: (BarChartGroupData group, int groupIndex,
                       BarChartRodData rod, int rodIndex) {
-                    final NumberFormat currencyFormat = NumberFormat.currency(
-                      symbol: widget.tipPreText,
-                      decimalDigits: 2,
-                    );
-
                     return BarTooltipItem(
                       "${widget.xAxisLabels[group.x]}: ",
                       TextStyle(
@@ -237,7 +232,8 @@ class _SistchBarChartState extends State<SistchBarChart> {
                       ),
                       children: <TextSpan>[
                         TextSpan(
-                          text: currencyFormat.format(rod.toY),
+                          text:
+                              "${widget.tipPreText}${getThousandsNumber(rod.toY)}",
                           style: TextStyle(
                             color: rod.color,
                             fontWeight: FontWeight.bold,

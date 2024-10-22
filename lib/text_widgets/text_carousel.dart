@@ -74,7 +74,7 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
     return widget.texts.isNotEmpty
         ? Container(
             decoration: BoxDecoration(
-              color: widget.bgColor ?? theme.colorScheme.primary,
+              color: widget.bgColor ?? theme.colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(5),
             ),
             width: MediaQuery.sizeOf(context).width,
@@ -85,7 +85,8 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
               children: [
                 Icon(
                   widget.icon ?? Icons.lightbulb_circle_rounded,
-                  color: theme.colorScheme.primaryContainer,
+                  color:
+                      widget.textColor ?? theme.colorScheme.onPrimaryContainer,
                   size: 32,
                 ),
                 const SizedBox(width: 10),
@@ -93,7 +94,8 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
                   child: Obx(
                     () => FadeInDownText(
                       currentText: widget.texts[currentIndex.value],
-                      textColor: widget.textColor,
+                      textColor: widget.textColor ??
+                          theme.colorScheme.onPrimaryContainer,
                       textStyle: widget.textStyle,
                     ),
                   ),
@@ -107,12 +109,12 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
 
 class FadeInDownText extends StatefulWidget {
   final String currentText;
-  final Color? textColor;
+  final Color textColor;
   final TextStyle? textStyle;
 
   const FadeInDownText({
     required this.currentText,
-    this.textColor,
+    required this.textColor,
     this.textStyle,
     super.key,
   });
@@ -194,9 +196,8 @@ class _FadeInDownTextState extends State<FadeInDownText>
         overflow: TextOverflow.ellipsis,
         style: widget.textStyle ??
             theme.textTheme.bodySmall!.copyWith(
-              fontWeight: FontWeight.w600,
-              color: widget.textColor ??
-                  Theme.of(context).colorScheme.primaryContainer,
+              fontWeight: FontWeight.w700,
+              color: widget.textColor,
             ),
       ),
     );

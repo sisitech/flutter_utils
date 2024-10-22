@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
+import 'package:flutter_utils/utils/functions.dart';
 
 // Constants
 //
@@ -74,7 +75,7 @@ class SistchLineChart extends StatefulWidget {
     this.chartTitle,
     this.name,
     this.chartHeight = 200,
-    this.tipPreText = "KES.",
+    this.tipPreText = "",
     this.useIndIcons,
   });
 
@@ -193,6 +194,7 @@ class _SistchLineChartState extends State<SistchLineChart> {
                   sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: getXAxisTitles,
+                    interval: 1,
                   ),
                 ),
                 leftTitles: AxisTitles(
@@ -213,6 +215,30 @@ class _SistchLineChartState extends State<SistchLineChart> {
                 ),
               ),
               gridData: FlGridData(show: true, drawVerticalLine: false),
+              lineTouchData: LineTouchData(
+                touchTooltipData: LineTouchTooltipData(
+                  tooltipBgColor: Theme.of(context)
+                      .colorScheme
+                      .surfaceVariant
+                      .withOpacity(0.4),
+                  getTooltipItems: (touchedSpots) {
+                    return touchedSpots
+                        .map((e) => LineTooltipItem(
+                              "${widget.xAxisLabels[e.spotIndex]}: ${widget.tipPreText}${getThousandsNumber(widget.dataSeries[e.barIndex][e.spotIndex])}",
+                              TextStyle(
+                                color: chartData.seriesColors[e.barIndex],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                              ),
+                            ))
+                        .toList();
+                  },
+                  tooltipPadding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -235,7 +261,7 @@ class _SistchLineChartState extends State<SistchLineChart> {
         isCurved: true,
         color: colors[index],
         dotData: FlDotData(show: true),
-        barWidth: 4.0,
+        barWidth: 0.7,
       );
       lineChartData.add(lineData);
     }
