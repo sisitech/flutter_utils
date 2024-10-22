@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/stacked_donut_chart.dart';
 import 'package:flutter_utils/charts/bar_chart.dart';
+import 'package:flutter_utils/charts/line_chart.dart';
 import 'package:flutter_utils/charts/card_grid_chart.dart';
 import 'package:flutter_utils/charts/pie_donut_chart.dart';
 import 'package:flutter_utils/charts/linear_percent_chart.dart';
@@ -100,6 +101,14 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                 updateChart: updateBarChart,
                 chartWidget: SistchBarChart(
                   chartTitle: "Bar Chart Double Series",
+                  dataSeries: barChartData[currentBarChartIdx],
+                  xAxisLabels: barChartLabels[currentBarChartIdx],
+                ),
+              ),
+              const Divider(),
+              chartScaffold(
+                chartWidget: SistchLineChart(
+                  chartTitle: "Line Chart Double Series",
                   dataSeries: barChartData[currentBarChartIdx],
                   xAxisLabels: barChartLabels[currentBarChartIdx],
                 ),
