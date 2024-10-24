@@ -344,23 +344,46 @@ class MyApp extends StatelessWidget {
                         print("Switch state changed to: $value");
                       },
                     ),
-                    SizedBox(
-                      width: 1000,
-                      child: SisitechCard(
-                        assetImage: 'assets/images/sisitech_logo_kinda.png',
-                        description: 'Kes. 10,000',
-                        color: Theme.of(context).colorScheme.primary,
-                        imageScale: 130,
-                        cardAxisAlignment: CrossAxisAlignment.center,
-                        title: 'Balance',
-                        enableTextVisibilityToggle: true,
-                        controller: SisitechCardController(),
+                    Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SisitechCard(
+                            iconData: Icons.call_received,
+                            description: 'Kes. 140,000',
+                            color: Theme.of(context).colorScheme.primary,
+                            cardAxisAlignment: CrossAxisAlignment.center,
+                            title: 'In',
+                            enableTextVisibilityToggle: true,
+                            controller: SisitechCardController(),
+                          ),
+                          SisitechCard(
+                            cardWidth: Get.width * 0.33,
+                            iconData: Icons.wallet,
+                            description: 'Kes. 10,000',
+                            color: Theme.of(context).colorScheme.primary,
+                            cardAxisAlignment: CrossAxisAlignment.center,
+                            title: 'Mpesa Balance',
+                            enableTextVisibilityToggle: true,
+                            topRightWidget: const SizedBox(height: 20),
+                            controller: SisitechCardController(),
+                          ),
+                          SisitechCard(
+                            iconData: Icons.call_made,
+                            description: 'Kes. 160,000',
+                            color: Theme.of(context).colorScheme.primary,
+                            cardAxisAlignment: CrossAxisAlignment.center,
+                            title: 'Out',
+                            enableTextVisibilityToggle: true,
+                            controller: SisitechCardController(),
+                          ),
+                        ],
                       ),
                     ),
                     SizedBox(
                       width: 1000,
                       child: SisitechCard(
-                        iconData: Icons.abc,
+                        assetImage: "assets/images/sisitech_logo_kinda.png",
                         topRightWidget: Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 2, horizontal: 5),
