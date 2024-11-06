@@ -107,17 +107,18 @@ class SistchPieDonutChart extends StatelessWidget {
       double percent = (chartSeries[i] / total) * 100;
       String percentTitle = "${percent.toStringAsFixed(1)}%";
       String sectionTitle = hideIndicators == true && i < chartSeriesMax
-          ? "${chartLabels[i]} • $percentTitle"
+          ? "${chartLabels[i]}"
           : chartLabels[i];
       Color? textColor = i < chartSeriesMax
           ? textColors != null
               ? textColors![i]
               : defaultTextChartColors[chartColors[i]]
           : null;
+
       TextStyle chartTxtStyle = TextStyle(
         color: textColor,
         fontWeight: FontWeight.bold,
-        fontSize: 10,
+        fontSize: 13,
       );
 
       PieChartSectionData pieSection = PieChartSectionData(
