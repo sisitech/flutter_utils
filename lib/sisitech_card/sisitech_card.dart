@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_utils/mixpanel/mixpanel_controller.dart';
 import 'package:get/get.dart';
 
@@ -67,17 +68,17 @@ class SisitechCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          width: cardWidth,
-          child: Card(
-            color: color,
-            elevation: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: GestureDetector(
-                onTap: () => controller!.toggleTextVisibility(
-                    eventName: "card_${slug}_clicked",
-                    enableMixpanel: enableMixpanel),
+        GestureDetector(
+          onTap: () => controller!.toggleTextVisibility(
+              eventName: "card_${slug}_clicked",
+              enableMixpanel: enableMixpanel),
+          child: SizedBox(
+            width: cardWidth,
+            child: Card(
+              color: color,
+              elevation: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
                 child: Column(
                   crossAxisAlignment:
                       cardAxisAlignment ?? CrossAxisAlignment.center,
