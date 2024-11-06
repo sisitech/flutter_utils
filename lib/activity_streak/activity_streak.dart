@@ -11,6 +11,7 @@ class SistchTagStreakIndicator extends StatelessWidget {
   final String activityDescription;
   final String activitySeparator;
   final String activitySubTitle;
+  final Widget? bottomWidget;
   final int currentCount;
   final int totalCount;
   final String slug;
@@ -26,6 +27,7 @@ class SistchTagStreakIndicator extends StatelessWidget {
     this.activitySeparator = " / ",
     this.slug = "defaultTagStreak",
     this.enableMixpanel = true,
+    this.bottomWidget,
     this.totalCount = 1,
     this.balanceLabel = " un-tagged", // Default value
   });
