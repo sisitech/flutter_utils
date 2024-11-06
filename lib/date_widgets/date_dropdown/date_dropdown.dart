@@ -49,10 +49,7 @@ class SistchDateDropdown extends StatelessWidget {
                 contentPadding: EdgeInsets.all(2),
               ),
               formControlName: 'duration',
-              hint: Text(
-                datePeriod.displayText,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+              hint: Text(datePeriod.displayText),
               onChanged: (FormControl formControl) async {
                 if (onDatePeriodChange != null) {
                   await onDatePeriodChange!(formControl.value);
