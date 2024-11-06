@@ -99,6 +99,30 @@ String addThousandSeparators(double value) {
       decimalPart;
 }
 
+String getThousandsNumber(double number) {
+  if (number < 10000) return addThousandSeparators(number);
+
+  double divisor = 1;
+  String suffix = '';
+
+  if (number < 1000000) {
+    divisor = 1000;
+    suffix = 'K';
+  } else if (number < 1000000000) {
+    divisor = 1000000;
+    suffix = 'M';
+  } else if (number < 1000000000000) {
+    divisor = 1000000000;
+    suffix = 'B';
+  } else {
+    divisor = 1000000000000;
+    suffix = 'T';
+  }
+
+  double val = number / divisor;
+  return val.toStringAsFixed(val % 1 == 0 ? 0 : 1) + suffix;
+}
+
 double getListOfDoublesSum(List<double> items) {
   double sum = 0.0;
   for (var item in items) {
@@ -107,9 +131,25 @@ double getListOfDoublesSum(List<double> items) {
   return sum;
 }
 
-double? getListOfDoublesMax(List<double>? values) {
-  if (values == null || values.isEmpty) {
-    return null;
-  }
+String strToTitleCase(String input) {
+  return input
+      .split('_')
+      .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+      .join(' ');
+}
+
+double getListOfDoublesAvg(List<double>? values) {
+  if (values == null || values.isEmpty) return 0.0;
+  double sum = values.reduce((a, b) => a + b);
+  return sum / values.length;
+}
+
+double getListOfDoublesMax(List<double>? values) {
+  if (values == null || values.isEmpty) return 0.0;
   return values.reduce((a, b) => a > b ? a : b);
+}
+
+double getListOfDoublesMin(List<double>? values) {
+  if (values == null || values.isEmpty) return 0.0;
+  return values.reduce((a, b) => a < b ? a : b);
 }

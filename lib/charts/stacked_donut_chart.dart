@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
 import 'package:flutter_utils/utils/functions.dart';
+import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 // Constants
@@ -10,12 +11,14 @@ const double defChartWidth = 200.0;
 // Models
 //
 class SistchDtChartData {
+  final String label;
   final double radius;
   final double percent;
   final Color sectionColor;
   final double startAngle;
 
   SistchDtChartData({
+    required this.label,
     required this.radius,
     required this.percent,
     required this.sectionColor,
@@ -29,7 +32,7 @@ class SistchStackedDonutChart extends StatelessWidget {
   final List<double> dataSeries;
   final List<String> chartLabels;
   final List<Color>? dtColors;
-  final Axis? chartDirection;
+  // final Axis? chartDirection;
   final String? chartTitle;
   final double? chartWidth;
   final Widget? centerWidget;
@@ -37,6 +40,9 @@ class SistchStackedDonutChart extends StatelessWidget {
   final bool? useIndIcons;
   final double? firstStartAngle;
   final String indicatorPrefix;
+  final bool hideIndicators;
+  final String? selectedIndicator;
+  final Function(String val)? onIndicatorTap;
 
   ///[SistchStackedDonutChart] renders custom Sisitech Stack of Donut Charts
   /// Required Fields:
@@ -47,7 +53,7 @@ class SistchStackedDonutChart extends StatelessWidget {
     required this.dataSeries,
     required this.chartLabels,
     this.dtColors,
-    this.chartDirection,
+    // this.chartDirection,
     this.chartTitle,
     this.chartWidth = defChartWidth,
     this.centerWidget,
@@ -55,6 +61,9 @@ class SistchStackedDonutChart extends StatelessWidget {
     this.useIndIcons,
     this.firstStartAngle,
     this.indicatorPrefix = '',
+    this.hideIndicators = false,
+    this.onIndicatorTap,
+    this.selectedIndicator,
   });
 
   /// [_createChartData]
@@ -77,24 +86,29 @@ class SistchStackedDonutChart extends StatelessWidget {
       var angle = startAngle + ((index + 1) * angleIncr);
 
       return SistchDtChartData(
+        label: chartLabels[index],
         percent: e / seriesTotal,
         radius: startRadius - ((index + 1) * radDcr),
         sectionColor: chartColors[index],
         startAngle: index == 0
-            ? (firstStartAngle ?? 335)
+            ? (firstStartAngle ?? 30)
             : angle + ((index - 1) * angleIncr),
       );
     }).toList();
 
-    List<Widget> donutChartIndicators = getChartIndicators(
-      chartLabels,
-      chartColors,
-      values: chartData.map((e) => e.percent * 100).toList(),
-      useIcons: useIndIcons,
-      indicatorPrefix: indicatorPrefix,
-    );
+    List<Widget> stackedChartIndicators = getChartIndicators(chartLabels,
+        chartColors, chartData.map((e) => e.percent * 100).toList(),
+        useIcons: useIndIcons,
+        indicatorPrefix: indicatorPrefix,
+        hidePerc: false,
+        selectedIndicator: selectedIndicator,
+        onIndicatorTap:
+            // chartDirection != Axis.horizontal ?
+            onIndicatorTap
+        //: null,
+        );
 
-    return [chartData, donutChartIndicators];
+    return [chartData, stackedChartIndicators];
   }
 
   @override
@@ -105,7 +119,7 @@ class SistchStackedDonutChart extends StatelessWidget {
 
     var createChartRes = _createChartData();
     List<SistchDtChartData> chartData = createChartRes[0];
-    List<Widget> donutChartIndicators = createChartRes[1];
+    List<Widget> stackedChartIndicators = createChartRes[1];
 
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -124,12 +138,14 @@ class SistchStackedDonutChart extends StatelessWidget {
           //         mainAxisAlignment: MainAxisAlignment.center,
           //         children: [
           //           _getChartSection(isHorizFormat, colorScheme),
-          //           const SizedBox(width: 10),
-          //           _getIndicatorsSection(isHorizFormat),
+          //           if (!hideIndicators)
+          //             Padding(
+          //               padding: const EdgeInsets.only(top: 10),
+          //               child: _getIndicatorsSection(isHorizFormat),
+          //             ),
           //         ],
           //       )
-          //     :
-
+          // :
           Column(
             // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -139,11 +155,14 @@ class SistchStackedDonutChart extends StatelessWidget {
                 context: context,
                 chartData: chartData,
               ),
-              const SizedBox(height: 15),
-              _getIndicatorsSection(
-                isHorizFormat: false,
-                donutChartIndicators: donutChartIndicators,
-              ),
+              if (!hideIndicators)
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: _getIndicatorsSection(
+                    isHorizFormat: false,
+                    chartIndicators: stackedChartIndicators,
+                  ),
+                ),
             ],
           ),
         ],
@@ -166,15 +185,20 @@ class SistchStackedDonutChart extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           ...chartData.map(
-            (e) => CircularPercentIndicator(
-              radius: e.radius,
-              // lineWidth: 10.0,
-              startAngle: e.startAngle,
-              animation: true,
-              animationDuration: 1000,
-              percent: e.percent,
-              backgroundColor: colorScheme.background,
-              progressColor: e.sectionColor,
+            (e) => GestureDetector(
+              onTap: onIndicatorTap == null
+                  ? null
+                  : () => onIndicatorTap!(e.label),
+              child: CircularPercentIndicator(
+                radius: e.radius,
+                lineWidth: selectedIndicator == e.label ? 7 : 5.0,
+                startAngle: e.startAngle,
+                animation: true,
+                animationDuration: 1000,
+                percent: e.percent,
+                backgroundColor: colorScheme.surface,
+                progressColor: e.sectionColor,
+              ),
             ),
           ),
           centerWidget ?? const SizedBox()
@@ -185,7 +209,7 @@ class SistchStackedDonutChart extends StatelessWidget {
 
   Widget _getIndicatorsSection({
     required bool isHorizFormat,
-    required List<Widget> donutChartIndicators,
+    required List<Widget> chartIndicators,
   }) {
     return
         // Container(
@@ -198,7 +222,7 @@ class SistchStackedDonutChart extends StatelessWidget {
         //   child:
         Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: donutChartIndicators.map((indicator) => indicator).toList(),
+      children: chartIndicators.map((indicator) => indicator).toList(),
       // ),
     );
   }

@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/activity_streak/activity_streak.dart';
-import 'package:flutter_utils/date_dropdown/constants.dart';
-import 'package:flutter_utils/date_dropdown/date_dropdown.dart';
-import 'package:flutter_utils/date_dropdown/models.dart';
-import 'package:flutter_utils/date_pickers/date_range_picker.dart';
-import 'package:flutter_utils/date_pickers/utils.dart';
+import 'package:flutter_utils/date_widgets/date_dropdown/constants.dart';
+import 'package:flutter_utils/date_widgets/date_dropdown/date_dropdown.dart';
+import 'package:flutter_utils/date_widgets/date_dropdown/models.dart';
+import 'package:flutter_utils/date_widgets/date_range_picker/date_range_picker.dart';
+import 'package:flutter_utils/date_widgets/date_range_picker/utils.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
-import 'package:flutter_utils/sistch_text_carousel/text_carousel.dart';
-import 'package:flutter_utils/widgets/custom_tab_bar.dart';
+import 'package:flutter_utils/text_widgets/text_carousel.dart';
+import 'package:flutter_utils/text_widgets/carousel.dart';
+import 'package:flutter_utils/text_widgets/animated_counter.dart';
+import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
+import 'package:flutter_utils/layout_widgets/collapsible_scaffold.dart';
+import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 
@@ -31,6 +35,13 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
     dprint(datePeriod.displayName);
   }
 
+  RxInt currentTabIdx = RxInt(0);
+  onTabChange(int? val) {
+    if (val != null) {
+      currentTabIdx.value = val;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -44,7 +55,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
         child: Center(
           child: Column(
             children: [
-              getHeaderWidget(theme: theme, title: "Date Dropdown"),
+              getHeaderWidget(title: "Date Dropdown"),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: SistchDateDropdown(
@@ -73,7 +84,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ///
-              getHeaderWidget(theme: theme, title: "Range Picker"),
+              getHeaderWidget(title: "Range Picker"),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20),
                 child: Obx(
@@ -82,14 +93,15 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                       selectedRange.value = val;
                     },
                     selectedRange: selectedRange.value,
-                    hideSuggestions: true,
                   ),
                 ),
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ///
-              getHeaderWidget(theme: theme, title: "Text Carousel"),
+              getHeaderWidget(
+                  title: "Text Carousel",
+                  trailingWidget: const Icon(Icons.menu_book)),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: SistchTextCarousel(
@@ -103,7 +115,17 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ///
-              getHeaderWidget(theme: theme, title: "Streak Indicator"),
+              getHeaderWidget(title: "Animated Counter"),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: SistchAnimatedCounter(
+                  valueToAnimate: 415000,
+                ),
+              ),
+              SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+
+              ///
+              getHeaderWidget(title: "Streak Indicator"),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: SistchTagStreakIndicator(
@@ -114,22 +136,91 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ///
-              getHeaderWidget(theme: theme, title: "Tab Bar Scaffold"),
+              getHeaderWidget(title: "Tab Bar Scaffold"),
               Container(
                 color: theme.colorScheme.surfaceVariant,
                 margin: const EdgeInsets.symmetric(vertical: 20),
-                child: const SistchTabBarScaffold(
-                  tabLabels: ["Tab One", "Tab Two", "Tab Three"],
-                  // showUnViewedIndicator: false,
-                  height: 200,
-                  isScrollable: false,
-                  useWantKeepAlive: false,
-                  tabWidgets: [
-                    Center(child: Icon(Icons.one_k)),
-                    Center(child: Icon(Icons.two_k)),
-                    Center(child: Icon(Icons.three_k)),
-                  ],
+                child: Obx(
+                  () => SistchTabBarScaffold(
+                    tabLabels: const ["Tab One", "Tab Two", "Tab Three"],
+                    // showUnViewedIndicator: false,
+                    height: currentTabIdx.value == 1 ? 250 : 150,
+                    isScrollable: false,
+                    // useWantKeepAlive: false,
+                    onIndexChange: onTabChange,
+                    tabWidgets: const [
+                      Center(
+                        child: SistchAnimatedCounter(
+                          valueToAnimate: 9999,
+                        ),
+                      ),
+                      Center(
+                        child: SistchAnimatedCounter(
+                          valueToAnimate: 99999,
+                          // useWantKeepAlive: false,
+                        ),
+                      ),
+                      Center(child: Icon(Icons.three_k)),
+                    ],
+                  ),
                 ),
+              ),
+              SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+
+              ///
+              getHeaderWidget(title: "Collapsible Sections Scaffold"),
+              SistchCollapsibleScaffold(
+                sectionTitles: const [
+                  "Section One",
+                  "Section Two",
+                  "Section Three"
+                ],
+                sections: const [
+                  Center(child: Icon(Icons.one_k)),
+                  Center(child: Icon(Icons.two_k)),
+                  Center(child: Icon(Icons.three_k)),
+                ],
+                sectionIcons: defaultIconMapper.values.toList().sublist(0, 3),
+                initialExpandedIdx: 1,
+              ),
+              SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+
+              ///
+              getHeaderWidget(title: "Mini Cards"),
+              const SizedBox(height: 10),
+              SistchCarousel(
+                // autoPlay: false,
+                // waitTime: 5,
+                // isScrollable: false,
+                children: [
+                  Container(
+                    width: 150,
+                    height: 70,
+                    color: Colors.pink,
+                    child: const Center(child: Text('Box 1')),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    width: 150,
+                    height: 70,
+                    color: Colors.green,
+                    child: const Center(child: Text('Box 2')),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    width: 150,
+                    height: 70,
+                    color: Colors.blue,
+                    child: const Center(child: Text('Box 3')),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    width: 150,
+                    height: 70,
+                    color: Colors.yellow,
+                    child: const Center(child: Text('Box 4')),
+                  ),
+                ],
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 

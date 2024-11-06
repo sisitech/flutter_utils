@@ -16,18 +16,22 @@ class SistchPieDonutChart extends StatelessWidget {
   final List<String> pieLabels;
   final List<Color>? pieColors;
   final Axis? chartDirection;
-  final double? chartHeight;
+  final double chartHeight;
   final double? donutCenterRadius;
   final Color? bgColor;
-  final bool? hideIndicators;
+  final bool hideIndicators;
   final String? chartTitle;
   final double? badgeOffset;
-  final double? titleOffset;
-  final bool? hideIndicatorExt;
+  final double titleOffset;
+  final bool hideIndicatorExt;
   final bool? useIndIcons;
   final bool isHalfArcChart;
   final double? sectionsSpace;
   final String indicatorPrefix;
+  final String? selectedIndicator;
+  final Function(String val)? onIndicatorTap;
+  final Widget? centerWidget;
+  final List<Color>? textColors;
 
   ///[SistchPieDonutChart] renders custom Sisitech Pie or Donut Chart
   /// Required Fields:
@@ -45,15 +49,19 @@ class SistchPieDonutChart extends StatelessWidget {
     this.chartHeight = 220,
     this.donutCenterRadius,
     this.bgColor,
-    this.hideIndicators,
+    this.hideIndicators = false,
     this.chartTitle,
     this.badgeOffset,
-    this.titleOffset,
-    this.hideIndicatorExt,
+    this.titleOffset = 0.7,
+    this.hideIndicatorExt = false,
     this.useIndIcons,
     this.isHalfArcChart = false,
     this.sectionsSpace,
     this.indicatorPrefix = '',
+    this.onIndicatorTap,
+    this.selectedIndicator,
+    this.centerWidget,
+    this.textColors,
   });
 
   /// [_createChartData]
@@ -66,23 +74,32 @@ class SistchPieDonutChart extends StatelessWidget {
     List<Widget> pieChartIndicators = getChartIndicators(
       pieLabels,
       chartColors,
-      values: hideIndicatorExt == true ? null : chartSeries,
+      hideIndicatorExt == true ? [] : dataSeries,
       useIcons: useIndIcons,
       indicatorPrefix: indicatorPrefix,
+      selectedIndicator: selectedIndicator,
+      onIndicatorTap: chartDirection != Axis.horizontal ? onIndicatorTap : null,
+    );
+    List<String> chartLabels = isHalfArcChart ? [...pieLabels, ''] : pieLabels;
+
+    List<PieChartSectionData> chartData = getPieChartSections(
+      chartColors: chartColors,
+      isPieChart: donutCenterRadius == 0,
+      chartLabels: chartLabels,
     );
 
-    List<PieChartSectionData> chartData =
-        getPieChartSections(chartColors: chartColors);
-
-    return [chartData, pieChartIndicators];
+    return [chartData, pieChartIndicators, chartLabels];
   }
 
   List<PieChartSectionData> getPieChartSections(
-      {required List<Color> chartColors}) {
+      {required List<Color> chartColors,
+      required bool isPieChart,
+      required List<String> chartLabels}) {
     List<PieChartSectionData> pieSections = [];
     double total = getListOfDoublesSum(dataSeries);
     List<double> chartSeries =
         isHalfArcChart ? getHalfArcChartValues(dataSeries) : dataSeries;
+
     int chartSeriesMax =
         isHalfArcChart ? chartSeries.length - 1 : chartSeries.length;
 
@@ -90,35 +107,38 @@ class SistchPieDonutChart extends StatelessWidget {
       double percent = (chartSeries[i] / total) * 100;
       String percentTitle = "${percent.toStringAsFixed(1)}%";
       String sectionTitle = hideIndicators == true && i < chartSeriesMax
-          ? "${pieLabels[i]} • $percentTitle"
-          : percentTitle;
-      Color? textColor =
-          i < chartSeriesMax ? defaultTextChartColors[chartColors[i]] : null;
+          ? "${chartLabels[i]} • $percentTitle"
+          : chartLabels[i];
+      Color? textColor = i < chartSeriesMax
+          ? textColors != null
+              ? textColors![i]
+              : defaultTextChartColors[chartColors[i]]
+          : null;
+      TextStyle chartTxtStyle = TextStyle(
+        color: textColor,
+        fontWeight: FontWeight.bold,
+        fontSize: 10,
+      );
 
       PieChartSectionData pieSection = PieChartSectionData(
         color: i < chartSeriesMax ? chartColors[i] : null,
         value: percent,
-        title: hideIndicators == true ? sectionTitle : "",
-        titleStyle: TextStyle(
-          color: textColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 10,
-        ),
+        title: sectionTitle,
+        titleStyle: chartTxtStyle,
+        showTitle: hideIndicators,
         badgeWidget: hideIndicators == true
             ? null
             : Text(
                 percentTitle,
-                style: TextStyle(
-                  color: textColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 10,
-                ),
+                style: chartTxtStyle,
               ),
-        radius: isHalfArcChart
-            ? null
-            : donutCenterRadius != 0
-                ? null
-                : 80,
+        radius: isPieChart
+            ? chartLabels[i] == selectedIndicator
+                ? chartHeight * 0.5
+                : chartHeight * 0.47
+            : chartLabels[i] == selectedIndicator
+                ? 45
+                : 40,
         badgePositionPercentageOffset: badgeOffset,
         titlePositionPercentageOffset: titleOffset,
       );
@@ -136,6 +156,7 @@ class SistchPieDonutChart extends StatelessWidget {
     var createChartRes = _createChartData();
     List<PieChartSectionData> pieSections = createChartRes[0];
     List<Widget> chartIndicators = createChartRes[1];
+    List<String> chartLabels = createChartRes[2];
 
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -160,6 +181,8 @@ class SistchPieDonutChart extends StatelessWidget {
                         context: context,
                         pieSections: pieSections,
                         sectionsSpace: sectionsSpace,
+                        centerWidget: centerWidget,
+                        chartLabels: chartLabels,
                       ),
                     ),
                     hideIndicators == true
@@ -178,6 +201,8 @@ class SistchPieDonutChart extends StatelessWidget {
                       context: context,
                       pieSections: pieSections,
                       sectionsSpace: sectionsSpace,
+                      chartLabels: chartLabels,
+                      centerWidget: centerWidget,
                     ),
                     const SizedBox(height: 10),
                     hideIndicators == true
@@ -198,39 +223,50 @@ class SistchPieDonutChart extends StatelessWidget {
     required bool isHorizFormat,
     required BuildContext context,
     required List<PieChartSectionData> pieSections,
+    required List<String> chartLabels,
     double? sectionsSpace,
+    Widget? centerWidget,
   }) {
-    return ClipRect(
-      child: Align(
-        alignment: Alignment.topCenter,
-        heightFactor: isHalfArcChart ? 0.5 : 1,
-        child: SizedBox(
-          height: chartHeight,
-          child: PieChart(
-            PieChartData(
-              sections: pieSections,
-              startDegreeOffset: 180,
-              sectionsSpace: sectionsSpace,
-              borderData: FlBorderData(show: false),
-              centerSpaceRadius: donutCenterRadius,
-              pieTouchData: PieTouchData(
-                touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                  // setState(() {
-                  //   if (!event.isInterestedForInteractions ||
-                  //       pieTouchResponse == null ||
-                  //       pieTouchResponse.touchedSection == null) {
-                  //     touchedIndex = -1;
-                  //     return;
-                  //   }
-                  //   touchedIndex =
-                  //       pieTouchResponse.touchedSection!.touchedSectionIndex;
-                  // });
-                },
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        ClipRect(
+          child: Align(
+            alignment: Alignment.topCenter,
+            heightFactor: isHalfArcChart ? 0.5 : 1,
+            child: SizedBox(
+              height: isHalfArcChart ? chartHeight * 1.2 : chartHeight,
+              child: PieChart(
+                PieChartData(
+                  sections: pieSections,
+                  startDegreeOffset: 180,
+                  sectionsSpace: sectionsSpace,
+                  borderData: FlBorderData(show: false),
+                  centerSpaceRadius: isHalfArcChart ? null : donutCenterRadius,
+                  pieTouchData: PieTouchData(
+                      touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                    if (event is FlLongPressEnd) {
+                      if (pieTouchResponse == null ||
+                          pieTouchResponse.touchedSection == null ||
+                          onIndicatorTap == null) {
+                        return;
+                      }
+
+                      int? touchedIndex =
+                          pieTouchResponse.touchedSection?.touchedSectionIndex;
+
+                      if (touchedIndex != null && touchedIndex != -1) {
+                        onIndicatorTap!(chartLabels[touchedIndex]);
+                      }
+                    }
+                  }),
+                ),
               ),
             ),
           ),
         ),
-      ),
+        if (centerWidget != null) centerWidget
+      ],
     );
   }
 

@@ -30,9 +30,7 @@ class SistchTabBarScaffold extends StatefulWidget {
 }
 
 class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
-    with
-        SingleTickerProviderStateMixin,
-        AutomaticKeepAliveClientMixin<SistchTabBarScaffold> {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   late TabController tabController;
   RxList<bool> viewedTabs = RxList([]);
 
@@ -45,12 +43,21 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
       initialIndex: widget.startTabIdx,
     );
 
-    // set viewed notification dots
+    // Add listener to the TabController to detect tab changes
+    tabController.addListener(() {
+      if (!tabController.indexIsChanging &&
+          tabController.index != tabController.previousIndex) {
+        onTabIndexChange(tabController.index);
+      }
+    });
+
+    // Set viewed notification dots
     viewedTabs.value = List.generate(
       widget.tabWidgets.length,
       (i) => widget.showUnViewedIndicator ? false : true,
     );
     updateViewedTabs(widget.startTabIdx);
+    setUpTabControllerListener();
   }
 
   onTabIndexChange(int? val) {
@@ -63,6 +70,25 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
   updateViewedTabs(int idx) {
     if (idx >= 0 && idx < viewedTabs.length) {
       viewedTabs[idx] = true;
+    }
+  }
+
+  setUpTabControllerListener() {
+    if (tabController.animation != null) {
+      tabController.animation!.addListener(() {
+        int indexChange = tabController.offset.round();
+        int index = tabController.index + indexChange;
+        if (index == tabController.index) {
+          return;
+        }
+        onTabIndexChange(index);
+        if (tabController.indexIsChanging) {
+          return;
+        }
+        tabController.animateTo(index,
+            duration: const Duration(milliseconds: 1), curve: Curves.linear);
+      });
+      return;
     }
   }
 
@@ -88,15 +114,12 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
   }
 
   @override
-  bool get wantKeepAlive => widget.useWantKeepAlive;
-
-  @override
   Widget build(BuildContext context) {
     super.build(context);
     final theme = Theme.of(context);
 
     return SizedBox(
-      height: widget.height ?? MediaQuery.sizeOf(context).height * 0.9,
+      height: widget.height ?? MediaQuery.sizeOf(context).height * 0.5,
       child: SafeArea(
         child: CustomScrollView(
           shrinkWrap: widget.isScrollable ? false : true,
@@ -126,16 +149,12 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(label),
+                          const SizedBox(width: 4),
                           if (!viewedTabs[index])
-                            Container(
-                              width: 4,
-                              height: 4,
-                              margin: const EdgeInsets.only(left: 5.0),
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.primary,
-                                shape: BoxShape.circle,
-                              ),
-                            ),
+                            CircleAvatar(
+                              radius: 2.5,
+                              backgroundColor: theme.colorScheme.primary,
+                            )
                         ],
                       ),
                     );
@@ -154,4 +173,7 @@ class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => widget.useWantKeepAlive;
 }

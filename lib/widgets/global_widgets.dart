@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 Widget getIconBtn(
     {Color? bgColor,
@@ -28,7 +29,6 @@ Widget getIconBtn(
 }
 
 Widget getChipsWidget({
-  required ThemeData theme,
   required List<String> chipLabels,
   required Function(int val) onChipSelected,
   required int? selectedIdx,
@@ -40,7 +40,7 @@ Widget getChipsWidget({
   return Container(
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(5),
-      color: bgColor ?? theme.colorScheme.primaryContainer,
+      color: bgColor ?? Get.theme.colorScheme.primaryContainer,
     ),
     width: width,
     margin: const EdgeInsets.all(5),
@@ -51,7 +51,7 @@ Widget getChipsWidget({
         if (title != null)
           Text(
             title,
-            style: theme.textTheme.labelMedium!.copyWith(
+            style: Get.theme.textTheme.labelMedium!.copyWith(
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -63,7 +63,7 @@ Widget getChipsWidget({
             return ChoiceChip(
               label: Text(
                 label,
-                style: theme.textTheme.labelSmall,
+                style: Get.theme.textTheme.labelSmall,
               ),
               labelPadding: EdgeInsets.zero,
               avatar: (chipIcons != null &&
@@ -84,7 +84,6 @@ Widget getChipsWidget({
 }
 
 Widget getDropDownFormField({
-  required ThemeData theme,
   required int? selectedValue,
   required List<DropdownMenuItem<int>> items,
   required Function(int? val) onChanged,
@@ -109,7 +108,7 @@ Widget getDropDownFormField({
                 filled: true,
                 isDense: true,
                 floatingLabelBehavior: FloatingLabelBehavior.always,
-                hintStyle: theme.textTheme.displaySmall,
+                hintStyle: Get.theme.textTheme.displaySmall,
                 border: const OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ),
@@ -117,7 +116,7 @@ Widget getDropDownFormField({
               ),
               value: selectedValue,
               icon: const Icon(Icons.keyboard_arrow_down),
-              style: theme.textTheme.bodyMedium,
+              style: Get.theme.textTheme.bodyMedium,
               onChanged: (int? value) {
                 onChanged(value);
               },
@@ -133,18 +132,25 @@ Widget getDropDownFormField({
   );
 }
 
-Widget getPopupScaffold(
-    {required List<Widget> widgetList, required ThemeData theme}) {
-  return Dialog(
-    insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-    child: SingleChildScrollView(
-      child: Container(
-        decoration: BoxDecoration(
-          color: theme.colorScheme.surface,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: const EdgeInsets.all(15),
+Widget getBottomSheetScaffold(
+    {required List<Widget> widgetList,
+    required double height,
+    bool isScrollable = true}) {
+  final scrollCtrl = ScrollController();
+  return Container(
+    height: height,
+    decoration: BoxDecoration(color: Get.theme.colorScheme.surface),
+    padding: const EdgeInsets.all(15),
+    child: Scrollbar(
+      controller: scrollCtrl,
+      thumbVisibility: isScrollable,
+      child: SingleChildScrollView(
+        controller: scrollCtrl,
+        physics: isScrollable
+            ? const ClampingScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: widgetList,
         ),
@@ -155,21 +161,128 @@ Widget getPopupScaffold(
 
 Widget getHeaderWidget({
   required String title,
-  required ThemeData theme,
   TextStyle? style,
+  Widget? leadingWidget,
+  Widget? trailingWidget,
 }) {
   return Row(
     children: [
+      if (leadingWidget != null)
+        Padding(
+          padding: const EdgeInsets.only(right: 5),
+          child: leadingWidget,
+        ),
       Text(
         title,
-        style: style ?? theme.textTheme.titleSmall,
+        style: style ?? Get.theme.textTheme.titleSmall,
       ),
-      const SizedBox(width: 5),
       Expanded(
-        child: Divider(
-          color: theme.colorScheme.outline,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Divider(
+            color: Get.theme.colorScheme.outline,
+          ),
         ),
       ),
+      if (trailingWidget != null) trailingWidget,
     ],
+  );
+}
+
+Widget getSummaryCard({
+  required IconData iconPath,
+  required String title,
+  String? subtitle,
+  required String tag,
+  required Color mainColor,
+  String? prefix,
+  Function(String title)? onTap,
+  double? width,
+  Color? bgColor,
+}) {
+  final textTheme = Get.theme.textTheme;
+  return GestureDetector(
+    onTap: () {
+      if (onTap != null) onTap(title);
+    },
+    child: Card(
+      color: bgColor ?? Get.theme.cardColor,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        width: width ?? Get.width * 0.35,
+        height: Get.width * 0.3,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  radius: 12,
+                  backgroundColor: mainColor.withOpacity(0.3),
+                  child: Icon(iconPath, color: mainColor, size: 18),
+                ),
+                const SizedBox(width: 5),
+                SizedBox(
+                  width: (width ?? Get.width * 0.35) * 0.65,
+                  child: Text(
+                    title,
+                    overflow: TextOverflow.clip,
+                    maxLines: 2,
+                    style: textTheme.labelSmall!.copyWith(
+                      color: mainColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (subtitle != null) ...[
+              const SizedBox(height: 10),
+              Text(
+                subtitle,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style:
+                    textTheme.labelSmall!.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
+            const Spacer(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text.rich(
+                  TextSpan(
+                    text: prefix == null ? '' : '$prefix ',
+                    style: textTheme.labelSmall!.copyWith(
+                      color: Get.theme.colorScheme.tertiary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: tag,
+                        style: textTheme.bodyLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                CircleAvatar(
+                  radius: 14,
+                  backgroundColor: mainColor.withOpacity(0.3),
+                  child: Icon(
+                    Icons.call_made,
+                    size: 16,
+                    color: mainColor,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ),
   );
 }

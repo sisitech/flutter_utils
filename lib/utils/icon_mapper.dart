@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-const Map<String, IconData> iconMapper = {
+const Map<String, IconData> defaultIconMapper = {
   // ---------
+  'Untagged': Icons.category,
   'Household': Icons.house,
   // ---------
   'Shopping': Icons.shopping_basket,
@@ -64,6 +65,7 @@ const Map<String, IconData> iconMapper = {
   'Vehicle': Icons.car_repair,
   // ---------
   'Food & Drinks': FontAwesomeIcons.bowlFood,
+  'Food & Dining': FontAwesomeIcons.bowlFood,
   // ---------
   'Restaurant': Icons.restaurant_rounded,
   'Meal': Icons.restaurant_menu,

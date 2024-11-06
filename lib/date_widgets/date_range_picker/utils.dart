@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_utils/date_dropdown/constants.dart';
-import 'package:flutter_utils/date_dropdown/models.dart';
+import 'package:flutter_utils/date_widgets/date_dropdown/constants.dart';
+import 'package:flutter_utils/date_widgets/date_dropdown/models.dart';
 import 'package:intl/intl.dart';
 
 /// Models

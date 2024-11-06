@@ -9,8 +9,8 @@ import 'package:flutter_utils/utils/functions.dart';
 
 // Models
 //
-class SistchBarChartData {
-  List<BarChartGroupData> barGroupData;
+class SistchLineChartData {
+  List<LineChartBarData> lineChartData;
   List<String> xAxisLabels;
   double maxY;
   List<Color> seriesColors;
@@ -18,8 +18,8 @@ class SistchBarChartData {
   Color? textColor;
   bool? useIndIcons;
 
-  SistchBarChartData({
-    required this.barGroupData,
+  SistchLineChartData({
+    required this.lineChartData,
     required this.xAxisLabels,
     required this.maxY,
     required this.seriesColors,
@@ -28,8 +28,8 @@ class SistchBarChartData {
     this.useIndIcons,
   });
 
-  SistchBarChartData copyWith({
-    List<BarChartGroupData>? barGroupData,
+  SistchLineChartData copyWith({
+    List<LineChartBarData>? lineChartData,
     List<String>? xAxisLabels,
     double? maxY,
     List<Color>? seriesColors,
@@ -37,8 +37,8 @@ class SistchBarChartData {
     Color? textColor,
     bool? useIndIcons,
   }) {
-    return SistchBarChartData(
-      barGroupData: barGroupData ?? this.barGroupData,
+    return SistchLineChartData(
+      lineChartData: lineChartData ?? this.lineChartData,
       xAxisLabels: xAxisLabels ?? this.xAxisLabels,
       maxY: maxY ?? this.maxY,
       seriesColors: seriesColors ?? this.seriesColors,
@@ -51,7 +51,7 @@ class SistchBarChartData {
 
 // View
 //
-class SistchBarChart extends StatefulWidget {
+class SistchLineChart extends StatefulWidget {
   final List<List<double>> dataSeries;
   final List<String> xAxisLabels;
   final List<String>? seriesLabels;
@@ -64,7 +64,7 @@ class SistchBarChart extends StatefulWidget {
   final String? name;
   final bool? useIndIcons;
 
-  const SistchBarChart({
+  const SistchLineChart({
     super.key,
     required this.dataSeries,
     required this.xAxisLabels,
@@ -80,42 +80,42 @@ class SistchBarChart extends StatefulWidget {
   });
 
   @override
-  State<SistchBarChart> createState() => _SistchBarChartState();
+  State<SistchLineChart> createState() => _SistchLineChartState();
 }
 
-class _SistchBarChartState extends State<SistchBarChart> {
+class _SistchLineChartState extends State<SistchLineChart> {
   int currentSeriesIdx = -1;
 
   /// [_createChartData]
-  ///Returns [0]: chartData, [1] chartIndicators
+  /// Returns [0]: chartData, [1]: chartIndicators
   _createChartData() {
     List<List<double>> currentSeries;
     List<String> currentSeriesLabels;
     List<Color> currentSeriesColors;
 
-    List<String> barSeriesLabels = widget.seriesLabels ??
+    List<String> lineSeriesLabels = widget.seriesLabels ??
         List.generate(widget.dataSeries.length, (i) => "Series $i");
-    List<Color> barChartColors =
+    List<Color> lineChartColors =
         widget.seriesColors ?? getChartColors(widget.dataSeries.length);
 
     if (currentSeriesIdx == -1) {
       currentSeries = widget.dataSeries;
-      currentSeriesLabels = barSeriesLabels;
-      currentSeriesColors = barChartColors;
+      currentSeriesLabels = lineSeriesLabels;
+      currentSeriesColors = lineChartColors;
     } else {
       currentSeries = [widget.dataSeries[currentSeriesIdx]];
-      currentSeriesLabels = [barSeriesLabels[currentSeriesIdx]];
-      currentSeriesColors = [barChartColors[currentSeriesIdx]];
+      currentSeriesLabels = [lineSeriesLabels[currentSeriesIdx]];
+      currentSeriesColors = [lineChartColors[currentSeriesIdx]];
     }
 
-    List<Widget> barChartIndicators = getChartIndicators(
+    List<Widget> lineChartIndicators = getChartIndicators(
         currentSeriesLabels, currentSeriesColors, [],
         useIcons: widget.useIndIcons);
 
-    final barGroupData = getBarGroupData(currentSeries, currentSeriesColors);
+    final lineChartData = getLineChartData(currentSeries, currentSeriesColors);
 
-    SistchBarChartData chartData = SistchBarChartData(
-      barGroupData: barGroupData,
+    SistchLineChartData chartData = SistchLineChartData(
+      lineChartData: lineChartData,
       xAxisLabels: widget.xAxisLabels,
       maxY: getMaxY(currentSeries),
       textColor: widget.textColor,
@@ -124,7 +124,7 @@ class _SistchBarChartState extends State<SistchBarChart> {
       useIndIcons: widget.useIndIcons,
     );
 
-    return [chartData, barChartIndicators];
+    return [chartData, lineChartIndicators];
   }
 
   void onSwapChartSeries() {
@@ -144,7 +144,7 @@ class _SistchBarChartState extends State<SistchBarChart> {
     final textTheme = Theme.of(context).textTheme;
 
     var createChartRes = _createChartData();
-    SistchBarChartData chartData = createChartRes[0];
+    SistchLineChartData chartData = createChartRes[0];
     List<Widget> chartIndicators = createChartRes[1];
 
     return Column(
@@ -177,11 +177,11 @@ class _SistchBarChartState extends State<SistchBarChart> {
           ),
         SizedBox(
           height: widget.chartHeight,
-          child: BarChart(
-            BarChartData(
+          child: LineChart(
+            LineChartData(
               maxY: chartData.maxY,
               minY: 0.0,
-              barGroups: chartData.barGroupData,
+              lineBarsData: chartData.lineChartData,
               titlesData: FlTitlesData(
                 show: true,
                 rightTitles: AxisTitles(
@@ -194,6 +194,7 @@ class _SistchBarChartState extends State<SistchBarChart> {
                   sideTitles: SideTitles(
                     showTitles: true,
                     getTitlesWidget: getXAxisTitles,
+                    interval: 1,
                   ),
                 ),
                 leftTitles: AxisTitles(
@@ -214,34 +215,23 @@ class _SistchBarChartState extends State<SistchBarChart> {
                 ),
               ),
               gridData: FlGridData(show: true, drawVerticalLine: false),
-              groupsSpace: 6.0,
-              barTouchData: BarTouchData(
-                touchTooltipData: BarTouchTooltipData(
+              lineTouchData: LineTouchData(
+                touchTooltipData: LineTouchTooltipData(
                   tooltipBgColor: Theme.of(context)
                       .colorScheme
                       .surfaceVariant
                       .withOpacity(0.4),
-                  getTooltipItem: (BarChartGroupData group, int groupIndex,
-                      BarChartRodData rod, int rodIndex) {
-                    return BarTooltipItem(
-                      "${widget.xAxisLabels[group.x]}: ",
-                      TextStyle(
-                        color: widget.textColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text:
-                              "${widget.tipPreText}${getThousandsNumber(rod.toY)}",
-                          style: TextStyle(
-                            color: rod.color,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 11,
-                          ),
-                        ),
-                      ],
-                    );
+                  getTooltipItems: (touchedSpots) {
+                    return touchedSpots
+                        .map((e) => LineTooltipItem(
+                              "${widget.xAxisLabels[e.spotIndex]}: ${widget.tipPreText}${getThousandsNumber(widget.dataSeries[e.barIndex][e.spotIndex])}",
+                              TextStyle(
+                                color: chartData.seriesColors[e.barIndex],
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11,
+                              ),
+                            ))
+                        .toList();
                   },
                   tooltipPadding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -256,39 +246,26 @@ class _SistchBarChartState extends State<SistchBarChart> {
     );
   }
 
-  List<BarChartGroupData> getBarGroupData(
+  List<LineChartBarData> getLineChartData(
       List<List<double>> series, List<Color> colors) {
-    List<BarChartGroupData> barGroupData = [];
+    List<LineChartBarData> lineChartData = [];
 
-    for (int x = 0; x < series[0].length; x++) {
-      var barData = BarChartGroupData(
-        barsSpace: 2.0,
-        x: x,
-        barRods: getBarRods(series, colors, x),
-      );
-      barGroupData.add(barData);
-    }
-    return barGroupData;
-  }
-
-  List<BarChartRodData> getBarRods(
-      List<List<double>> series, List<Color> colors, int seriesIndex) {
-    List<BarChartRodData> barRods = [];
     for (int index = 0; index < series.length; index++) {
-      var e = series[index];
-      barRods.add(
-        BarChartRodData(
-          toY: e[seriesIndex],
-          color: colors[index],
-          width: 8.0,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(2),
-            topRight: Radius.circular(2),
-          ),
-        ),
+      List<FlSpot> spots = [];
+      for (int x = 0; x < series[index].length; x++) {
+        spots.add(FlSpot(x.toDouble(), series[index][x]));
+      }
+
+      var lineData = LineChartBarData(
+        spots: spots,
+        isCurved: true,
+        color: colors[index],
+        dotData: FlDotData(show: true),
+        barWidth: 0.7,
       );
+      lineChartData.add(lineData);
     }
-    return barRods;
+    return lineChartData;
   }
 
   double getMaxY(List<List<double>> dataSeries) {

@@ -48,7 +48,7 @@ class SistchTimeLapseChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final width = MediaQuery.sizeOf(context).width;
-    double maxValue = getListOfDoublesMax(dataSeries) ?? 0;
+    double maxValue = getListOfDoublesMax(dataSeries);
 
     List<TimeLapseChartSection> sections = getTimeLapseChartSections(
       timeTitles: timeLabels,
@@ -96,7 +96,9 @@ class SistchTimeLapseChart extends StatelessWidget {
                         children: sections.asMap().entries.map((entry) {
                           int idx = entry.key;
                           TimeLapseChartSection e = sections[idx];
-                          double angle = pi * idx / (sections.length - 1);
+                          int divFactor = sections.length - 1;
+                          double angle =
+                              pi * idx / (divFactor == 0 ? 1 : divFactor);
 
                           return Positioned(
                             left: (timeTilesRadius +
@@ -135,14 +137,16 @@ class SistchTimeLapseChart extends StatelessWidget {
           Icon(
             Icons.timelapse,
             size: theme.textTheme.titleLarge?.fontSize,
-            color: theme.colorScheme.secondary,
+            color: useSunColors ? sunColors[1] : theme.colorScheme.secondary,
           ),
           const SizedBox(width: 5),
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               color: isHighlighted
-                  ? highlightColor ?? theme.colorScheme.primary
+                  ? useSunColors
+                      ? sunColors[1]
+                      : highlightColor ?? theme.colorScheme.primary
                   : theme.colorScheme.surfaceVariant.withOpacity(0.2),
             ),
             padding: const EdgeInsets.all(4),
@@ -153,7 +157,11 @@ class SistchTimeLapseChart extends StatelessWidget {
                 Text(
                   timeTile.timeTile ?? "--",
                   style: TextStyle(
-                    color: isHighlighted ? theme.colorScheme.onPrimary : null,
+                    color: isHighlighted
+                        ? useSunColors
+                            ? sunColors.last
+                            : theme.colorScheme.onPrimary
+                        : null,
                     fontWeight: FontWeight.bold,
                     fontSize: 10,
                   ),
@@ -162,7 +170,11 @@ class SistchTimeLapseChart extends StatelessWidget {
                 Text(
                   timeTile.displayVal ?? "-",
                   style: TextStyle(
-                    color: isHighlighted ? theme.colorScheme.onPrimary : null,
+                    color: isHighlighted
+                        ? useSunColors
+                            ? sunColors.last
+                            : theme.colorScheme.onPrimary
+                        : null,
                     fontWeight: FontWeight.bold,
                     fontSize: 10,
                   ),
