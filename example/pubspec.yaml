@@ -69,6 +69,11 @@ dependency_overrides:
   flutter_utils:
     path: ../
 
+  flutter_form:
+    git:
+      url: git@github.com:sisitech/flutter-forms.git
+      ref: "792f174"
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

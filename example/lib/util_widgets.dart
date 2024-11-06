@@ -131,6 +131,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 child: SistchTagStreakIndicator(
                   totalCount: 10,
                   currentCount: 3,
+                  bottomWidget: Text("Poa"),
                 ),
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),

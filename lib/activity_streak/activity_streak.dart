@@ -51,6 +51,7 @@ class SistchTagStreakIndicator extends StatelessWidget {
           activitySubTitle: activitySubTitle,
           currentCount: currentCount,
           totalCount: totalCount,
+          bottomWidget: bottomWidget,
           percent: percent,
           balanceCount: balance,
           balanceTextLabel: balanceLabel, // Pass the label to the dialog
@@ -106,6 +107,8 @@ class SistchTagStreakDialog extends StatelessWidget {
   final int currentCount;
   final int totalCount;
   final double percent;
+  final Widget? bottomWidget;
+
   final int balanceCount;
   final String balanceTextLabel; // Added parameter
 
@@ -114,6 +117,7 @@ class SistchTagStreakDialog extends StatelessWidget {
     this.activityTitle = "Tag Streak",
     this.activityDescription = "Tag Streak",
     this.currentCount = 0,
+    this.bottomWidget,
     this.activitySubTitle = " done",
     this.activitySeparator = " / ",
     this.totalCount = 1,
@@ -199,6 +203,7 @@ class SistchTagStreakDialog extends StatelessWidget {
                 ),
               ),
               // Other widgets remain unchanged...
+              if (bottomWidget != null) bottomWidget!,
             ],
           ),
         ),
