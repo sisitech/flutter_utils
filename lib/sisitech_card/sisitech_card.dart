@@ -121,7 +121,7 @@ class SisitechCard extends StatelessWidget {
                                 '___,___,___',
                                 style: Theme.of(context)
                                     .textTheme
-                                    .titleSmall
+                                    .titleLarge
                                     ?.copyWith(color: descriptionColor),
                               ),
                               SizedBox(height: Get.height * 0.008),
