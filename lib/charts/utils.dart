@@ -35,16 +35,16 @@ Widget chartIndicator({
               children: [
                 TextSpan(
                   text: label,
-                  style: const TextStyle(fontSize: 10),
+                  style: const TextStyle(fontSize: 12),
                 ),
                 TextSpan(
                   text: percentage == null ? '' : ' ($percentage)',
-                  style: const TextStyle(fontSize: 8),
+                  style: const TextStyle(fontSize: 12),
                 ),
-                TextSpan(
-                  text: extension != null ? ' • $extension' : '',
-                  style: const TextStyle(fontSize: 8),
-                ),
+                // TextSpan(
+                //   text: extension != null ? ' • $extension' : '',
+                //   style: const TextStyle(fontSize: 8),
+                // ),
               ],
             ),
           ),
