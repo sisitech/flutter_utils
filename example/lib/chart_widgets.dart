@@ -204,6 +204,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                         chartLabels: chartLabels[currentChartIdx],
                         selectedTile: selectedTile.value,
                         onChartTileTap: onLinearPercChartTileTap,
+                        indicatorPrefix: 'KES.',
                         // tileHeight: 50.0,
                         // selectedColor: theme.colorScheme.primaryContainer,
                         leadingWidgets: defaultIconMapper.values

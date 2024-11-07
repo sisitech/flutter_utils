@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
 import 'package:flutter_utils/utils/functions.dart';
-import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 // Constants
@@ -12,6 +11,7 @@ const double defChartWidth = 200.0;
 //
 class SistchDtChartData {
   final String label;
+  final double value;
   final double radius;
   final double percent;
   final Color sectionColor;
@@ -19,6 +19,7 @@ class SistchDtChartData {
 
   SistchDtChartData({
     required this.label,
+    required this.value,
     required this.radius,
     required this.percent,
     required this.sectionColor,
@@ -87,6 +88,7 @@ class SistchStackedDonutChart extends StatelessWidget {
 
       return SistchDtChartData(
         label: chartLabels[index],
+        value: e,
         percent: e / seriesTotal,
         radius: startRadius - ((index + 1) * radDcr),
         sectionColor: chartColors[index],
@@ -96,8 +98,8 @@ class SistchStackedDonutChart extends StatelessWidget {
       );
     }).toList();
 
-    List<Widget> stackedChartIndicators = getChartIndicators(chartLabels,
-        chartColors, chartData.map((e) => e.percent * 100).toList(),
+    List<Widget> stackedChartIndicators = getChartIndicators(
+        chartLabels, chartColors, chartData.map((e) => e.value * 100).toList(),
         useIcons: useIndIcons,
         indicatorPrefix: indicatorPrefix,
         hidePerc: false,

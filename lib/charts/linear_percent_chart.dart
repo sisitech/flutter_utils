@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
+import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -22,6 +23,7 @@ class SistchLinearPercentChart extends StatelessWidget {
   final String? chartTitle;
   final double tileHeight;
   final List<Color>? textColors;
+  final String? indicatorPrefix;
 
   const SistchLinearPercentChart({
     required this.dataSeries,
@@ -33,8 +35,9 @@ class SistchLinearPercentChart extends StatelessWidget {
     this.trailingWidgets,
     this.selectedColor,
     this.chartTitle,
-    this.tileHeight = 40.0,
+    this.tileHeight = 42.0,
     this.textColors,
+    this.indicatorPrefix,
     Key? key,
   }) : super(key: key);
 
@@ -125,9 +128,9 @@ class SistchLinearPercentChart extends StatelessWidget {
                                                   chtColors[idx]],
                                     ),
                                   ),
-                                  const SizedBox(width: 3),
+                                  const SizedBox(height: 2),
                                   Text(
-                                    "${(percent * 100).toStringAsFixed(1)}%",
+                                    "${indicatorPrefix ?? ""}${addThousandSeparators(dataSeries[idx])} • ${(percent * 100).toStringAsFixed(1)}%",
                                     style: TextStyle(
                                       fontSize: 10,
                                       color: percent < 0.6

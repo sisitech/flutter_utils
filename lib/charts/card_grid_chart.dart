@@ -42,8 +42,10 @@ class SistchCardGridView extends StatelessWidget {
 
     double total = getListOfDoublesSum(dataSeries);
     List<Color> bgColors = cardColors ?? defaultChartColors;
-    List<Color> fgColors =
-        onCardColors ?? defaultTextChartColors.values.toList();
+    List<Color> fgColors = onCardColors ??
+        defaultChartColors
+            .map((e) => defaultTextChartColors[e] ?? Colors.white)
+            .toList();
 
     return Column(
       children: [
