@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 class SistchDateRangePicker extends StatelessWidget {
   final DateFormat? dateFormat;
   final int lastYrPicker;
-  final int lastMnPicker;
+  final int maxRangeCount;
   final DateRangeDefaults defaultPicker;
   final Function(SelectedDateRange dates) onDatesSelected;
   final Function(TimePeriod timePeriod)? onTimePeriodChange;
@@ -23,7 +23,7 @@ class SistchDateRangePicker extends StatelessWidget {
     super.key,
     this.dateFormat,
     this.lastYrPicker = 2015,
-    this.lastMnPicker = 6,
+    this.maxRangeCount = 6,
     this.defaultPicker = DateRangeDefaults.thisMonth,
     required this.onDatesSelected,
     this.onTimePeriodChange,
@@ -48,7 +48,7 @@ class SistchDateRangePicker extends StatelessWidget {
         ),
         DatePickerScaffold(
           chosenFormat: chosenFormat,
-          lastMnPicker: lastMnPicker,
+          maxRangeCount: maxRangeCount,
           lastYrPicker: lastYrPicker,
           hideSuggestions: hideSuggestions,
           btnLabel: btnLabel,
@@ -98,14 +98,14 @@ class SistchDateRangePicker extends StatelessWidget {
 class DatePickerScaffold extends StatelessWidget {
   final DateFormat chosenFormat;
   final int lastYrPicker;
-  final int lastMnPicker;
+  final int maxRangeCount;
   final bool hideSuggestions;
   final String btnLabel;
   const DatePickerScaffold({
     super.key,
     required this.chosenFormat,
     required this.lastYrPicker,
-    required this.lastMnPicker,
+    required this.maxRangeCount,
     this.hideSuggestions = true,
     required this.btnLabel,
   });
@@ -152,11 +152,14 @@ class DatePickerScaffold extends StatelessWidget {
           () => showFullPicker.value
               ? DateRangePickerWidget(
                   chosenFormat: chosenFormat,
-                  lastMnPicker: lastMnPicker,
+                  maxRangeCount: maxRangeCount,
                   lastYrPicker: lastYrPicker,
                   onRangeSelected: onRangeSelected,
                 )
-              : DateOptionsPickerWidget(onRangeSelected: onRangeSelected),
+              : DateOptionsPickerWidget(
+                  onRangeSelected: onRangeSelected,
+                  onSwitchPickers: onSwitchPickers,
+                ),
         ),
         const SizedBox(height: 10),
         ElevatedButton(
@@ -183,9 +186,11 @@ class DatePickerScaffold extends StatelessWidget {
 
 class DateOptionsPickerWidget extends StatelessWidget {
   final Function(SelectedDateRange val) onRangeSelected;
+  final Function() onSwitchPickers;
   const DateOptionsPickerWidget({
     super.key,
     required this.onRangeSelected,
+    required this.onSwitchPickers,
   });
 
   @override
@@ -209,6 +214,10 @@ class DateOptionsPickerWidget extends StatelessWidget {
                 groupValue: selectedOption.value,
                 onChanged: (String? val) {
                   if (val != null) {
+                    if (val == kCustomTPKeyword) {
+                      onSwitchPickers();
+                      return;
+                    }
                     TimePeriod? tp = defaultDateRanges
                         .firstWhereOrNull((e) => e.displayText == val);
                     if (tp != null &&
@@ -238,7 +247,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
 class DateRangePickerWidget extends StatelessWidget {
   final DateFormat chosenFormat;
   final int lastYrPicker;
-  final int lastMnPicker;
+  final int maxRangeCount;
   final bool hideSuggestions;
   final Function(SelectedDateRange val) onRangeSelected;
 
@@ -246,7 +255,7 @@ class DateRangePickerWidget extends StatelessWidget {
     super.key,
     required this.chosenFormat,
     required this.lastYrPicker,
-    required this.lastMnPicker,
+    required this.maxRangeCount,
     this.hideSuggestions = true,
     required this.onRangeSelected,
   });
@@ -255,7 +264,7 @@ class DateRangePickerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     RxList<DateTime> selectedDays = RxList([]);
     RxList<DateTime> startEndMonthDates = RxList([]);
-    RxList<int> selectedYear = RxList([]);
+    RxList<DateTime> startEndYearDates = RxList([]);
 
     /// Pickers Logic ==============================================
 
@@ -309,18 +318,21 @@ class DateRangePickerWidget extends StatelessWidget {
       ));
     }
 
-    onYearSelected(int year) {
-      selectedYear.value = [year];
-      DateTime startDate = DateTime(year, 1, 1);
+    onYearSelected(DateTime startDate, DateTime endDate) {
+      startEndYearDates.value = [startDate, endDate];
+      bool isYearRange = startDate != endDate;
+
       onRangeSelected(SelectedDateRange(
         startDate: startDate,
-        endDate: DateTime(year + 1, 1, 1),
-        rangeType: DateRangeTypes.year,
-        rangeLabel: startDate == thisYear
-            ? "This Year"
-            : startDate == lastYear
-                ? "Last Year"
-                : DateFormat('yyyy').format(startDate),
+        endDate: isYearRange ? endDate : DateTime(startDate.year + 1, 1, 1),
+        rangeType: isYearRange ? DateRangeTypes.yearRange : DateRangeTypes.year,
+        rangeLabel: isYearRange
+            ? "${yearFormat.format(startDate)} to ${yearFormat.format(endDate.subtract(const Duration(days: 1)))}"
+            : startDate == thisYear
+                ? "This Year"
+                : startDate == lastYear
+                    ? "Last Year"
+                    : yearFormat.format(startDate),
       ));
     }
 
@@ -354,13 +366,13 @@ class DateRangePickerWidget extends StatelessWidget {
           .map((e) => getRangePickerScaffold(
                 rangeType: e,
                 firstYearPicker: lastYrPicker,
-                maxMonthRange: lastMnPicker,
+                maxRangeCount: maxRangeCount,
                 selectedDays: selectedDays,
                 onDaySelected: onDaySelected,
                 onWeekSelected: onWeekSelected,
                 startEndMonthDates: startEndMonthDates,
                 onMonthSelected: onMonthsSelected,
-                selectedYear: selectedYear,
+                startEndYearDates: startEndYearDates,
                 onYearSelected: onYearSelected,
                 onRangeSelected: onRangeSelected,
                 onSuggestionSelected: onSuggestionChipSelected,
@@ -374,7 +386,7 @@ class DateRangePickerWidget extends StatelessWidget {
 Widget getRangePickerScaffold({
   required DateRangeTypes rangeType,
   required int firstYearPicker,
-  required int maxMonthRange,
+  required int maxRangeCount,
   required Function(SelectedDateRange selection) onRangeSelected,
   required Function(String suggestion) onSuggestionSelected,
   required Function(DateTime day) onDaySelected,
@@ -382,8 +394,8 @@ Widget getRangePickerScaffold({
   required List<DateTime> selectedDays,
   required List<DateTime> startEndMonthDates,
   required Function(DateTime startMonth, DateTime lastMonth) onMonthSelected,
-  required List<int> selectedYear,
-  required Function(int year) onYearSelected,
+  required List<DateTime> startEndYearDates,
+  required Function(DateTime startMonth, DateTime lastMonth) onYearSelected,
   required bool hideSuggestions,
 }) {
   final width = Get.size.width;
@@ -409,13 +421,13 @@ Widget getRangePickerScaffold({
     }
   }
 
-  Rx<int> selectedMonthRange = Rx<int>(1);
+  Rx<int> selectedMnRangeCount = Rx<int>(1);
   onMonthRangeSelected(int? val) {
     if (val != null) {
-      selectedMonthRange.value = val;
+      selectedMnRangeCount.value = val;
       if (startEndMonthDates.isNotEmpty) {
         onMonthSelected(startEndMonthDates.first,
-            getLastMonthRangeDate(val, startEndMonthDates.first));
+            getLastPeriodRangeDate(val, startEndMonthDates.first, false));
       }
     }
   }
@@ -423,6 +435,17 @@ Widget getRangePickerScaffold({
   Rx<int> selectedDrpYear = Rx<int>(now.year);
   onYearDrpSelected(int? val) {
     if (val != null) selectedDrpYear.value = val;
+  }
+
+  Rx<int> selectedYrRangeCount = Rx<int>(1);
+  onYearRangeSelected(int? val) {
+    if (val != null) {
+      selectedYrRangeCount.value = val;
+      if (startEndYearDates.isNotEmpty) {
+        onYearSelected(startEndYearDates.first,
+            getLastPeriodRangeDate(val, startEndYearDates.first, true));
+      }
+    }
   }
 
   Rx<int> selectedDecade = Rx<int>((now.year ~/ 10) * 10);
@@ -460,6 +483,15 @@ Widget getRangePickerScaffold({
                 ? [
                     Obx(
                       () => getDropDownFormField(
+                        width: width * 0.28,
+                        selectedValue: selectedYrRangeCount.value,
+                        items: getPickerPeriodCounts(maxRangeCount, false),
+                        onChanged: (val) => onYearRangeSelected(val),
+                      ),
+                    ),
+                    const SizedBox(width: 7),
+                    Obx(
+                      () => getDropDownFormField(
                         width: width * 0.26,
                         selectedValue: selectedDecade.value,
                         items: getPickerDecades(firstYearPicker),
@@ -473,8 +505,8 @@ Widget getRangePickerScaffold({
                               .contains(rangeType)
                           ? getDropDownFormField(
                               width: width * 0.28,
-                              selectedValue: selectedMonthRange.value,
-                              items: getPickerMonthRanges(maxMonthRange),
+                              selectedValue: selectedMnRangeCount.value,
+                              items: getPickerPeriodCounts(maxRangeCount, true),
                               onChanged: (val) => onMonthRangeSelected(val),
                             )
                           : getDropDownFormField(
@@ -514,18 +546,21 @@ Widget getRangePickerScaffold({
             : [DateRangeTypes.month, DateRangeTypes.monthRange]
                     .contains(rangeType)
                 ? Obx(
-                    () => getMonthView(
-                        currentPickerYr: selectedDrpYear.value,
-                        rangeType: rangeType,
-                        selectedMonthRange: selectedMonthRange.value,
-                        startEndMonthDates: startEndMonthDates,
-                        onMonthsSelected: onMonthSelected),
+                    () => getMonthYearView(
+                      currentPickerYear: selectedDrpYear.value,
+                      rangeType: rangeType,
+                      selectedRangeCount: selectedMnRangeCount.value,
+                      startEndDates: startEndMonthDates,
+                      onRangeSelected: onMonthSelected,
+                    ),
                   )
                 : Obx(
-                    () => getYearView(
-                      selectedYear: selectedYear,
-                      onYearSelected: onYearSelected,
-                      selectedDecade: selectedDecade.value,
+                    () => getMonthYearView(
+                      currentPickerDecade: selectedDecade.value,
+                      rangeType: rangeType,
+                      selectedRangeCount: selectedYrRangeCount.value,
+                      startEndDates: startEndYearDates,
+                      onRangeSelected: onYearSelected,
                     ),
                   ),
       ),

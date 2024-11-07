@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/date_widgets/date_dropdown/constants.dart';
 import 'package:flutter_utils/date_widgets/date_dropdown/models.dart';
-import 'package:intl/intl.dart';
 
 /// Models
 class SelectedDateRange {
@@ -50,7 +49,7 @@ List<DropdownMenuItem<int>> getPickerYears(int firstYearPicker) {
     DateTime yearDate = DateTime(year, 1, 1);
     yearDates.add(DropdownMenuItem(
       value: yearDate.year,
-      child: Text(DateFormat('yyy').format(yearDate)),
+      child: Text(yearFormat.format(yearDate)),
     ));
   }
   return yearDates;
@@ -68,12 +67,13 @@ List<DropdownMenuItem<int>> getPickerMonths(int selectedYear) {
   );
 }
 
-List<DropdownMenuItem<int>> getPickerMonthRanges(int maxMonthRange) {
+List<DropdownMenuItem<int>> getPickerPeriodCounts(
+    int maxMonthRange, bool isMonth) {
   List<DropdownMenuItem<int>> monthRanges = [];
   for (int i = 1; i <= maxMonthRange; i++) {
     monthRanges.add(DropdownMenuItem(
       value: i,
-      child: Text('$i Month${i == 1 ? '' : 's'}'),
+      child: Text('$i ${isMonth ? 'Month' : 'Year'}${i == 1 ? '' : 's'}'),
     ));
   }
   return monthRanges;
@@ -140,8 +140,10 @@ List<DateTime> getCalendarViewMonths(int startYear) {
   return List.generate(12, (month) => DateTime(startYear, month + 1, 1));
 }
 
-DateTime getLastMonthRangeDate(int range, DateTime startDate) {
-  DateTime lastRangeDate = DateTime(startDate.year, startDate.month + range, 1);
+DateTime getLastPeriodRangeDate(int range, DateTime startDate, bool isYear) {
+  DateTime lastRangeDate = isYear
+      ? DateTime(startDate.year + range, 1, 1)
+      : DateTime(startDate.year, startDate.month + range, 1);
   return range == 1
       ? startDate
       : lastRangeDate.isAfter(today)

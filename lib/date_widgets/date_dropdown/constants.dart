@@ -14,6 +14,7 @@ DateTime thisYear = DateTime(now.year, 1, 1);
 DateTime lastYear = DateTime(now.year - 1, 1, 1);
 
 DateFormat monthFormat = DateFormat('MMM');
+DateFormat yearFormat = DateFormat('yyyy');
 List<String> monthsList = monthFormat.dateSymbols.STANDALONESHORTMONTHS;
 List<String> allMonths = [
   'Jan',
@@ -29,6 +30,8 @@ List<String> allMonths = [
   'Nov',
   'Dec'
 ];
+
+const String kCustomTPKeyword = "Custom";
 
 var defaultDateRanges = [
   TimePeriod(
@@ -168,30 +171,26 @@ var defaultDateRanges = [
       return thisYear;
     },
   ),
-  // TimePeriod(
-  //   // displayName: 'Last Year But 1',
-  //   displayName: "@start_date_display#",
-  //   dateFormat: "yyyy",
-  //   type: DateRangeTypes.year,
-  //   value: 13,
-  //   startDate: () {
-  //     return DateTime(now.year - 2, 1, 1);
-  //   },
-  //   endDate: () {
-  //     return DateTime(now.year - 1, 1, 1);
-  //   },
-  // ),
-  // TimePeriod(
-  //   // displayName: 'Last Year But 2',
-  //   displayName: "@start_date_display#",
-  //   dateFormat: "yyyy",
-  //   type: DateRangeTypes.year,
-  //   value: 14,
-  //   startDate: () {
-  //     return DateTime(now.year - 3, 1, 1);
-  //   },
-  //   endDate: () {
-  //     return DateTime(now.year - 2, 1, 1);
-  //   },
-  // ),
+  TimePeriod(
+    displayName: "All Time",
+    type: DateRangeTypes.yearRange,
+    value: 13,
+    startDate: () {
+      return DateTime(2015, 1, 1);
+    },
+    endDate: () {
+      return today;
+    },
+  ),
+  TimePeriod(
+    displayName: kCustomTPKeyword,
+    type: DateRangeTypes.year,
+    value: 14,
+    startDate: () {
+      return today;
+    },
+    endDate: () {
+      return today;
+    },
+  ),
 ];

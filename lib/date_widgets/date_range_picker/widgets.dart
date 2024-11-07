@@ -138,52 +138,61 @@ Widget _buildDayItem({
 }
 
 ///
-Widget getMonthView({
+Widget getMonthYearView({
   required DateRangeTypes rangeType,
-  required int currentPickerYr,
-  required int selectedMonthRange,
-  required List<DateTime> startEndMonthDates,
-  required Function(DateTime startMonth, DateTime lastMonth) onMonthsSelected,
+  required int selectedRangeCount,
+  required List<DateTime> startEndDates,
+  required Function(DateTime startMonth, DateTime lastMonth) onRangeSelected,
+  int? currentPickerYear, // for months
+  int? currentPickerDecade, // for years
 }) {
-  List<DateTime> calendarMonthDates = getCalendarViewMonths(currentPickerYr);
+  bool isMonthView = currentPickerDecade == null && currentPickerYear != null;
+  List<int> yearList = currentPickerDecade == null
+      ? []
+      : List.generate(10, (index) => currentPickerDecade + index);
+  List<DateTime> calendarDates = [];
+
+  if (isMonthView) {
+    calendarDates = getCalendarViewMonths(currentPickerYear);
+  } else {
+    calendarDates =
+        List.generate(yearList.length, (i) => DateTime(yearList[i], 1, 1));
+  }
 
   return GridView.builder(
     gridDelegate:
         const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-    itemCount: monthsList.length,
+    itemCount: isMonthView ? monthsList.length : yearList.length,
     physics: const NeverScrollableScrollPhysics(),
     shrinkWrap: true,
     itemBuilder: (context, index) {
-      DateTime month = calendarMonthDates[index];
+      DateTime date = calendarDates[index];
       return Obx(
-        () => _buildMonthItem(
-          date: month,
-          isStartMonth: startEndMonthDates.isEmpty
+        () => _buildMonthYearItem(
+          date: date,
+          isStartOfRange:
+              startEndDates.isEmpty ? false : startEndDates.first == date,
+          isSelected: startEndDates.isEmpty
               ? false
-              : startEndMonthDates.first == month,
-          isSelected: startEndMonthDates.isEmpty
-              ? false
-              : month == startEndMonthDates.first ||
-                  (month.isAfter(startEndMonthDates.first) &&
-                      month.isBefore(startEndMonthDates.last)),
-          onMonthsSelected: onMonthsSelected,
-          selectedMonthRange: selectedMonthRange,
-          currentPickerYr: currentPickerYr,
-          startEndMonthDates: startEndMonthDates,
+              : date == startEndDates.first ||
+                  (date.isAfter(startEndDates.first) &&
+                      date.isBefore(startEndDates.last)),
+          onRangeSelected: onRangeSelected,
+          selectedRangeCount: selectedRangeCount,
+          isMonthView: isMonthView,
         ),
       );
     },
   );
 }
 
-Widget _buildMonthItem({
-  required bool isStartMonth,
-  required int currentPickerYr,
+Widget _buildMonthYearItem({
+  required bool isStartOfRange,
   required bool isSelected,
   required DateTime date,
-  required int selectedMonthRange,
-  required List<DateTime> startEndMonthDates,
-  required Function(DateTime startMonth, DateTime lastMonth) onMonthsSelected,
+  required int selectedRangeCount,
+  required Function(DateTime startMonth, DateTime lastMonth) onRangeSelected,
+  required bool isMonthView,
 }) {
   final theme = Get.theme;
   bool isNotInCurrentPickerDate = date.isAfter(today);
@@ -191,9 +200,9 @@ Widget _buildMonthItem({
   return GestureDetector(
     onTap: () {
       if (isNotInCurrentPickerDate) return;
-      onMonthsSelected(
+      onRangeSelected(
         date,
-        getLastMonthRangeDate(selectedMonthRange, date),
+        getLastPeriodRangeDate(selectedRangeCount, date, !isMonthView),
       );
     },
     child: Container(
@@ -206,92 +215,22 @@ Widget _buildMonthItem({
               : Colors.transparent,
         ),
         color: isSelected == true
-            ? isStartMonth
+            ? isStartOfRange
                 ? theme.colorScheme.secondaryContainer
                 : Colors.transparent
             : null,
       ),
       child: Center(
         child: Text(
-          monthFormat.format(date),
+          isMonthView ? monthFormat.format(date) : yearFormat.format(date),
           style: theme.textTheme.labelSmall!.copyWith(
             color: isSelected == true
                 ? theme.colorScheme.onSecondaryContainer
-                : isStartMonth
+                : isStartOfRange
                     ? theme.colorScheme.secondary
                     : isNotInCurrentPickerDate
                         ? theme.colorScheme.outline
                         : theme.colorScheme.onBackground,
-            fontWeight: isSelected == true ? FontWeight.bold : null,
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-///
-Widget getYearView({
-  required int selectedDecade,
-  required List<int> selectedYear,
-  required Function(int year) onYearSelected,
-}) {
-  List<int> yearList = List.generate(10, (index) => selectedDecade + index);
-  List<int> validYearList = yearList.contains(now.year)
-      ? yearList.sublist(0, yearList.indexOf(now.year) + 1)
-      : yearList;
-
-  return GridView.builder(
-    gridDelegate:
-        const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-    itemCount: yearList.length,
-    physics: const NeverScrollableScrollPhysics(),
-    shrinkWrap: true,
-    itemBuilder: (context, index) {
-      int year = yearList[index];
-      return Obx(
-        () => _buildYearItem(
-          year: year,
-          isSelected: selectedYear.isEmpty ? false : selectedYear.first == year,
-          onYearSelected: onYearSelected,
-          isNotInCurrentPickerDate: !validYearList.contains(year),
-        ),
-      );
-    },
-  );
-}
-
-Widget _buildYearItem({
-  required bool isSelected,
-  required int year,
-  required bool isNotInCurrentPickerDate,
-  required Function(int val) onYearSelected,
-}) {
-  final theme = Get.theme;
-  return GestureDetector(
-    onTap: () {
-      if (isNotInCurrentPickerDate) return;
-      onYearSelected(year);
-    },
-    child: Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: isSelected == true
-              ? theme.colorScheme.secondaryContainer
-              : Colors.transparent,
-        ),
-        color: isSelected == true ? theme.colorScheme.secondaryContainer : null,
-      ),
-      child: Center(
-        child: Text(
-          year.toString(),
-          style: theme.textTheme.labelSmall!.copyWith(
-            color: isSelected == true
-                ? theme.colorScheme.onSecondaryContainer
-                : isNotInCurrentPickerDate
-                    ? theme.colorScheme.outline
-                    : theme.colorScheme.onBackground,
             fontWeight: isSelected == true ? FontWeight.bold : null,
           ),
         ),

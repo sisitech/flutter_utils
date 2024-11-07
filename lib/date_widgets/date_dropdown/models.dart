@@ -5,7 +5,7 @@ import 'package:flutter_utils/text_view/text_view_extensions.dart';
 
 // enum DateRangeType { day, week, month, quarterYr, halfYr, year }
 
-enum DateRangeTypes { day, week, month, monthRange, year }
+enum DateRangeTypes { day, week, month, monthRange, year, yearRange }
 
 ///[TimePeriod]
 /// Extra Classes:
