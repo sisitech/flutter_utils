@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
+import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
 // View
@@ -32,7 +33,7 @@ class SistchLinearPercentChart extends StatelessWidget {
     this.trailingWidgets,
     this.selectedColor,
     this.chartTitle,
-    this.tileHeight = 30.0,
+    this.tileHeight = 40.0,
     this.textColors,
     Key? key,
   }) : super(key: key);
@@ -104,19 +105,40 @@ class SistchLinearPercentChart extends StatelessWidget {
                                   ? null
                                   : leadingWidgets![idx],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: Text(
-                                "${chartLabels[idx]} • ${(percent * 100).toStringAsFixed(1)}%",
-                                style: textTheme.bodySmall!.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: percent < 0.6
-                                      ? colorScheme.onBackground
-                                      : textColors != null
-                                          ? textColors![idx]
-                                          : defaultTextChartColors[
-                                              chtColors[idx]],
-                                ),
+                            Container(
+                              width: Get.width * 0.4,
+                              margin: const EdgeInsets.only(left: 5),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    chartLabels[idx],
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: percent < 0.6
+                                          ? colorScheme.onBackground
+                                          : textColors != null
+                                              ? textColors![idx]
+                                              : defaultTextChartColors[
+                                                  chtColors[idx]],
+                                    ),
+                                  ),
+                                  const SizedBox(width: 3),
+                                  Text(
+                                    "${(percent * 100).toStringAsFixed(1)}%",
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: percent < 0.6
+                                          ? colorScheme.onBackground
+                                          : textColors != null
+                                              ? textColors![idx]
+                                              : defaultTextChartColors[
+                                                  chtColors[idx]],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],

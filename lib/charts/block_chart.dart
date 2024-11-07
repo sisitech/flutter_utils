@@ -126,26 +126,29 @@ class SistchDuoBlockChart extends StatelessWidget {
             lineHeight: height * (isBiggerValue ? 0.9 : 0.7),
             progressColor: hideSmaller ? Colors.transparent : bgColor,
             backgroundColor: Get.theme.colorScheme.surfaceVariant,
-            center: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  style: TextStyle(
-                    color: smallColor,
-                    fontSize: isBiggerValue ? 14 : 12,
-                    fontWeight: FontWeight.bold,
+            center: SizedBox(
+              width: (width ?? Get.width * 0.65) * 0.7,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: smallColor,
+                      fontSize: isBiggerValue ? 14 : 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                Text(
-                  value,
-                  style: TextStyle(
-                    color: smallColor,
-                    fontSize: isBiggerValue ? 12 : 10,
-                    fontWeight: FontWeight.bold,
+                  Text(
+                    value,
+                    style: TextStyle(
+                      color: smallColor,
+                      fontSize: isBiggerValue ? 12 : 10,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

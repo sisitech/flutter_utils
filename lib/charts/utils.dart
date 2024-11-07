@@ -11,8 +11,9 @@ Widget chartIndicator({
   bool? useIcons,
   required String label,
 }) {
-  return Padding(
-    padding: const EdgeInsets.only(right: 8, bottom: 4),
+  return Container(
+    width: Get.size.width * 0.6,
+    margin: const EdgeInsets.only(right: 8, bottom: 4),
     child: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -30,7 +31,7 @@ Widget chartIndicator({
         Flexible(
           child: Text.rich(
             maxLines: 3,
-            overflow: TextOverflow.clip,
+            overflow: TextOverflow.ellipsis,
             TextSpan(
               children: [
                 TextSpan(
