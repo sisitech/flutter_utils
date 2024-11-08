@@ -156,3 +156,26 @@ double getListOfDoublesMin(List<double>? values) {
   if (values == null || values.isEmpty) return 0.0;
   return values.reduce((a, b) => a < b ? a : b);
 }
+
+List<List<dynamic>> shuffleTwoLists(
+    List<dynamic> listOne, List<dynamic> listTwo) {
+  if (listOne.length != listTwo.length) {
+    return [listOne, listTwo];
+  }
+  List<int> indices = List<int>.generate(listOne.length, (index) => index);
+
+  indices.shuffle();
+
+  List<dynamic> shuffledLabels = List<dynamic>.from(listOne);
+  List<dynamic> shuffledDataSeries = List<dynamic>.from(listTwo);
+
+  List<dynamic> newOne = [...listOne];
+  List<dynamic> newTwo = [...listOne];
+
+  for (int i = 0; i < indices.length; i++) {
+    newOne[i] = shuffledLabels[indices[i]];
+    newTwo[i] = shuffledDataSeries[indices[i]];
+  }
+
+  return [newOne, newTwo];
+}
