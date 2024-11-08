@@ -166,15 +166,15 @@ List<List<dynamic>> shuffleTwoLists(
 
   indices.shuffle();
 
-  List<dynamic> shuffledLabels = List<dynamic>.from(listOne);
-  List<dynamic> shuffledDataSeries = List<dynamic>.from(listTwo);
+  List<dynamic> shuffledOne = List<dynamic>.from(listOne);
+  List<dynamic> shuffledTwo = List<dynamic>.from(listTwo);
 
   List<dynamic> newOne = [...listOne];
-  List<dynamic> newTwo = [...listOne];
+  List<dynamic> newTwo = [...listTwo];
 
   for (int i = 0; i < indices.length; i++) {
-    newOne[i] = shuffledLabels[indices[i]];
-    newTwo[i] = shuffledDataSeries[indices[i]];
+    newOne[i] = shuffledOne[indices[i]];
+    newTwo[i] = shuffledTwo[indices[i]];
   }
 
   return [newOne, newTwo];
