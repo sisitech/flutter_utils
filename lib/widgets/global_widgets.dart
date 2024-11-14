@@ -150,7 +150,6 @@ Widget getBottomSheetScaffold(
             ? const ClampingScrollPhysics()
             : const NeverScrollableScrollPhysics(),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: widgetList,
         ),
