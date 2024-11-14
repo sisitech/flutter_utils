@@ -147,7 +147,7 @@ class SistchTimeLapseChart extends StatelessWidget {
                   ? useSunColors
                       ? sunColors[1]
                       : highlightColor ?? theme.colorScheme.primary
-                  : theme.colorScheme.surfaceVariant.withOpacity(0.2),
+                  : theme.colorScheme.surfaceVariant,
             ),
             padding: const EdgeInsets.all(4),
             child: Column(
