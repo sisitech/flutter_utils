@@ -118,8 +118,13 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               getHeaderWidget(title: "Animated Counter"),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
-                child: SistchAnimatedCounter(
-                  valueToAnimate: 415000,
+                child: Column(
+                  children: [
+                    SistchAnimatedCounter(valueToAnimate: 4150),
+                    SistchAnimatedCounter(valueToAnimate: 41500),
+                    SistchAnimatedCounter(valueToAnimate: 415000),
+                    SistchAnimatedCounter(valueToAnimate: 4150000),
+                  ],
                 ),
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),

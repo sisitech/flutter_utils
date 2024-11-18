@@ -46,7 +46,7 @@ class _SistchAnimatedCounterState extends State<SistchAnimatedCounter>
   }
 
   void runAnimation() async {
-    int start = widget.startValue ?? (widget.valueToAnimate * 0.9).ceil();
+    int start = widget.startValue ?? (widget.valueToAnimate * 0.99).ceil();
     currentVal.value = start;
     for (int i = start; i <= widget.valueToAnimate; i++) {
       await Future.delayed(Duration(microseconds: widget.durationInUs));

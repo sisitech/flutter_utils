@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
 import 'package:flutter_utils/utils/functions.dart';
+import 'package:get/get.dart';
 
 // Constants
 //
@@ -185,6 +186,7 @@ class SistchPieDonutChart extends StatelessWidget {
                         chartLabels: chartLabels,
                       ),
                     ),
+                    SizedBox(width: Get.height * 0.01),
                     hideIndicators == true
                         ? const SizedBox()
                         : _getIndicatorsSection(
@@ -276,7 +278,7 @@ class SistchPieDonutChart extends StatelessWidget {
     required List<Widget> chartIndicators,
   }) {
     return SizedBox(
-      width: isHorizFormat ? MediaQuery.of(context).size.width * 0.35 : null,
+      width: isHorizFormat ? MediaQuery.of(context).size.width * 0.33 : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: chartIndicators.map((indicator) => indicator).toList(),
