@@ -34,7 +34,7 @@ Widget chartIndicator({
           const SizedBox(width: 4),
           Flexible(
             child: Text.rich(
-              maxLines: 3,
+              maxLines: 4,
               overflow: TextOverflow.ellipsis,
               TextSpan(
                 children: [
@@ -104,7 +104,7 @@ Widget actionChartIndicator({
               SizedBox(
                 width: Get.size.width * 0.45,
                 child: Text.rich(
-                  maxLines: 3,
+                  maxLines: 4,
                   overflow: TextOverflow.clip,
                   TextSpan(
                     children: [

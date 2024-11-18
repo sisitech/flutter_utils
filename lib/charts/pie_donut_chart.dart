@@ -276,7 +276,7 @@ class SistchPieDonutChart extends StatelessWidget {
     required List<Widget> chartIndicators,
   }) {
     return SizedBox(
-      width: isHorizFormat ? MediaQuery.of(context).size.width * 0.25 : null,
+      width: isHorizFormat ? MediaQuery.of(context).size.width * 0.35 : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: chartIndicators.map((indicator) => indicator).toList(),

@@ -55,7 +55,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
   ];
   List<List<String>> chartLabels = [
     [
-      "Government Services long very long long name",
+      "Government Services long very long long name name name name name",
       "Two",
       "Three",
       "Four"
