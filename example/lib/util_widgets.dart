@@ -14,6 +14,7 @@ import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
 import 'package:flutter_utils/layout_widgets/collapsible_scaffold.dart';
 import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
+import 'package:flutter_utils/product_tour/product_tour.dart';
 import 'package:get/get.dart';
 
 class UtilWidgetsScreen extends StatefulWidget {
@@ -28,6 +29,9 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
   TimePeriod datePeriod = defaultDateRanges[0];
   final ThemeController themeController = Get.find<ThemeController>();
   Rx<SelectedDateRange> selectedRange = Rx(SelectedDateRange());
+  final ProductTourController tourCtrl =
+      Get.find<ProductTourController>(tag: "example_tour");
+  onTourNxt() => tourCtrl.enableNext();
 
   Future<void> onDatePeriodChange(int newPeriod) async {
     datePeriod =
@@ -45,6 +49,51 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    List<TourStepModel> tourSteps = [
+      TourStepModel(
+        title: "Feature One",
+        description:
+            "This is Feature One of this tour. Press Action One to continue.",
+        icon: Icons.interests_rounded,
+        stepWidget: Center(
+          child: ElevatedButton(
+            onPressed: onTourNxt,
+            child: const Text("Action One"),
+          ),
+        ),
+      ),
+      TourStepModel(
+        title: "Feature Two",
+        description:
+            "This is Feature Tow of this tour. Press Action Two to continue.",
+        icon: Icons.interests_rounded,
+        stepWidget: Center(
+          child: ElevatedButton(
+            onPressed: onTourNxt,
+            child: const Text("Action Two"),
+          ),
+        ),
+      ),
+      TourStepModel(
+        title: "Feature Three",
+        description: "You don't have to do anything here, just view.",
+        icon: Icons.interests_rounded,
+        autoAllowNext: true,
+        stepWidget: const Center(child: Text("Hello!")),
+      ),
+      TourStepModel(
+        title: "Feature Four",
+        description:
+            "This is the last feature of this tour. Press Action Four to finish.",
+        icon: Icons.interests_rounded,
+        stepWidget: Center(
+          child: ElevatedButton(
+            onPressed: onTourNxt,
+            child: const Text("Action Four"),
+          ),
+        ),
+      ),
+    ];
     return Scaffold(
       appBar: AppBar(
         title: const Text('Util Widgets'),
@@ -79,6 +128,22 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                     dprint(timePeriod.toJson());
                     dprint(timePeriod.getGroupingType());
                   },
+                ),
+              ),
+              SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+
+              ///
+              getHeaderWidget(title: "Product Tour"),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.to(() => SistchProductTour(
+                          steps: tourSteps,
+                          controller: tourCtrl,
+                        ));
+                  },
+                  child: const Text("Go to Tour"),
                 ),
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
