@@ -10,13 +10,19 @@ import 'package:intl/intl.dart';
 Widget getDayWeekView({
   required DateRangeTypes rangeType,
   required DateTime currentPickerDt,
-  required Function(DateTime day) onDaySelected,
-  required Function(DateTime startWeekDay) onWeekSelected,
-  required List<DateTime> selectedDays,
+  required Function(DateTime startMonth, DateTime lastMonth) onRangeSelected,
+  required List<DateTime> startEndDates,
+  required int selectedRangeCount,
 }) {
   List<DateTime> calendarDayDates = getCalendarViewDays(
       DateTime(currentPickerDt.year, currentPickerDt.month, 1));
   List<DateTime> calendarWeekDates = getCalendarViewWeeks(calendarDayDates);
+  List<DateTime> selectedDates = startEndDates.isNotEmpty
+      ? [
+          startEndDates.first,
+          startEndDates.last.subtract(const Duration(days: 1))
+        ]
+      : [];
 
   return Column(
     children: [
@@ -35,17 +41,17 @@ Widget getDayWeekView({
           DateTime date = rangeType == DateRangeTypes.week
               ? calendarWeekDates[index]
               : calendarDayDates[index];
-          return Obx(
-            () => _buildDayItem(
-              date: date,
-              dateIdx: index,
-              currentPickers: currentPickerDt,
-              isWeekView: rangeType == DateRangeTypes.week,
-              isSelected: selectedDays.contains(date),
-              onDateSelected: rangeType == DateRangeTypes.week
-                  ? onWeekSelected
-                  : onDaySelected,
-            ),
+          return _buildDayItem(
+            date: date,
+            dateIdx: index,
+            currentPickers: currentPickerDt,
+            isWeekView: rangeType == DateRangeTypes.week,
+            isSelected: selectedDates.contains(date) ||
+                (selectedDates.isNotEmpty &&
+                    date.isAfter(selectedDates.first) &&
+                    date.isBefore(selectedDates.last)),
+            onRangeSelected: onRangeSelected,
+            selectedRangeCount: selectedRangeCount,
           );
         },
       ),
@@ -80,10 +86,11 @@ Widget _buildDayHeaders(bool isWeekView) {
 Widget _buildDayItem({
   required DateTime currentPickers,
   required DateTime date,
-  required Function(DateTime val) onDateSelected,
   required bool? isSelected,
   required bool isWeekView,
   required int dateIdx,
+  required int selectedRangeCount,
+  required Function(DateTime startMonth, DateTime lastMonth) onRangeSelected,
 }) {
   final theme = Get.theme;
   List<int> weekIndices = [0, 8, 16, 24, 32, 40]; // startWeekDates Indices
@@ -92,14 +99,22 @@ Widget _buildDayItem({
           DateTime(currentPickers.year, currentPickers.month + 1, 0)) ||
       date.isAfter(now);
   bool isSelectedDate = isSelected == true && !date.isAfter(now);
+
   return GestureDetector(
     onTap: () {
       if (date.isAfter(now)) return;
-      if (isWeekView && !weekIndices.contains(dateIdx)) {
-        onDateSelected(getFirstDayOfCurrentWeek(date));
+
+      if (isWeekView) {
+        DateTime startDate = getFirstDayOfCurrentWeek(date);
+        onRangeSelected(
+            startDate,
+            getLastPeriodRangeDate(
+                selectedRangeCount, startDate, DateRangeTypes.week));
         return;
       }
-      onDateSelected(date);
+
+      onRangeSelected(date,
+          getLastPeriodRangeDate(selectedRangeCount, date, DateRangeTypes.day));
     },
     child: Container(
       margin: const EdgeInsets.all(4),
@@ -202,7 +217,11 @@ Widget _buildMonthYearItem({
       if (isNotInCurrentPickerDate) return;
       onRangeSelected(
         date,
-        getLastPeriodRangeDate(selectedRangeCount, date, !isMonthView),
+        getLastPeriodRangeDate(
+          selectedRangeCount,
+          date,
+          isMonthView ? DateRangeTypes.month : DateRangeTypes.year,
+        ),
       );
     },
     child: Container(
@@ -246,6 +265,7 @@ Widget getSelectedDatesWidget({
 }) {
   final textTheme = Get.theme.textTheme;
   final colorScheme = Get.theme.colorScheme;
+
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [

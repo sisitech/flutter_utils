@@ -68,12 +68,12 @@ List<DropdownMenuItem<int>> getPickerMonths(int selectedYear) {
 }
 
 List<DropdownMenuItem<int>> getPickerPeriodCounts(
-    int maxMonthRange, bool isMonth) {
+    int maxMonthRange, String rangeLabel) {
   List<DropdownMenuItem<int>> monthRanges = [];
   for (int i = 1; i <= maxMonthRange; i++) {
     monthRanges.add(DropdownMenuItem(
       value: i,
-      child: Text('$i ${isMonth ? 'Month' : 'Year'}${i == 1 ? '' : 's'}'),
+      child: Text('$i $rangeLabel${i == 1 ? '' : 's'}'),
     ));
   }
   return monthRanges;
@@ -140,13 +140,28 @@ List<DateTime> getCalendarViewMonths(int startYear) {
   return List.generate(12, (month) => DateTime(startYear, month + 1, 1));
 }
 
-DateTime getLastPeriodRangeDate(int range, DateTime startDate, bool isYear) {
-  DateTime lastRangeDate = isYear
-      ? DateTime(startDate.year + range, 1, 1)
-      : DateTime(startDate.year, startDate.month + range, 1);
-  return range == 1
-      ? startDate
-      : lastRangeDate.isAfter(today)
-          ? today
-          : lastRangeDate;
+DateTime getLastPeriodRangeDate(
+    int range, DateTime startDate, DateRangeTypes rangeType) {
+  DateTime lastRangeDate = now;
+
+  switch (rangeType) {
+    case DateRangeTypes.year:
+      lastRangeDate = DateTime(startDate.year + range, 1, 1);
+      break;
+    case DateRangeTypes.month:
+      lastRangeDate = DateTime(startDate.year, startDate.month + range, 1);
+      break;
+    case DateRangeTypes.week:
+      lastRangeDate = DateTime(
+          startDate.year, startDate.month, startDate.day + (range * 7));
+      break;
+    case DateRangeTypes.day:
+      lastRangeDate =
+          DateTime(startDate.year, startDate.month, startDate.day + range);
+      break;
+    default:
+      lastRangeDate = now;
+  }
+
+  return lastRangeDate.isAfter(today) ? now : lastRangeDate;
 }

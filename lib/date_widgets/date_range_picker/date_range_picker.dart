@@ -126,7 +126,7 @@ class DatePickerScaffold extends StatelessWidget {
     onSwitchPickers() => showFullPicker.value = !showFullPicker.value;
 
     return getBottomSheetScaffold(
-      height: Get.height * (hideSuggestions ? 0.7 : 0.85),
+      height: Get.height * (hideSuggestions ? 0.75 : 0.85),
       widgetList: [
         Row(
           children: [
@@ -161,21 +161,23 @@ class DatePickerScaffold extends StatelessWidget {
                   onSwitchPickers: onSwitchPickers,
                 ),
         ),
-        const SizedBox(height: 10),
-        ElevatedButton(
-          onPressed: onDatePickerClose,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.primary,
-            foregroundColor: colorScheme.onPrimary,
-          ),
-          child: Center(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.filter_alt),
-                const SizedBox(width: 5),
-                Text(btnLabel),
-              ],
+        Padding(
+          padding: const EdgeInsets.all(5),
+          child: ElevatedButton(
+            onPressed: onDatePickerClose,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: colorScheme.primary,
+              foregroundColor: colorScheme.onPrimary,
+            ),
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.filter_alt),
+                  const SizedBox(width: 5),
+                  Text(btnLabel),
+                ],
+              ),
             ),
           ),
         ),
@@ -262,77 +264,61 @@ class DateRangePickerWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    RxList<DateTime> selectedDays = RxList([]);
-    RxList<DateTime> startEndMonthDates = RxList([]);
-    RxList<DateTime> startEndYearDates = RxList([]);
+    RxList<DateTime> startEndDates = RxList([]);
 
     /// Pickers Logic ==============================================
 
-    onDaySelected(DateTime val) {
-      selectedDays.value = [val];
-      onRangeSelected(SelectedDateRange(
-        startDate: val,
-        endDate: val.add(const Duration(days: 1)),
-        rangeType: DateRangeTypes.day,
-        rangeLabel: val == today
-            ? "Today"
-            : val == yesterday
-                ? "Yesterday"
-                : DateFormat('EEE, dd/MMM/yy').format(val),
-      ));
-    }
+    onDateRangeSelected(
+        {required DateTime startDate,
+        required DateTime endDate,
+        required DateRangeTypes rangeType,
+        required bool isRange}) {
+      startEndDates.value = [startDate, endDate];
 
-    onWeekSelected(DateTime val) {
-      selectedDays.value = List.generate(7, (i) => val.add(Duration(days: i)))
-          .where((date) => date.isBefore(today.add(const Duration(days: 1))))
-          .toList();
-      onRangeSelected(SelectedDateRange(
-          startDate: val,
-          endDate: selectedDays.last.add(const Duration(days: 1)),
-          rangeType: DateRangeTypes.week,
-          rangeLabel: val == thisWeek
-              ? "This Week"
-              : val == lastWeek
-                  ? "Last Week"
-                  : "Week ${getWeekNumberFromDate(val)}"));
-    }
+      DateRangeTypes? rnType;
+      String? rangeLabel;
 
-    onMonthsSelected(DateTime startDate, DateTime endDate) {
-      startEndMonthDates.value = [startDate, endDate];
-      bool isMonthRange = startDate != endDate;
+      switch (rangeType) {
+        case DateRangeTypes.day:
+          rnType = DateRangeTypes.day;
+          rangeLabel = isRange
+              ? "${dayFormat.format(startDate)} to ${dayFormat.format(endDate)}"
+              : dateToLabelMap[rangeType]?[startDate] ??
+                  DateFormat('EEE, dd/MMM/yy').format(startDate);
+          break;
 
-      onRangeSelected(SelectedDateRange(
-        startDate: startDate,
-        endDate: isMonthRange
-            ? endDate
-            : DateTime(startDate.year, startDate.month + 1, 1),
-        rangeType:
-            isMonthRange ? DateRangeTypes.monthRange : DateRangeTypes.month,
-        rangeLabel: isMonthRange
-            ? "${monthFormat.format(startDate)} to ${monthFormat.format(endDate.subtract(const Duration(days: 1)))}"
-            : startDate == thisMonth
-                ? "This Month"
-                : startDate == lastMonth
-                    ? "Last Month"
-                    : DateFormat('MMMM').format(startDate),
-      ));
-    }
+        case DateRangeTypes.week:
+          rnType = DateRangeTypes.week;
+          rangeLabel = isRange
+              ? "Week ${getWeekNumberFromDate(startDate)} to Week ${getWeekNumberFromDate(endDate)}"
+              : dateToLabelMap[rangeType]?[startDate] ??
+                  "Week ${getWeekNumberFromDate(startDate)}";
+          break;
 
-    onYearSelected(DateTime startDate, DateTime endDate) {
-      startEndYearDates.value = [startDate, endDate];
-      bool isYearRange = startDate != endDate;
+        case DateRangeTypes.month:
+          rnType = isRange ? DateRangeTypes.monthRange : DateRangeTypes.month;
+          rangeLabel = isRange
+              ? "${monthFormat.format(startDate)} to ${monthFormat.format(endDate)}"
+              : dateToLabelMap[rangeType]?[startDate] ??
+                  DateFormat('MMMM').format(startDate);
+          break;
+
+        case DateRangeTypes.year:
+          rnType = isRange ? DateRangeTypes.yearRange : DateRangeTypes.year;
+          rangeLabel = isRange
+              ? "${yearFormat.format(startDate)} to ${yearFormat.format(endDate)}"
+              : dateToLabelMap[rangeType]?[startDate] ??
+                  yearFormat.format(startDate);
+          break;
+
+        default:
+      }
 
       onRangeSelected(SelectedDateRange(
         startDate: startDate,
-        endDate: isYearRange ? endDate : DateTime(startDate.year + 1, 1, 1),
-        rangeType: isYearRange ? DateRangeTypes.yearRange : DateRangeTypes.year,
-        rangeLabel: isYearRange
-            ? "${yearFormat.format(startDate)} to ${yearFormat.format(endDate.subtract(const Duration(days: 1)))}"
-            : startDate == thisYear
-                ? "This Year"
-                : startDate == lastYear
-                    ? "Last Year"
-                    : yearFormat.format(startDate),
+        endDate: endDate,
+        rangeType: rnType!,
+        rangeLabel: rangeLabel!,
       ));
     }
 
@@ -347,7 +333,45 @@ class DateRangePickerWidget extends StatelessWidget {
               rangeType: selectedPeriod.type,
               rangeLabel: selectedPeriod.displayName));
           // reset picker values
-          selectedDays.clear();
+          startEndDates.clear();
+        }
+      }
+    }
+
+    /// ============================================== Dropdown logic
+
+    Rx<int> selectedDrpMonth = Rx<int>(now.month);
+    onMonthDrpSelected(int? val) {
+      if (val != null) {
+        selectedDrpMonth.value = val;
+      }
+    }
+
+    Rx<int> selectedDrpYear = Rx<int>(now.year);
+    onYearDrpSelected(int? val) {
+      if (val != null) selectedDrpYear.value = val;
+    }
+
+    Rx<int> selectedDecade = Rx<int>((now.year ~/ 10) * 10);
+    onDecadeSelected(int? val) {
+      if (val != null) {
+        selectedDecade.value = val;
+      }
+    }
+
+    /// ============================================== Picker Logic
+    Rx<int> selectedRangeCount = Rx<int>(1);
+    onRangeCountSelected(int? val, DateRangeTypes rangeType) {
+      if (val != null) {
+        selectedRangeCount.value = val;
+        if (startEndDates.isNotEmpty) {
+          onDateRangeSelected(
+            startDate: startEndDates.first,
+            endDate:
+                getLastPeriodRangeDate(val, startEndDates.first, rangeType),
+            rangeType: rangeType,
+            isRange: val != 1,
+          );
         }
       }
     }
@@ -355,29 +379,32 @@ class DateRangePickerWidget extends StatelessWidget {
     return SistchTabBarScaffold(
       tabLabels: const ["Day", "Week", "Month", "Year"],
       showUnViewedIndicator: false,
-      height: Get.height * (hideSuggestions ? 0.5 : 0.6),
+      height: Get.height * (hideSuggestions ? 0.55 : 0.6),
       isScrollable: false,
+      onIndexChange: (val) => startEndDates.clear(),
       tabWidgets: [
         DateRangeTypes.day,
         DateRangeTypes.week,
         DateRangeTypes.month,
         DateRangeTypes.year
       ]
-          .map((e) => getRangePickerScaffold(
+          .map((e) => Obx(() => getRangePickerScaffold(
                 rangeType: e,
                 firstYearPicker: lastYrPicker,
                 maxRangeCount: maxRangeCount,
-                selectedDays: selectedDays,
-                onDaySelected: onDaySelected,
-                onWeekSelected: onWeekSelected,
-                startEndMonthDates: startEndMonthDates,
-                onMonthSelected: onMonthsSelected,
-                startEndYearDates: startEndYearDates,
-                onYearSelected: onYearSelected,
-                onRangeSelected: onRangeSelected,
+                startEndDates: startEndDates,
+                onDateRangeSelected: onDateRangeSelected,
                 onSuggestionSelected: onSuggestionChipSelected,
                 hideSuggestions: hideSuggestions,
-              ))
+                selectedDecade: selectedDecade.value,
+                selectedDrpMonth: selectedDrpMonth.value,
+                selectedDrpYear: selectedDrpYear.value,
+                selectedRangeCount: selectedRangeCount.value,
+                onDecadeSelected: onDecadeSelected,
+                onRangeCountSelected: onRangeCountSelected,
+                onMonthDrpSelected: onMonthDrpSelected,
+                onYearDrpSelected: onYearDrpSelected,
+              )))
           .toList(),
     );
   }
@@ -387,20 +414,31 @@ Widget getRangePickerScaffold({
   required DateRangeTypes rangeType,
   required int firstYearPicker,
   required int maxRangeCount,
-  required Function(SelectedDateRange selection) onRangeSelected,
   required Function(String suggestion) onSuggestionSelected,
-  required Function(DateTime day) onDaySelected,
-  required Function(DateTime startWeekDate) onWeekSelected,
-  required List<DateTime> selectedDays,
-  required List<DateTime> startEndMonthDates,
-  required Function(DateTime startMonth, DateTime lastMonth) onMonthSelected,
-  required List<DateTime> startEndYearDates,
-  required Function(DateTime startMonth, DateTime lastMonth) onYearSelected,
   required bool hideSuggestions,
+
+  ///
+  required List<DateTime> startEndDates,
+  required Function(
+          {required DateTime startDate,
+          required DateTime endDate,
+          required bool isRange,
+          required DateRangeTypes rangeType})
+      onDateRangeSelected,
+
+  ///
+  required int selectedDecade,
+  required int selectedDrpMonth,
+  required int selectedDrpYear,
+  required int selectedRangeCount,
+  required Function(int? val) onMonthDrpSelected,
+  required Function(int? val) onYearDrpSelected,
+  required Function(int? val) onDecadeSelected,
+  required Function(int rangeCount, DateRangeTypes rangeType)
+      onRangeCountSelected,
 }) {
   final width = Get.size.width;
 
-  /// Chip Suggestions Logic ==============================================
   List<String> dateSuggestions = defaultDateRanges
       .where((element) => element.type == rangeType)
       .map((e) => e.displayName)
@@ -413,47 +451,20 @@ Widget getRangePickerScaffold({
     }
   }
 
-  /// Dropdown logic ==============================================
-  Rx<int> selectedDrpMonth = Rx<int>(now.month);
-  onMonthDrpSelected(int? val) {
-    if (val != null) {
-      selectedDrpMonth.value = val;
-    }
+  handleRangeCountChange(int? val) {
+    if (val != null) onRangeCountSelected(val, rangeType);
   }
 
-  Rx<int> selectedMnRangeCount = Rx<int>(1);
-  onMonthRangeSelected(int? val) {
-    if (val != null) {
-      selectedMnRangeCount.value = val;
-      if (startEndMonthDates.isNotEmpty) {
-        onMonthSelected(startEndMonthDates.first,
-            getLastPeriodRangeDate(val, startEndMonthDates.first, false));
-      }
-    }
+  handleDateRangeChange(DateTime startDate, DateTime endDate) {
+    onDateRangeSelected(
+      startDate: startDate,
+      endDate: endDate,
+      rangeType: rangeType,
+      isRange: selectedRangeCount != 1,
+    );
   }
 
-  Rx<int> selectedDrpYear = Rx<int>(now.year);
-  onYearDrpSelected(int? val) {
-    if (val != null) selectedDrpYear.value = val;
-  }
-
-  Rx<int> selectedYrRangeCount = Rx<int>(1);
-  onYearRangeSelected(int? val) {
-    if (val != null) {
-      selectedYrRangeCount.value = val;
-      if (startEndYearDates.isNotEmpty) {
-        onYearSelected(startEndYearDates.first,
-            getLastPeriodRangeDate(val, startEndYearDates.first, true));
-      }
-    }
-  }
-
-  Rx<int> selectedDecade = Rx<int>((now.year ~/ 10) * 10);
-  onDecadeSelected(int? val) {
-    if (val != null) {
-      selectedDecade.value = val;
-    }
-  }
+  double drpWidth = Get.width * 0.2;
 
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -478,54 +489,53 @@ Widget getRangePickerScaffold({
       Padding(
         padding: const EdgeInsets.only(top: 15),
         child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: rangeType == DateRangeTypes.year
-                ? [
-                    Obx(
-                      () => getDropDownFormField(
-                        width: width * 0.28,
-                        selectedValue: selectedYrRangeCount.value,
-                        items: getPickerPeriodCounts(maxRangeCount, false),
-                        onChanged: (val) => onYearRangeSelected(val),
-                      ),
-                    ),
-                    const SizedBox(width: 7),
-                    Obx(
-                      () => getDropDownFormField(
-                        width: width * 0.26,
-                        selectedValue: selectedDecade.value,
-                        items: getPickerDecades(firstYearPicker),
-                        onChanged: (val) => onDecadeSelected(val),
-                      ),
-                    )
-                  ]
-                : [
-                    Obx(
-                      () => [DateRangeTypes.month, DateRangeTypes.monthRange]
-                              .contains(rangeType)
-                          ? getDropDownFormField(
-                              width: width * 0.28,
-                              selectedValue: selectedMnRangeCount.value,
-                              items: getPickerPeriodCounts(maxRangeCount, true),
-                              onChanged: (val) => onMonthRangeSelected(val),
-                            )
-                          : getDropDownFormField(
-                              width: width * 0.25,
-                              selectedValue: selectedDrpMonth.value,
-                              items: getPickerMonths(selectedDrpYear.value),
-                              onChanged: (int? val) => onMonthDrpSelected(val),
-                            ),
-                    ),
-                    const SizedBox(width: 7),
-                    Obx(
-                      () => getDropDownFormField(
-                        width: width * 0.25,
-                        selectedValue: selectedDrpYear.value,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            getDropDownFormField(
+              width: width * 0.26,
+              selectedValue: selectedRangeCount,
+              items: getPickerPeriodCounts(
+                  maxRangeCount,
+                  rangeType == DateRangeTypes.year
+                      ? "Year"
+                      : rangeType == DateRangeTypes.month
+                          ? "Month"
+                          : rangeType == DateRangeTypes.week
+                              ? "Week"
+                              : "Day"),
+              onChanged: handleRangeCountChange,
+            ),
+            const SizedBox(width: 7),
+            rangeType == DateRangeTypes.year
+                ? getDropDownFormField(
+                    width: drpWidth,
+                    selectedValue: selectedDecade,
+                    items: getPickerDecades(firstYearPicker),
+                    onChanged: (val) => onDecadeSelected(val),
+                  )
+                : Row(
+                    children: [
+                      if ([DateRangeTypes.day, DateRangeTypes.week]
+                          .contains(rangeType))
+                        Padding(
+                          padding: const EdgeInsets.only(right: 7),
+                          child: getDropDownFormField(
+                            width: drpWidth,
+                            selectedValue: selectedDrpMonth,
+                            items: getPickerMonths(selectedDrpYear),
+                            onChanged: onMonthDrpSelected,
+                          ),
+                        ),
+                      getDropDownFormField(
+                        width: drpWidth,
+                        selectedValue: selectedDrpYear,
                         items: getPickerYears(firstYearPicker),
-                        onChanged: (val) => onYearDrpSelected(val),
-                      ),
-                    ),
-                  ]),
+                        onChanged: onYearDrpSelected,
+                      )
+                    ],
+                  ),
+          ],
+        ),
       ),
       const Divider(),
       const SizedBox(height: 10),
@@ -533,35 +543,28 @@ Widget getRangePickerScaffold({
       /// the calendars
       Expanded(
         child: [DateRangeTypes.day, DateRangeTypes.week].contains(rangeType)
-            ? Obx(
-                () => getDayWeekView(
-                  currentPickerDt: DateTime(
-                      selectedDrpYear.value, selectedDrpMonth.value, 1),
-                  rangeType: rangeType,
-                  selectedDays: selectedDays,
-                  onDaySelected: onDaySelected,
-                  onWeekSelected: onWeekSelected,
-                ),
+            ? getDayWeekView(
+                currentPickerDt: DateTime(selectedDrpYear, selectedDrpMonth, 1),
+                rangeType: rangeType,
+                startEndDates: startEndDates,
+                onRangeSelected: handleDateRangeChange,
+                selectedRangeCount: selectedRangeCount,
               )
             : [DateRangeTypes.month, DateRangeTypes.monthRange]
                     .contains(rangeType)
-                ? Obx(
-                    () => getMonthYearView(
-                      currentPickerYear: selectedDrpYear.value,
-                      rangeType: rangeType,
-                      selectedRangeCount: selectedMnRangeCount.value,
-                      startEndDates: startEndMonthDates,
-                      onRangeSelected: onMonthSelected,
-                    ),
+                ? getMonthYearView(
+                    currentPickerYear: selectedDrpYear,
+                    rangeType: rangeType,
+                    selectedRangeCount: selectedRangeCount,
+                    startEndDates: startEndDates,
+                    onRangeSelected: handleDateRangeChange,
                   )
-                : Obx(
-                    () => getMonthYearView(
-                      currentPickerDecade: selectedDecade.value,
-                      rangeType: rangeType,
-                      selectedRangeCount: selectedYrRangeCount.value,
-                      startEndDates: startEndYearDates,
-                      onRangeSelected: onYearSelected,
-                    ),
+                : getMonthYearView(
+                    currentPickerDecade: selectedDecade,
+                    rangeType: rangeType,
+                    selectedRangeCount: selectedRangeCount,
+                    startEndDates: startEndDates,
+                    onRangeSelected: handleDateRangeChange,
                   ),
       ),
     ],

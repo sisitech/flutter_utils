@@ -13,6 +13,27 @@ DateTime lastMonth = DateTime(now.year, now.month - 1, 1);
 DateTime thisYear = DateTime(now.year, 1, 1);
 DateTime lastYear = DateTime(now.year - 1, 1, 1);
 
+Map<DateRangeTypes, Map<DateTime, String>> dateToLabelMap = {
+  DateRangeTypes.day: {
+    today: "Today",
+    tomorrow: "Tomorrow",
+    yesterday: "Yesterday",
+  },
+  DateRangeTypes.week: {
+    thisWeek: "This Week",
+    lastWeek: "Last Week",
+  },
+  DateRangeTypes.month: {
+    thisMonth: "This Month",
+    lastMonth: "Last Month",
+  },
+  DateRangeTypes.year: {
+    thisYear: "This Year",
+    lastYear: "Last Year",
+  },
+};
+
+DateFormat dayFormat = DateFormat('dd/MM/yy');
 DateFormat monthFormat = DateFormat('MMM');
 DateFormat yearFormat = DateFormat('yyyy');
 List<String> monthsList = monthFormat.dateSymbols.STANDALONESHORTMONTHS;
