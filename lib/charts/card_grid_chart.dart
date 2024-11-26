@@ -111,7 +111,7 @@ class SistchCardGridView extends StatelessWidget {
                 if (iconPath != null)
                   Icon(
                     iconPath,
-                    size: 18,
+                    size: 20,
                     color: fgColor,
                   ),
                 Column(
@@ -127,7 +127,7 @@ class SistchCardGridView extends StatelessWidget {
                           ),
                           TextSpan(
                             text: getThousandsNumber(value),
-                            style: textTheme.titleMedium!.copyWith(
+                            style: textTheme.titleLarge!.copyWith(
                               fontWeight: FontWeight.bold,
                               color: fgColor,
                             ),
@@ -139,7 +139,7 @@ class SistchCardGridView extends StatelessWidget {
                       Text(
                         '${percentage.toStringAsFixed(1)}%',
                         style: TextStyle(
-                          fontSize: 10,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: colorScheme.primaryContainer,
                         ),

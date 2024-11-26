@@ -68,8 +68,7 @@ class SistchDuoBlockChart extends StatelessWidget {
               Expanded(
                 child: _buildBlockSection(
                   label: sortedLabels[0],
-                  value:
-                      "${valuePrefix ?? ''}${addThousandSeparators(sortedValues[0])}",
+                  value: addThousandSeparators(sortedValues[0]),
                   percentage: '${percentages[0].toStringAsFixed(1)}%',
                   bgColor: ctColors[0],
                   textColor: txtColors[0],
@@ -81,8 +80,7 @@ class SistchDuoBlockChart extends StatelessWidget {
               _buildBlockSection(
                 width: Get.size.width * 0.25,
                 label: sortedLabels[1],
-                value:
-                    "${valuePrefix ?? ''}${addThousandSeparators(sortedValues[1])}",
+                value: addThousandSeparators(sortedValues[1]),
                 percentage: '${percentages[1].toStringAsFixed(1)}%',
                 bgColor: ctColors[1],
                 textColor: txtColors[1],
@@ -111,6 +109,7 @@ class SistchDuoBlockChart extends StatelessWidget {
     final smallColor =
         hideSmaller ? Get.theme.colorScheme.onSurfaceVariant : textColor;
     final blockKey = ValueKey(value);
+    final textTheme = Get.textTheme;
 
     return Column(
       children: [
@@ -131,20 +130,35 @@ class SistchDuoBlockChart extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: valuePrefix,
+                          style: TextStyle(
+                            color: textColor,
+                            fontSize: 10,
+                          ),
+                        ),
+                        TextSpan(
+                          text: value,
+                          style: TextStyle(
+                            color: textColor,
+                            fontSize: isBiggerValue ? 14 : 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 2),
                   Text(
                     label,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      color: smallColor,
-                      fontSize: isBiggerValue ? 14 : 12,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    value,
-                    style: TextStyle(
-                      color: smallColor,
+                      color: textColor,
                       fontSize: isBiggerValue ? 12 : 10,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
@@ -154,10 +168,9 @@ class SistchDuoBlockChart extends StatelessWidget {
         ),
         Container(
           width: 2,
-          height: Get.size.height * 0.04,
+          height: Get.size.height * 0.03,
           color: Get.theme.colorScheme.onBackground,
         ),
-        const SizedBox(height: 4),
         Text(
           percentage,
           style: TextStyle(

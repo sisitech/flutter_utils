@@ -105,8 +105,11 @@ class SistchPieDonutChart extends StatelessWidget {
         isHalfArcChart ? chartSeries.length - 1 : chartSeries.length;
 
     for (int i = 0; i < chartSeries.length; i++) {
-      double percent = (chartSeries[i] / total) * 100;
-      String percentTitle = "${percent.toStringAsFixed(1)}%";
+      double chartPercent = (chartSeries[i] / total) * 100;
+      double actualPercent =
+          i < dataSeries.length ? (dataSeries[i] / total) * 100 : 0;
+
+      String percentTitle = "${actualPercent.toStringAsFixed(1)}%";
       String sectionTitle = hideIndicators == true && i < chartSeriesMax
           ? "${chartLabels[i]} • $percentTitle"
           : chartLabels[i];
@@ -123,7 +126,7 @@ class SistchPieDonutChart extends StatelessWidget {
 
       PieChartSectionData pieSection = PieChartSectionData(
         color: i < chartSeriesMax ? chartColors[i] : null,
-        value: percent,
+        value: chartPercent,
         title: sectionTitle,
         titleStyle: chartTxtStyle,
         showTitle: hideIndicators,
