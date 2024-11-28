@@ -11,7 +11,6 @@ import 'package:flutter_utils/mixpanel/mixpanel_controller.dart';
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/network_status/network_status_controller.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
-import 'package:flutter_utils/product_tour/product_tour.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -117,8 +116,6 @@ void main() async {
   );
 
   Get.put(LocalAuthController());
-
-  Get.put(ProductTourController(), tag: "example_tour");
 
   runApp(MyApp());
 }

@@ -2,24 +2,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
 import 'package:get/get.dart';
 
-/// ==================================================== View
-
-class SistchProductTour extends StatelessWidget {
+class ProductTourOptions {
   final List<TourStepModel> steps;
-  final ProductTourController controller;
+  final String controllerTag;
   final VoidCallback? onFinish;
 
-  const SistchProductTour({
-    Key? key,
+  ProductTourOptions({
     required this.steps,
-    required this.controller,
+    required this.controllerTag,
     this.onFinish,
-  }) : super(key: key);
+  });
+}
+
+class TourStepModel {
+  final String slug;
+  final String title;
+  final String description;
+  final Widget stepWidget;
+  final IconData? icon;
+  final bool autoAllowNext;
+
+  TourStepModel({
+    required this.slug,
+    required this.title,
+    required this.description,
+    required this.stepWidget,
+    this.icon,
+    this.autoAllowNext = false,
+  });
+}
+
+/// ==================================================== View
+class SistchProductTour extends StatelessWidget {
+  final ProductTourOptions options;
+  late final ProductTourController controller;
+
+  SistchProductTour({
+    Key? key,
+    required this.options,
+  }) : super(key: key) {
+    controller = Get.put(
+      ProductTourController(options: options),
+      tag: options.controllerTag,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     double overlayOffset = 0.28;
-    controller.initialize(steps);
 
     return Scaffold(
       appBar: AppBar(automaticallyImplyLeading: false, toolbarHeight: 20.0),
@@ -27,26 +57,25 @@ class SistchProductTour extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Obx(
           () {
-            final step = controller.steps[controller.currentStep.value];
             return Stack(
               alignment: Alignment.topCenter,
               children: [
-                step.stepWidget,
+                controller.currentStep.value.stepWidget,
                 //
                 Stack(
                   children: [
                     Positioned(
                       bottom: -(Get.height * overlayOffset),
                       child: _TourOverlay(
-                        step: step,
+                        step: controller.currentStep.value,
                         isLastStep: controller.showFinish.value,
-                        onFinish: onFinish ?? () => Get.back(),
-                        onNext: controller._goToNext,
+                        onFinish: options.onFinish ?? () => Get.back(),
+                        onNext: controller.goToNext,
                         allowNext: controller.allowNext.value,
                         stepNoTxt:
                             "Step @step_no# of @total_steps#".interpolate({
-                          "step_no": controller.currentStep.value + 1,
-                          "total_steps": steps.length,
+                          "step_no": controller.currentIdx + 1,
+                          "total_steps": controller.stepsLength,
                         }),
                       ),
                     ),
@@ -87,6 +116,7 @@ class _TourOverlay extends StatelessWidget {
     double contentWidth = Get.width * 0.7;
     double bgRadius = Get.height * 0.5;
     Color bgColor = colorScheme.primaryContainer.withOpacity(0.5);
+    TextStyle stepStyle = const TextStyle(fontSize: 11);
 
     return Container(
       width: bgRadius,
@@ -121,7 +151,7 @@ class _TourOverlay extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   step.description,
-                  style: const TextStyle(fontSize: 11),
+                  style: stepStyle,
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
@@ -155,52 +185,39 @@ class _TourOverlay extends StatelessWidget {
   }
 }
 
-/// ==================================================== Models
-
-class TourStepModel {
-  final String title;
-  final String description;
-  final Widget stepWidget;
-  final IconData? icon;
-  final bool autoAllowNext;
-
-  TourStepModel({
-    required this.title,
-    required this.description,
-    required this.stepWidget,
-    this.icon,
-    this.autoAllowNext = false,
-  });
-}
-
 /// ==================================================== Controller
 
 class ProductTourController extends GetxController {
-  final RxInt currentStep = 0.obs;
-  final RxBool showFinish = false.obs;
-  final RxBool allowNext = false.obs;
-  final RxBool showIndicator = true.obs;
+  int currentIdx = 0;
+  int stepsLength = 0;
+  RxBool showFinish = false.obs;
+  RxBool allowNext = false.obs;
+  RxBool showIndicator = true.obs;
+  ProductTourOptions options;
+  late Rx<TourStepModel> currentStep;
 
-  List<TourStepModel> steps = [];
-
-  void initialize(List<TourStepModel> newSteps) {
-    currentStep.value = 0;
-    showFinish.value = false;
-    showIndicator.value = true;
-    allowNext.value = false;
-    steps = newSteps;
+  ProductTourController({required this.options}) {
+    stepsLength = options.steps.length;
+    currentStep = Rx<TourStepModel>(options.steps[currentIdx]);
+    changeStep(currentIdx);
   }
 
   void hideIndicator() => showIndicator.value = false;
 
   void enableNext() => allowNext.value = true;
 
-  void _goToNext() {
-    if (currentStep.value < steps.length - 1) {
-      currentStep.value++;
-      showFinish.value = currentStep.value == steps.length - 1;
-    }
-    allowNext.value = steps[currentStep.value].autoAllowNext ? true : false;
+  changeStep(int index) {
+    currentIdx = index;
+    currentStep.value = options.steps[index];
+
+    allowNext.value = currentStep.value.autoAllowNext ? true : false;
+    showFinish.value = index == stepsLength - 1;
     showIndicator.value = true;
+  }
+
+  void goToNext() {
+    if (currentIdx < stepsLength - 1) {
+      changeStep(currentIdx + 1);
+    }
   }
 }

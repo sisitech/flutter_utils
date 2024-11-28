@@ -29,9 +29,13 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
   TimePeriod datePeriod = defaultDateRanges[0];
   final ThemeController themeController = Get.find<ThemeController>();
   Rx<SelectedDateRange> selectedRange = Rx(SelectedDateRange());
-  final ProductTourController tourCtrl =
-      Get.find<ProductTourController>(tag: "example_tour");
-  onTourNxt() => tourCtrl.enableNext();
+  final String tourTag = "example_tour";
+
+  onTourNxt() {
+    final ProductTourController tourCtrl =
+        Get.find<ProductTourController>(tag: tourTag);
+    tourCtrl.enableNext();
+  }
 
   Future<void> onDatePeriodChange(int newPeriod) async {
     datePeriod =
@@ -51,6 +55,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
     final theme = Theme.of(context);
     List<TourStepModel> tourSteps = [
       TourStepModel(
+        slug: "feature_one",
         title: "Feature One",
         description:
             "This is Feature One of this tour. Press Action One to continue.",
@@ -63,6 +68,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
         ),
       ),
       TourStepModel(
+        slug: "feature_two",
         title: "Feature Two",
         description:
             "This is Feature Tow of this tour. Press Action Two to continue.",
@@ -75,6 +81,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
         ),
       ),
       TourStepModel(
+        slug: "feature_three",
         title: "Feature Three",
         description: "You don't have to do anything here, just view.",
         icon: Icons.interests_rounded,
@@ -82,6 +89,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
         stepWidget: const Center(child: Text("Hello!")),
       ),
       TourStepModel(
+        slug: "feature_four",
         title: "Feature Four",
         description:
             "This is the last feature of this tour. Press Action Four to finish.",
@@ -94,6 +102,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
         ),
       ),
     ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Util Widgets'),
@@ -139,8 +148,10 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 child: ElevatedButton(
                   onPressed: () {
                     Get.to(() => SistchProductTour(
-                          steps: tourSteps,
-                          controller: tourCtrl,
+                          options: ProductTourOptions(
+                            steps: tourSteps,
+                            controllerTag: tourTag,
+                          ),
                         ));
                   },
                   child: const Text("Go to Tour"),

@@ -50,7 +50,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
   bool useFirstChartSeries = true;
   int currentChartIdx = 0;
   List<List<double>> chartData = [
-    [1627891, 78920, 4567, 70], // series 0
+    [100, 90, 80, 70], // series 0
     [40, 30, 20, 10] // series 1
   ];
   List<List<String>> chartLabels = [
