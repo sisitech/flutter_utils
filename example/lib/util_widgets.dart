@@ -193,6 +193,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                       selectedRange.value = val;
                     },
                     selectedRange: selectedRange.value,
+                    // enableMixpanel: true,
                   ),
                 ),
               ),
@@ -249,6 +250,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 child: SistchTabBarScaffold(
                   options: TabViewOptions(
                     maxHeight: Get.height * 0.2,
+                    // enableMixpanel: true,
                     // showUnViewedIndicator: false,
                     onIndexChange: onTabChange,
                     tabs: sampleWidgets.asMap().entries.map((e) {

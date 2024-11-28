@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 
 /// ==================================================== Models
@@ -9,6 +10,7 @@ class TabViewOptions {
   final Function(int? val)? onIndexChange;
   final bool showUnViewedIndicator;
   final int initialIndex;
+  final bool enableMixpanel;
   //
   double? maxHeight;
   bool isScrollable;
@@ -34,6 +36,7 @@ class TabViewOptions {
     this.unselectedItemColor,
     this.labelStyle,
     this.unselectedLabelStyle,
+    this.enableMixpanel = false,
   });
 }
 
@@ -132,10 +135,7 @@ class TabViewController extends GetxController {
   late RxList<bool> viewedTabs;
 
   TabViewController({required this.options}) {
-    print("length: ${options.tabs.length}");
-
     viewedTabs = RxList<bool>(List.generate(options.tabs.length, (i) {
-      print(options.tabs[i].label);
       return options.showUnViewedIndicator
           ? options.initialIndex == i
               ? true
@@ -146,7 +146,15 @@ class TabViewController extends GetxController {
 
   onTabIndexChange(int? val) {
     if (val != null) {
-      updateViewedTabs(val);
+      //
+      if (options.showUnViewedIndicator) updateViewedTabs(val);
+
+      //
+      if (options.enableMixpanel) {
+        mixpanelTrackEvent('tab_view:${options.tabs[val].label}');
+      }
+
+      //
       if (options.onIndexChange != null) options.onIndexChange!(val);
     }
   }

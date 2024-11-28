@@ -4,6 +4,7 @@ import 'package:flutter_utils/date_widgets/date_dropdown/models.dart';
 import 'package:flutter_utils/date_widgets/date_range_picker/utils.dart';
 import 'package:flutter_utils/date_widgets/date_range_picker/widgets.dart';
 import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
+import 'package:flutter_utils/utils/functions.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +19,7 @@ class SistchDateRangePicker extends StatelessWidget {
   final bool hideSuggestions;
   final SelectedDateRange selectedRange;
   final String btnLabel;
+  final bool enableMixpanel;
 
   const SistchDateRangePicker({
     super.key,
@@ -30,6 +32,7 @@ class SistchDateRangePicker extends StatelessWidget {
     required this.selectedRange,
     this.hideSuggestions = true,
     this.btnLabel = "Show Me The Data",
+    this.enableMixpanel = false,
   });
 
   @override
@@ -52,6 +55,7 @@ class SistchDateRangePicker extends StatelessWidget {
           lastYrPicker: lastYrPicker,
           hideSuggestions: hideSuggestions,
           btnLabel: btnLabel,
+          enableMixpanel: enableMixpanel,
         ),
       );
       if (val != null) {
@@ -101,6 +105,7 @@ class DatePickerScaffold extends StatelessWidget {
   final int maxRangeCount;
   final bool hideSuggestions;
   final String btnLabel;
+  final bool enableMixpanel;
   const DatePickerScaffold({
     super.key,
     required this.chosenFormat,
@@ -108,6 +113,7 @@ class DatePickerScaffold extends StatelessWidget {
     required this.maxRangeCount,
     this.hideSuggestions = true,
     required this.btnLabel,
+    required this.enableMixpanel,
   });
 
   @override
@@ -123,7 +129,12 @@ class DatePickerScaffold extends StatelessWidget {
 
     onDatePickerClose() => Get.back(result: selectedDateRange.value);
 
-    onSwitchPickers() => showFullPicker.value = !showFullPicker.value;
+    onSwitchPickers() {
+      if (enableMixpanel) {
+        mixpanelTrackEvent('switch_picker');
+      }
+      showFullPicker.value = !showFullPicker.value;
+    }
 
     return getBottomSheetScaffold(
       height: Get.height * (hideSuggestions ? 0.72 : 0.82),
@@ -155,10 +166,12 @@ class DatePickerScaffold extends StatelessWidget {
                   maxRangeCount: maxRangeCount,
                   lastYrPicker: lastYrPicker,
                   onRangeSelected: onRangeSelected,
+                  enableMixpanel: enableMixpanel,
                 )
               : DateOptionsPickerWidget(
                   onRangeSelected: onRangeSelected,
                   onSwitchPickers: onSwitchPickers,
+                  enableMixpanel: enableMixpanel,
                 ),
         ),
         Padding(
@@ -189,10 +202,13 @@ class DatePickerScaffold extends StatelessWidget {
 class DateOptionsPickerWidget extends StatelessWidget {
   final Function(SelectedDateRange val) onRangeSelected;
   final Function() onSwitchPickers;
+  final bool enableMixpanel;
+
   const DateOptionsPickerWidget({
     super.key,
     required this.onRangeSelected,
     required this.onSwitchPickers,
+    required this.enableMixpanel,
   });
 
   @override
@@ -220,11 +236,17 @@ class DateOptionsPickerWidget extends StatelessWidget {
                       onSwitchPickers();
                       return;
                     }
+
                     TimePeriod? tp = defaultDateRanges
                         .firstWhereOrNull((e) => e.displayText == val);
                     if (tp != null &&
                         tp.startDateFunc != null &&
                         tp.endDateFunc != null) {
+                      //
+                      if (enableMixpanel) {
+                        mixpanelTrackEvent('date_option:${tp.displayText}');
+                      }
+                      //
                       selectedOption.value = tp.displayText;
                       onRangeSelected(SelectedDateRange(
                         rangeLabel: tp.displayText,
@@ -252,6 +274,7 @@ class DateRangePickerWidget extends StatelessWidget {
   final int maxRangeCount;
   final bool hideSuggestions;
   final Function(SelectedDateRange val) onRangeSelected;
+  final bool enableMixpanel;
 
   const DateRangePickerWidget({
     super.key,
@@ -260,6 +283,7 @@ class DateRangePickerWidget extends StatelessWidget {
     required this.maxRangeCount,
     this.hideSuggestions = true,
     required this.onRangeSelected,
+    required this.enableMixpanel,
   });
 
   @override
@@ -363,6 +387,11 @@ class DateRangePickerWidget extends StatelessWidget {
     Rx<int> selectedRangeCount = Rx<int>(1);
     onRangeCountSelected(int? val, DateRangeTypes rangeType) {
       if (val != null) {
+        //
+        if (enableMixpanel) {
+          mixpanelTrackEvent('date_range:$val');
+        }
+        //
         selectedRangeCount.value = val;
         if (startEndDates.isNotEmpty) {
           onDateRangeSelected(
@@ -405,6 +434,7 @@ class DateRangePickerWidget extends StatelessWidget {
     return SistchTabBarScaffold(
       options: TabViewOptions(
         controllerTag: "sistch_date_range_picker",
+        enableMixpanel: enableMixpanel,
         showUnViewedIndicator: false,
         maxHeight: Get.height * (hideSuggestions ? 0.48 : 0.6),
         onIndexChange: (val) => startEndDates.clear(),
