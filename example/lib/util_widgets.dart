@@ -12,7 +12,6 @@ import 'package:flutter_utils/text_widgets/carousel.dart';
 import 'package:flutter_utils/text_widgets/animated_counter.dart';
 import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
 import 'package:flutter_utils/layout_widgets/collapsible_scaffold.dart';
-import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:flutter_utils/product_tour/product_tour.dart';
 import 'package:get/get.dart';
@@ -49,6 +48,31 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
       currentTabIdx.value = val;
     }
   }
+
+  List<IconData> sampleIcons = [Icons.one_k, Icons.two_k, Icons.three_k];
+
+  List<String> sampleLabels = ["One", "Two", "Three"];
+
+  List<Widget> sampleWidgets = [
+    Container(
+        width: 150,
+        height: 70,
+        color: Colors.pink,
+        child: const Center(child: Text('Box 1'))),
+    Container(
+      width: 150,
+      height: 70,
+      color: Colors.green,
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      child: const Center(child: Text('Box 2')),
+    ),
+    Container(
+      width: 150,
+      height: 70,
+      color: Colors.blue,
+      child: const Center(child: Text('Box 3')),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -222,28 +246,19 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               Container(
                 color: theme.colorScheme.surfaceVariant,
                 margin: const EdgeInsets.symmetric(vertical: 20),
-                child: Obx(
-                  () => SistchTabBarScaffold(
-                    tabLabels: const ["Tab One", "Tab Two", "Tab Three"],
+                child: SistchTabBarScaffold(
+                  options: TabViewOptions(
+                    maxHeight: Get.height * 0.2,
                     // showUnViewedIndicator: false,
-                    height: currentTabIdx.value == 1 ? 250 : 150,
-                    isScrollable: false,
-                    // useWantKeepAlive: false,
                     onIndexChange: onTabChange,
-                    tabWidgets: const [
-                      Center(
-                        child: SistchAnimatedCounter(
-                          valueToAnimate: 9999,
-                        ),
-                      ),
-                      Center(
-                        child: SistchAnimatedCounter(
-                          valueToAnimate: 99999,
-                          // useWantKeepAlive: false,
-                        ),
-                      ),
-                      Center(child: Icon(Icons.three_k)),
-                    ],
+                    tabs: sampleWidgets.asMap().entries.map((e) {
+                      int index = e.key;
+                      return TabViewItem(
+                        widget: e.value,
+                        label: sampleLabels[index],
+                        icon: sampleIcons[index],
+                      );
+                    }).toList(),
                   ),
                 ),
               ),
@@ -252,17 +267,14 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               ///
               getHeaderWidget(title: "Collapsible Sections Scaffold"),
               SistchCollapsibleScaffold(
-                sectionTitles: const [
-                  "Section One",
-                  "Section Two",
-                  "Section Three"
-                ],
-                sections: const [
-                  Center(child: Icon(Icons.one_k)),
-                  Center(child: Icon(Icons.two_k)),
-                  Center(child: Icon(Icons.three_k)),
-                ],
-                sectionIcons: defaultIconMapper.values.toList().sublist(0, 3),
+                tabs: sampleWidgets.asMap().entries.map((e) {
+                  int index = e.key;
+                  return TabViewItem(
+                    widget: e.value,
+                    label: sampleLabels[index],
+                    icon: sampleIcons[index],
+                  );
+                }).toList(),
                 initialExpandedIdx: 1,
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
@@ -271,39 +283,10 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               getHeaderWidget(title: "Mini Cards"),
               const SizedBox(height: 10),
               SistchCarousel(
-                // autoPlay: false,
-                // waitTime: 5,
-                // isScrollable: false,
-                children: [
-                  Container(
-                    width: 150,
-                    height: 70,
-                    color: Colors.pink,
-                    child: const Center(child: Text('Box 1')),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    width: 150,
-                    height: 70,
-                    color: Colors.green,
-                    child: const Center(child: Text('Box 2')),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    width: 150,
-                    height: 70,
-                    color: Colors.blue,
-                    child: const Center(child: Text('Box 3')),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    width: 150,
-                    height: 70,
-                    color: Colors.yellow,
-                    child: const Center(child: Text('Box 4')),
-                  ),
-                ],
-              ),
+                  // autoPlay: false,
+                  // waitTime: 5,
+                  // isScrollable: false,
+                  children: sampleWidgets),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ////

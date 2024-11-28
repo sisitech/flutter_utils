@@ -1,179 +1,157 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SistchTabBarScaffold extends StatefulWidget {
-  final List<Widget> tabWidgets;
-  final List<String> tabLabels;
-  final List<IconData>? tabIcons;
-  final double? height;
+/// ==================================================== Models
+///
+class TabViewOptions {
+  final List<TabViewItem> tabs;
+  final String? controllerTag;
   final Function(int? val)? onIndexChange;
-  final bool isScrollable;
-  final bool useWantKeepAlive;
-  final int startTabIdx;
   final bool showUnViewedIndicator;
+  final int initialIndex;
+  //
+  double? maxHeight;
+  bool isScrollable;
+  Color? selectedItemColor;
+  Color? unselectedItemColor;
+  TextStyle? labelStyle;
+  TextStyle? unselectedLabelStyle;
+  double indicatorWeight;
+  Color? dividerColor;
 
-  const SistchTabBarScaffold({
-    super.key,
-    required this.tabWidgets,
-    required this.tabLabels,
-    this.tabIcons,
-    this.height,
+  TabViewOptions({
+    required this.tabs,
+    this.controllerTag,
     this.onIndexChange,
-    this.isScrollable = true,
-    this.useWantKeepAlive = true,
+    this.initialIndex = 0,
     this.showUnViewedIndicator = true,
-    this.startTabIdx = 0,
+    //
+    this.maxHeight,
+    this.isScrollable = false,
+    this.dividerColor,
+    this.indicatorWeight = 3,
+    this.selectedItemColor,
+    this.unselectedItemColor,
+    this.labelStyle,
+    this.unselectedLabelStyle,
   });
-
-  @override
-  State<SistchTabBarScaffold> createState() => _SistchTabBarScaffoldState();
 }
 
-class _SistchTabBarScaffoldState extends State<SistchTabBarScaffold>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  late TabController tabController;
-  RxList<bool> viewedTabs = RxList([]);
+class TabViewItem {
+  final Widget widget;
+  final String label;
+  final IconData? icon;
+
+  TabViewItem({
+    required this.widget,
+    required this.label,
+    this.icon,
+  });
+}
+
+/// ==================================================== View
+///
+class SistchTabBarScaffold extends StatelessWidget {
+  final TabViewOptions options;
+  late final TabViewController controller;
+
+  SistchTabBarScaffold({
+    Key? key,
+    required this.options,
+  }) : super(key: key) {
+    controller = Get.put(
+      TabViewController(options: options),
+      tag: options.controllerTag,
+    );
+  }
 
   @override
-  void initState() {
-    super.initState();
-    tabController = TabController(
-      vsync: this,
-      length: widget.tabLabels.length,
-      initialIndex: widget.startTabIdx,
-    );
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
 
-    // Add listener to the TabController to detect tab changes
-    tabController.addListener(() {
-      if (!tabController.indexIsChanging &&
-          tabController.index != tabController.previousIndex) {
-        onTabIndexChange(tabController.index);
-      }
-    });
+    return DefaultTabController(
+      length: options.tabs.length,
+      initialIndex: options.initialIndex,
+      child: Column(
+        children: [
+          TabBar(
+            isScrollable: options.isScrollable,
+            onTap: controller.onTabIndexChange,
+            tabs: options.tabs.asMap().entries.map((e) {
+              int index = e.key;
+              TabViewItem tabItem = e.value;
 
-    // Set viewed notification dots
-    viewedTabs.value = List.generate(
-      widget.tabWidgets.length,
-      (i) => widget.showUnViewedIndicator ? false : true,
+              return Obx(
+                () => Tab(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (tabItem.icon != null) Icon(tabItem.icon, size: 14),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: Text(tabItem.label),
+                      ),
+                      if (!controller.viewedTabs[index])
+                        CircleAvatar(
+                          radius: 2.5,
+                          backgroundColor: theme.primaryColor,
+                        )
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+            dividerColor:
+                options.dividerColor ?? Theme.of(context).primaryColor,
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicatorWeight: options.indicatorWeight,
+            indicatorColor: options.selectedItemColor,
+            labelColor: options.selectedItemColor,
+            unselectedLabelColor: options.unselectedItemColor,
+            labelStyle: options.labelStyle,
+            unselectedLabelStyle: options.unselectedLabelStyle,
+          ),
+          ConstrainedBox(
+            constraints: BoxConstraints(
+                maxHeight: options.maxHeight ?? Get.height * 0.7),
+            child: TabBarView(
+              children: options.tabs.map((e) => e.widget).toList(),
+            ),
+          ),
+        ],
+      ),
     );
-    updateViewedTabs(widget.startTabIdx);
-    setUpTabControllerListener();
+  }
+}
+
+/// ==================================================== Controller
+///
+
+class TabViewController extends GetxController {
+  TabViewOptions options;
+  late RxList<bool> viewedTabs;
+
+  TabViewController({required this.options}) {
+    print("length: ${options.tabs.length}");
+
+    viewedTabs = RxList<bool>(List.generate(options.tabs.length, (i) {
+      print(options.tabs[i].label);
+      return options.showUnViewedIndicator
+          ? options.initialIndex == i
+              ? true
+              : false
+          : true;
+    }));
   }
 
   onTabIndexChange(int? val) {
     if (val != null) {
       updateViewedTabs(val);
-      if (widget.onIndexChange != null) widget.onIndexChange!(val);
+      if (options.onIndexChange != null) options.onIndexChange!(val);
     }
   }
 
   updateViewedTabs(int idx) {
-    if (idx >= 0 && idx < viewedTabs.length) {
-      viewedTabs[idx] = true;
-    }
+    if (idx >= 0 && idx < viewedTabs.length) viewedTabs[idx] = true;
   }
-
-  setUpTabControllerListener() {
-    if (tabController.animation != null) {
-      tabController.animation!.addListener(() {
-        int indexChange = tabController.offset.round();
-        int index = tabController.index + indexChange;
-        if (index == tabController.index) {
-          return;
-        }
-        onTabIndexChange(index);
-        if (tabController.indexIsChanging) {
-          return;
-        }
-        tabController.animateTo(index,
-            duration: const Duration(milliseconds: 1), curve: Curves.linear);
-      });
-      return;
-    }
-  }
-
-  @override
-  void didUpdateWidget(SistchTabBarScaffold oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (widget.tabWidgets.length != oldWidget.tabWidgets.length ||
-        widget.tabLabels.length != oldWidget.tabLabels.length) {
-      tabController.dispose();
-      tabController = TabController(
-        vsync: this,
-        length: widget.tabLabels.length,
-        initialIndex: widget.startTabIdx,
-      );
-
-      viewedTabs.value = List.generate(
-        widget.tabWidgets.length,
-        (i) => widget.showUnViewedIndicator ? false : true,
-      );
-      updateViewedTabs(tabController.index);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    final theme = Theme.of(context);
-
-    return SizedBox(
-      height: widget.height ?? MediaQuery.sizeOf(context).height * 0.5,
-      child: SafeArea(
-        child: CustomScrollView(
-          shrinkWrap: widget.isScrollable ? false : true,
-          physics:
-              widget.isScrollable ? null : const NeverScrollableScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: Obx(
-                () => TabBar(
-                  controller: tabController,
-                  onTap: onTabIndexChange,
-                  dividerColor: Theme.of(context).colorScheme.primary,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  indicatorWeight: 3,
-                  tabs: widget.tabLabels.asMap().entries.map((entry) {
-                    int index = entry.key;
-                    String label = entry.value;
-
-                    return Tab(
-                      icon: (widget.tabIcons != null &&
-                              widget.tabIcons!.isNotEmpty &&
-                              widget.tabIcons!.length ==
-                                  widget.tabLabels.length)
-                          ? Icon(widget.tabIcons![index])
-                          : null,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(label),
-                          const SizedBox(width: 4),
-                          if (!viewedTabs[index])
-                            CircleAvatar(
-                              radius: 2.5,
-                              backgroundColor: theme.colorScheme.primary,
-                            )
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-            SliverFillRemaining(
-              child: TabBarView(
-                controller: tabController,
-                children: widget.tabWidgets,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  @override
-  bool get wantKeepAlive => widget.useWantKeepAlive;
 }

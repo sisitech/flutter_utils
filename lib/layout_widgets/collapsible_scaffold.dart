@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 
@@ -23,9 +24,7 @@ class CollapsibleSection {
 /// View
 ///
 class SistchCollapsibleScaffold extends StatelessWidget {
-  final List<Widget> sections;
-  final List<String> sectionTitles;
-  final List<IconData>? sectionIcons;
+  final List<TabViewItem> tabs;
   final int? initialExpandedIdx;
   final bool allExpandedAtStart;
   final double sectionsGapSize;
@@ -33,9 +32,7 @@ class SistchCollapsibleScaffold extends StatelessWidget {
 
   const SistchCollapsibleScaffold({
     super.key,
-    required this.sections,
-    required this.sectionTitles,
-    this.sectionIcons,
+    required this.tabs,
     this.initialExpandedIdx,
     this.allExpandedAtStart = false,
     this.hideCollapseAllToggle = false,
@@ -43,12 +40,12 @@ class SistchCollapsibleScaffold extends StatelessWidget {
   });
 
   List<CollapsibleSection> _createSections() {
-    return List.generate(sections.length, (i) {
+    return List.generate(tabs.length, (i) {
       bool viewToggle = initialExpandedIdx == i ? true : allExpandedAtStart;
       return CollapsibleSection(
-        title: sectionTitles[i],
-        titleIcon: sectionIcons?[i],
-        child: sections[i],
+        title: tabs[i].label,
+        titleIcon: tabs[i].icon,
+        child: tabs[i].widget,
         isExpanded: viewToggle,
         isViewed: viewToggle,
       );
@@ -141,7 +138,7 @@ class SistchCollapsibleScaffold extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(left: 5),
                           child: getHeaderWidget(
-                            leadingWidget: sectionIcons != null
+                            leadingWidget: e.titleIcon != null
                                 ? Icon(
                                     e.titleIcon,
                                     size: 18,

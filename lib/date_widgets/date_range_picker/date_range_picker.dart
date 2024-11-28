@@ -126,7 +126,7 @@ class DatePickerScaffold extends StatelessWidget {
     onSwitchPickers() => showFullPicker.value = !showFullPicker.value;
 
     return getBottomSheetScaffold(
-      height: Get.height * (hideSuggestions ? 0.75 : 0.85),
+      height: Get.height * (hideSuggestions ? 0.72 : 0.82),
       widgetList: [
         Row(
           children: [
@@ -376,36 +376,57 @@ class DateRangePickerWidget extends StatelessWidget {
       }
     }
 
+    TabViewItem buildTabViewItem(
+        {required String label, required DateRangeTypes rangeType}) {
+      return TabViewItem(
+        label: label,
+        widget: Obx(
+          () => getRangePickerScaffold(
+            rangeType: rangeType,
+            firstYearPicker: lastYrPicker,
+            maxRangeCount: maxRangeCount,
+            startEndDates: startEndDates,
+            onDateRangeSelected: onDateRangeSelected,
+            onSuggestionSelected: onSuggestionChipSelected,
+            hideSuggestions: hideSuggestions,
+            selectedDecade: selectedDecade.value,
+            selectedDrpMonth: selectedDrpMonth.value,
+            selectedDrpYear: selectedDrpYear.value,
+            selectedRangeCount: selectedRangeCount.value,
+            onDecadeSelected: onDecadeSelected,
+            onRangeCountSelected: onRangeCountSelected,
+            onMonthDrpSelected: onMonthDrpSelected,
+            onYearDrpSelected: onYearDrpSelected,
+          ),
+        ),
+      );
+    }
+
     return SistchTabBarScaffold(
-      tabLabels: const ["Day", "Week", "Month", "Year"],
-      showUnViewedIndicator: false,
-      height: Get.height * (hideSuggestions ? 0.55 : 0.6),
-      isScrollable: false,
-      onIndexChange: (val) => startEndDates.clear(),
-      tabWidgets: [
-        DateRangeTypes.day,
-        DateRangeTypes.week,
-        DateRangeTypes.month,
-        DateRangeTypes.year
-      ]
-          .map((e) => Obx(() => getRangePickerScaffold(
-                rangeType: e,
-                firstYearPicker: lastYrPicker,
-                maxRangeCount: maxRangeCount,
-                startEndDates: startEndDates,
-                onDateRangeSelected: onDateRangeSelected,
-                onSuggestionSelected: onSuggestionChipSelected,
-                hideSuggestions: hideSuggestions,
-                selectedDecade: selectedDecade.value,
-                selectedDrpMonth: selectedDrpMonth.value,
-                selectedDrpYear: selectedDrpYear.value,
-                selectedRangeCount: selectedRangeCount.value,
-                onDecadeSelected: onDecadeSelected,
-                onRangeCountSelected: onRangeCountSelected,
-                onMonthDrpSelected: onMonthDrpSelected,
-                onYearDrpSelected: onYearDrpSelected,
-              )))
-          .toList(),
+      options: TabViewOptions(
+        controllerTag: "sistch_date_range_picker",
+        showUnViewedIndicator: false,
+        maxHeight: Get.height * (hideSuggestions ? 0.48 : 0.6),
+        onIndexChange: (val) => startEndDates.clear(),
+        tabs: [
+          buildTabViewItem(
+            label: "Day",
+            rangeType: DateRangeTypes.day,
+          ),
+          buildTabViewItem(
+            label: "Week",
+            rangeType: DateRangeTypes.week,
+          ),
+          buildTabViewItem(
+            label: "Month",
+            rangeType: DateRangeTypes.month,
+          ),
+          buildTabViewItem(
+            label: "Year",
+            rangeType: DateRangeTypes.year,
+          ),
+        ],
+      ),
     );
   }
 }
@@ -537,6 +558,7 @@ Widget getRangePickerScaffold({
           ],
         ),
       ),
+      const SizedBox(height: 5),
       const Divider(),
       const SizedBox(height: 10),
 

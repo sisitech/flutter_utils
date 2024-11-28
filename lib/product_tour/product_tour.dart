@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
 import 'package:get/get.dart';
 
+/// ==================================================== Models
+///
 class ProductTourOptions {
   final List<TourStepModel> steps;
   final String controllerTag;
@@ -33,6 +35,7 @@ class TourStepModel {
 }
 
 /// ==================================================== View
+///
 class SistchProductTour extends StatelessWidget {
   final ProductTourOptions options;
   late final ProductTourController controller;
@@ -186,7 +189,7 @@ class _TourOverlay extends StatelessWidget {
 }
 
 /// ==================================================== Controller
-
+///
 class ProductTourController extends GetxController {
   int currentIdx = 0;
   int stepsLength = 0;
