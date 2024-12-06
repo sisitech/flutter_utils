@@ -175,6 +175,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                           options: ProductTourOptions(
                             steps: tourSteps,
                             controllerTag: tourTag,
+                            onFinish: () => debugPrint("done with tour"),
                           ),
                         ));
                   },

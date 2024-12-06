@@ -292,6 +292,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                         valuePrefix: 'KES.',
                         dataSeries: chartData[currentChartIdx],
                         chartLabels: chartLabels[currentChartIdx],
+                        // crossCount: 1,
                         cardIcons: defaultIconMapper.values
                             .toList()
                             .sublist(0, chartData[currentChartIdx].length),

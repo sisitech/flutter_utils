@@ -115,9 +115,9 @@ class _TourOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Get.theme;
     final colorScheme = theme.colorScheme;
-    double contentPadding = Get.height * 0.23;
-    double contentWidth = Get.width * 0.7;
-    double bgRadius = Get.height * 0.5;
+    double contentPadding = Get.height * 0.24;
+    double contentWidth = Get.width * 0.72;
+    double bgRadius = Get.height * 0.52;
     Color bgColor = colorScheme.primaryContainer.withOpacity(0.5);
     TextStyle stepStyle = const TextStyle(fontSize: 11);
 
@@ -145,13 +145,18 @@ class _TourOverlay extends StatelessWidget {
                 if (step.icon != null)
                   Icon(step.icon, color: colorScheme.tertiary),
                 Text(
+                  stepNoTxt,
+                  style: theme.textTheme.labelSmall!
+                      .copyWith(color: colorScheme.tertiary),
+                ),
+                Text(
                   step.title,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: colorScheme.tertiary,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 7),
                 Text(
                   step.description,
                   style: stepStyle,
@@ -163,11 +168,7 @@ class _TourOverlay extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      stepNoTxt,
-                      style: theme.textTheme.bodySmall!
-                          .copyWith(color: colorScheme.onPrimaryContainer),
-                    ),
+                    TextButton(onPressed: onFinish, child: const Text("Skip")),
                     ElevatedButton.icon(
                       onPressed: allowNext
                           ? isLastStep

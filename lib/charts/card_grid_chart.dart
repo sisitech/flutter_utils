@@ -60,7 +60,7 @@ class SistchCardGridView extends StatelessWidget {
           ),
         GridView.count(
           crossAxisCount: crossCount,
-          childAspectRatio: cardAspectRatio ?? 1.3,
+          childAspectRatio: cardAspectRatio ?? (crossCount == 1 ? 3 : 1.3),
           mainAxisSpacing: spacing,
           crossAxisSpacing: spacing,
           shrinkWrap: true,
@@ -155,7 +155,7 @@ class SistchCardGridView extends StatelessWidget {
                   : MainAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: Get.width * 0.3,
+                  width: Get.width * (crossCount == 1 ? 0.6 : 0.3),
                   child: Text(
                     label,
                     maxLines: 2,
