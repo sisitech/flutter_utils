@@ -59,7 +59,7 @@ class BaseScreenLockPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: const Text("Setup Authentication"),
+            title: const Text("Setup Screen Lock"),
           ),
           body: Center(
             child: Column(
