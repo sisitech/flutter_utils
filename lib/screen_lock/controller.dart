@@ -39,6 +39,7 @@ class ScreenLockOptions {
 
   final void Function() onMaxTriesExceeded;
   final void Function()? onLock;
+  final bool enabled;
 
   ScreenLockOptions({
     this.authDigits = const [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
@@ -50,6 +51,7 @@ class ScreenLockOptions {
     this.updatePasswordConfirmationTitle = "Enter Current passcode",
     this.biometricRecoveryPasswordTitle = "Set a recovery passcode",
     this.onLock,
+    this.enabled = true,
     // Create password (screenLockCreate) configuration
     required this.createTitle,
     required this.createConfirmTitle,
@@ -93,6 +95,10 @@ class ScreenLockController extends GetxController {
     _loadEncryptionKey();
     _checkSetupStatus();
     _fetchAvailableAuthTypes();
+
+    if (!options.enabled) {
+      setAuthenticated();
+    }
 
     // if (_options.promptOnStart) {
     //   authenticate();
@@ -166,6 +172,10 @@ class ScreenLockController extends GetxController {
 
   Future<bool> authenticate(BuildContext context,
       {String? providedAuthType, String? title}) async {
+    if (options.enabled) {
+      return Future.value(true);
+    }
+
     try {
       final authType =
           providedAuthType ?? await _secureStorage.read(key: 'auth_type');
