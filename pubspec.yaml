@@ -24,7 +24,6 @@ dependencies:
   package_info_plus: ^5.0.1
   flutter_local_notifications: ^13.0.0
   mixpanel_flutter: ^2.2.0
-  flutter_screen_lock: ^9.0.2
   nfc_manager: ^3.4.0
   flex_color_scheme: ^7.3.1
   reactive_forms: ^14.1.0
@@ -34,10 +33,12 @@ dependencies:
   encrypt: ^5.0.1
   crypto: ^3.0.1
   font_awesome_flutter: ^10.7.0
+  flutter_screen_lock: ^9.0.4
+  flutter_secure_storage: ^9.2.2
+  local_auth: ^2.3.0
   flutter_auth:
     git:
       url: git@github.com:sisitech/flutter_auth.git
-  local_auth: ^2.2.0
 
 dev_dependencies:
   flutter_test:
