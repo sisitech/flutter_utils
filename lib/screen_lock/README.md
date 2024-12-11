@@ -2,11 +2,11 @@
 
 ## Usage
 
-1. Initialize the `LockScreenController` in the main.dart
+1. Initialize the `ScreenLockController` in the main.dart
 
 - Define your lock Options
 ```dart
-LockScreenOptions(
+ScreenLockOptions(
   // Digits for authentication, if needed.
   promptOnStart: false, // We can manually trigger authentication if desired
   maxTries: 3,
@@ -35,7 +35,7 @@ LockScreenOptions(
   authFooter: ElevatedButton.icon(
       onPressed: () {
         print("Gount back");
-        var cnt = Get.find<LockScreenController>();
+        var cnt = Get.find<ScreenLockController>();
         cnt.clearStorage();
         Get.back();
       },
@@ -45,16 +45,16 @@ LockScreenOptions(
 ```
 
 ```dart
-  var controller = Get.put(LockScreenController(options: lockOptions));
+  var controller = Get.put(ScreenLockController(options: lockOptions));
 
 ```
 
 
-2. Wrap the component to be locked with `BaseLockScreenPage`
+2. Wrap the component to be locked with `BaseScreenLockPage`
 
 ```dart
- home: const BaseLockScreenPage(
-        child: MainPage(),
+ home: const BaseScreenLockPage(
+        child: ScreenLockSamplePage(),
       ),
 ```
 
@@ -62,7 +62,7 @@ TO lock
 
 ```dart
 
-var controller = Get.find<LockScreenController>();
+var controller = Get.find<ScreenLockController>();
 controller.lock()
 ```
 
