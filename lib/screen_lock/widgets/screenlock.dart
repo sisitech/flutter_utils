@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 
 import '../controller.dart';
 
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
+class ScreenLockSamplePage extends StatelessWidget {
+  const ScreenLockSamplePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var controller = Get.find<LockScreenController>();
+    var controller = Get.find<ScreenLockController>();
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -43,13 +43,13 @@ class MainPage extends StatelessWidget {
   }
 }
 
-class BaseLockScreenPage extends StatelessWidget {
+class BaseScreenLockPage extends StatelessWidget {
   final Widget child;
-  const BaseLockScreenPage({super.key, required this.child});
+  const BaseScreenLockPage({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    var controller = Get.find<LockScreenController>();
+    var controller = Get.find<ScreenLockController>();
     var passwordType = "Password";
     var biometricType = "Biometric";
 

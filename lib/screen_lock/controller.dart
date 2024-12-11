@@ -10,7 +10,7 @@ import 'package:local_auth/local_auth.dart';
 
 import 'package:flutter/material.dart';
 
-class LockScreenOptions {
+class ScreenLockOptions {
   // Core configuration
   final bool promptOnStart;
   final int maxTries;
@@ -40,7 +40,7 @@ class LockScreenOptions {
   final void Function() onMaxTriesExceeded;
   final void Function()? onLock;
 
-  LockScreenOptions({
+  ScreenLockOptions({
     this.authDigits = const [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
     // Core configuration
     this.promptOnStart = false,
@@ -69,11 +69,11 @@ class LockScreenOptions {
   });
 }
 
-class LockScreenController extends GetxController {
+class ScreenLockController extends GetxController {
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   final LocalAuthentication _localAuth = LocalAuthentication();
 
-  final LockScreenOptions options;
+  final ScreenLockOptions options;
 
   final inputController = InputController();
 
@@ -85,7 +85,7 @@ class LockScreenController extends GetxController {
 
   String? _encryptionKey;
 
-  LockScreenController({required this.options});
+  ScreenLockController({required this.options});
 
   @override
   void onInit() {
