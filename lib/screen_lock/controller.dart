@@ -172,10 +172,6 @@ class ScreenLockController extends GetxController {
 
   Future<bool> authenticate(BuildContext context,
       {String? providedAuthType, String? title}) async {
-    if (options.enabled) {
-      return Future.value(true);
-    }
-
     try {
       final authType =
           providedAuthType ?? await _secureStorage.read(key: 'auth_type');
