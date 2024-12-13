@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_screen_lock/flutter_screen_lock.dart';
+import 'package:flutter_utils/flutter_utils.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -84,6 +85,9 @@ class ScreenLockController extends GetxController {
   var availableAuthTypes = <String>[].obs;
 
   var isLocked = false.obs;
+  var biometricAvailable = false.obs;
+
+  var selectedAuthType = "".obs;
 
   String? _encryptionKey;
 
@@ -108,16 +112,20 @@ class ScreenLockController extends GetxController {
   void _loadEncryptionKey() async {
     _encryptionKey = await _secureStorage.read(key: 'encryption_key');
     if (_encryptionKey == null) {
+      dprint("Generation ley");
       _encryptionKey = base64UrlEncode(
         List<int>.generate(32, (_) => Random.secure().nextInt(256)),
       );
       await _secureStorage.write(key: 'encryption_key', value: _encryptionKey);
+    } else {
+      dprint("ENCRYPTION KEY: $_encryptionKey");
     }
   }
 
   void _checkSetupStatus() async {
     isSetupDone.value =
         await _secureStorage.containsKey(key: options.storageName);
+    selectedAuthType.value = await _secureStorage.read(key: 'auth_type') ?? '';
   }
 
   String _biometricTypeToString(BiometricType type) {
@@ -142,10 +150,12 @@ class ScreenLockController extends GetxController {
       final canCheckBiometrics = await _localAuth.canCheckBiometrics;
       final isDeviceSupported = await _localAuth.isDeviceSupported();
       availableAuthTypes.clear();
+
       if (canCheckBiometrics && isDeviceSupported) {
         final deviceBiometrics = await _localAuth.getAvailableBiometrics();
         final converted = deviceBiometrics.map(_biometricTypeToString).toList();
         availableAuthTypes.addAll(converted);
+        biometricAvailable.value = true;
       }
       if (!availableAuthTypes.contains("password")) {
         availableAuthTypes.add("password");
@@ -161,7 +171,10 @@ class ScreenLockController extends GetxController {
     final encryptedPassword = _encryptPassword(password);
     await _secureStorage.write(
         key: options.storageName, value: encryptedPassword);
+
     await _secureStorage.write(key: 'auth_type', value: authType);
+
+    selectedAuthType.value = authType;
     isSetupDone.value = true;
   }
 
@@ -178,6 +191,7 @@ class ScreenLockController extends GetxController {
       final storedEncryptedPassword =
           await _secureStorage.read(key: options.storageName);
 
+      dprint("PASSWORD: $storedEncryptedPassword");
       if (authType == null) {
         return false;
       }
@@ -239,6 +253,8 @@ class ScreenLockController extends GetxController {
     await _secureStorage.delete(key: 'encryption_key');
     await _secureStorage.delete(key: 'auth_type');
     isSetupDone.value = false;
+    // Load new encryption key
+    _loadEncryptionKey();
   }
 
   Future<void> lock() async {
@@ -256,11 +272,12 @@ class ScreenLockController extends GetxController {
     bool authenticated = false;
     // Build a screenLock widget
     // The user will enter their password, and we validate it
+    var correctPassword = _decryptPassword(storedEncryptedPassword);
+    dprint("CORRECT PASS: $correctPassword");
     await screenLock(
       context: context,
       title: title != null ? Text(title) : options.authTitle,
-      correctString:
-          _decryptPassword(storedEncryptedPassword), // We'll validate manually
+      correctString: correctPassword, // We'll validate manually
       canCancel: options.authCanCancel,
       maxRetries: options.authMaxRetries ?? 3,
       retryDelay: options.authRetryDelay ?? Duration.zero,

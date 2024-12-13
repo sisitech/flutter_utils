@@ -43,6 +43,13 @@ class ScreenLockSamplePage extends StatelessWidget {
   }
 }
 
+const biometricIcons = Row(
+  children: [
+    Icon(Icons.fingerprint),
+    Icon(Icons.face_unlock_sharp),
+  ],
+);
+
 class BaseScreenLockPage extends StatelessWidget {
   final Widget child;
   const BaseScreenLockPage({super.key, required this.child});
@@ -70,23 +77,19 @@ class BaseScreenLockPage extends StatelessWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
                 const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: ElevatedButton.icon(
-                    icon: Row(
-                      children: [
-                        Icon(Icons.fingerprint),
-                        Icon(Icons.face_unlock_sharp),
-                      ],
+                if (controller.biometricAvailable.value)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: ElevatedButton.icon(
+                      icon: biometricIcons,
+                      onPressed: () {
+                        // Start the password creation flow for the selected auth type
+                        controller.buildPasswordCreationLock(
+                            biometricType, context);
+                      },
+                      label: Text(biometricType),
                     ),
-                    onPressed: () {
-                      // Start the password creation flow for the selected auth type
-                      controller.buildPasswordCreationLock(
-                          biometricType, context);
-                    },
-                    label: Text(biometricType),
                   ),
-                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: ElevatedButton.icon(
@@ -116,25 +119,55 @@ class BaseScreenLockPage extends StatelessWidget {
           }
         });
         final authType = controller.isLocked.value ? null : 'password';
-        String authMessage =
-            controller.isLocked.value ? 'Unlock' : 'Unlock With Password';
+        String unlockAuthmessage = "Unlock";
+        String authMessage = controller.isLocked.value
+            ? unlockAuthmessage
+            : 'Unlock With Password';
         Widget authIcon = controller.isLocked.value
             ? Icon(Icons.lock_outline)
             : Icon(Icons.password);
         return Scaffold(
           body: Center(
-            child: ElevatedButton.icon(
-                onPressed: () async {
-                  final success = await controller.authenticate(context,
-                      providedAuthType: authType);
-                  if (success) {
-                    controller.isAuthenticated.value = true;
-                  } else {
-                    // If authentication fails, show a message or handle accordingly
-                  }
-                },
-                icon: authIcon,
-                label: Text(authMessage)),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (controller.biometricAvailable.value &&
+                    !controller.isLocked.value) ...[
+                  ElevatedButton.icon(
+                    onPressed: () async {
+                      final success = await controller.authenticate(context);
+                      if (success) {
+                        controller.isAuthenticated.value = true;
+                      } else {
+                        // If authentication fails, show a message or handle accordingly
+                      }
+                    },
+                    icon: biometricIcons,
+                    label: Text("Try Again"),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                ],
+                ElevatedButton.icon(
+                  onPressed: () async {
+                    // Resets the lockstate so as to see try again and unlock with password
+                    if (authMessage == unlockAuthmessage) {
+                      controller.isLocked.value = false;
+                    }
+                    final success = await controller.authenticate(context,
+                        providedAuthType: authType);
+                    if (success) {
+                      controller.isAuthenticated.value = true;
+                    } else {
+                      // If authentication fails, show a message or handle accordingly
+                    }
+                  },
+                  icon: authIcon,
+                  label: Text(authMessage),
+                ),
+              ],
+            ),
           ),
         );
       } else {

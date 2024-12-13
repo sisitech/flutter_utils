@@ -11,11 +11,13 @@ import 'package:flutter_utils/mixpanel/mixpanel_controller.dart';
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/network_status/network_status_controller.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
+import 'package:flutter_utils/screen_lock/controller.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'internalization/translate.dart';
+import 'lockscreen.dart';
 
 const default_local_name = "Kiswahili";
 // import 'package:flutter_utils/';
@@ -61,7 +63,9 @@ void main() async {
         )),
   );
   Get.put(NetworkStatusController());
-
+  var controller = Get.put(
+    ScreenLockController(options: screenLockOptions),
+  );
   var notificationCont = Get.put(LocalNotificationController(
       notificationTapBackground: notificationTapBackground));
 

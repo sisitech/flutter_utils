@@ -34,6 +34,8 @@ import 'package:flutter_utils/nfc/utils.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
 import 'package:flutter_utils/package_info/package_info_widget.dart';
 import 'package:flutter_utils/phone_call_launcher.dart';
+import 'package:flutter_utils/screen_lock/controller.dart';
+import 'package:flutter_utils/screen_lock/widgets/screenlock.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:flutter_utils/sisitech_themes/theme_picker.dart';
 import 'package:flutter_utils/sistch_progress_indicator/sistch_progress_controller.dart';
@@ -151,29 +153,31 @@ class MyApp extends StatelessWidget {
           translations: Get.find<LocaleController>().getCustomAppTranslations(),
           theme: themeController.lightTheme.value,
           darkTheme: themeController.darkTheme.value,
-          home: Obx(
-            () => showMainApp.value
-                ? mainApp(context)
-                : FutureBuilder(
-                    future: startApp(),
-                    builder: (context, snapshot) {
-                      switch (snapshot.connectionState) {
-                        case ConnectionState.waiting:
-                          return const Scaffold(
-                            body: CircularProgressIndicator(),
-                          );
-                        default:
-                          if (snapshot.hasError) {
-                            debugPrint('$snapshot.error');
-                            return Text('Error: ${snapshot.error}');
-                          } else {
-                            return SistchLockScreen(onSuccess: () {
-                              showMainApp.value = true;
-                            });
-                          }
-                      }
-                    },
-                  ),
+          home: BaseScreenLockPage(
+            child: Obx(
+              () => showMainApp.value
+                  ? mainApp(context)
+                  : FutureBuilder(
+                      future: startApp(),
+                      builder: (context, snapshot) {
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.waiting:
+                            return const Scaffold(
+                              body: CircularProgressIndicator(),
+                            );
+                          default:
+                            if (snapshot.hasError) {
+                              debugPrint('$snapshot.error');
+                              return Text('Error: ${snapshot.error}');
+                            } else {
+                              return SistchLockScreen(onSuccess: () {
+                                showMainApp.value = true;
+                              });
+                            }
+                        }
+                      },
+                    ),
+            ),
           ),
         );
       },
@@ -274,6 +278,16 @@ class MyApp extends StatelessWidget {
         ),
         appBar: AppBar(
           title: const Text('Flutter Utils'),
+          actions: [
+            TextButton.icon(
+              onPressed: () {
+                var cont = Get.find<ScreenLockController>();
+                cont.lock();
+              },
+              icon: Icon(Icons.lock_open),
+              label: Text("Lock"),
+            ),
+          ],
         ),
         floatingActionButton: ExtendedFAB(
           items: [
