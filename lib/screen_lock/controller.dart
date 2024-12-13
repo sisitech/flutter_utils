@@ -126,7 +126,10 @@ class ScreenLockController extends GetxController {
     }
   }
 
-  void triggerScreenLockSetup() async {
+  Future<void> triggerScreenLockSetup() async {
+    if (isSetupDone.value) {
+      return;
+    }
     await _secureStorage.write(key: 'triggerSetup', value: "true");
     isSetUpTriggered.value = true;
   }
