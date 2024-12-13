@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/flutter_utils.dart';
 import 'package:get/get.dart';
 
 import '../controller.dart';
@@ -110,7 +111,10 @@ class BaseScreenLockPage extends StatelessWidget {
         // If setup is done but not authenticated, attempt authentication when the widget builds.
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (!controller.isLocked.value) {
-            final success = await controller.authenticate(context);
+            dprint("UI AUTHENCITA");
+            final success = await controller.authenticate(
+              context,
+            );
             if (success) {
               controller.isAuthenticated.value = true;
             } else {
@@ -132,9 +136,12 @@ class BaseScreenLockPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 if (controller.biometricAvailable.value &&
-                    !controller.isLocked.value) ...[
+                    !controller.isLocked.value &&
+                    controller.selectedAuthType.value.toLowerCase() ==
+                        "biometric") ...[
                   ElevatedButton.icon(
                     onPressed: () async {
+                      dprint("CLIECKED AGAIN");
                       final success = await controller.authenticate(context);
                       if (success) {
                         controller.isAuthenticated.value = true;
@@ -148,17 +155,23 @@ class BaseScreenLockPage extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
+                  SizedBox(
+                    height: 20,
+                  ),
                 ],
                 ElevatedButton.icon(
                   onPressed: () async {
-                    // Resets the lockstate so as to see try again and unlock with password
+                    dprint("CLIECKED AUTH MESSAGE");
                     if (authMessage == unlockAuthmessage) {
                       controller.isLocked.value = false;
                     }
+                    // Resets the lockstate so as to see try again and unlock with password
                     final success = await controller.authenticate(context,
-                        providedAuthType: authType);
+                        providedAuthType: authType, setOngoing: true);
+                    controller.resetAuthenticationOngoing();
+
                     if (success) {
-                      controller.isAuthenticated.value = true;
+                      controller.setAuthenticated();
                     } else {
                       // If authentication fails, show a message or handle accordingly
                     }

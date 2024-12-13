@@ -281,6 +281,15 @@ class MyApp extends StatelessWidget {
           actions: [
             TextButton.icon(
               onPressed: () {
+                dprint("Trying update..");
+                var cont = Get.find<ScreenLockController>();
+                cont.updatePassowrd(context);
+              },
+              icon: Icon(Icons.password),
+              label: Text("Update"),
+            ),
+            TextButton.icon(
+              onPressed: () {
                 var cont = Get.find<ScreenLockController>();
                 cont.lock();
               },
@@ -344,6 +353,17 @@ class MyApp extends StatelessWidget {
                         uriRecord,
                         externalRecord2,
                       ]),
+                    ),
+                    TextButton.icon(
+                      onPressed: () {
+                        dprint("Trying update..");
+                        var cont = Get.find<ScreenLockController>();
+                        cont.updatePassowrd(context);
+                        // cont.buildPasswordCreationLock("password", context);
+                        // cont.lock();
+                      },
+                      icon: Icon(Icons.password),
+                      label: Text("Update"),
                     ),
                     IconButton(
                       onPressed: () async {

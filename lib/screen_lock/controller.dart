@@ -109,6 +109,7 @@ class ScreenLockController extends GetxController {
     // }
   }
 
+  var authencticationOngoing = false.obs;
   void _loadEncryptionKey() async {
     _encryptionKey = await _secureStorage.read(key: 'encryption_key');
     if (_encryptionKey == null) {
@@ -183,15 +184,26 @@ class ScreenLockController extends GetxController {
     isLocked.value = false;
   }
 
+  Future<void> resetAuthenticationOngoing() async {
+    authencticationOngoing.value = false;
+  }
+
   Future<bool> authenticate(BuildContext context,
-      {String? providedAuthType, String? title}) async {
+      {String? providedAuthType,
+      String? title,
+      bool setOngoing = false}) async {
+    if (authencticationOngoing.value) {
+      return Future.value(false);
+    }
+    if (setOngoing) {
+      authencticationOngoing.value = true;
+    }
+
     try {
       final authType =
           providedAuthType ?? await _secureStorage.read(key: 'auth_type');
       final storedEncryptedPassword =
           await _secureStorage.read(key: options.storageName);
-
-      dprint("PASSWORD: $storedEncryptedPassword");
       if (authType == null) {
         return false;
       }
@@ -239,9 +251,11 @@ class ScreenLockController extends GetxController {
   }
 
   updatePassowrd(BuildContext context) async {
+    dprint("Trying ..");
     bool reset = await authenticate(context,
         providedAuthType: 'password',
         title: options.updatePasswordConfirmationTitle);
+    print("Got the resposen $reset");
 
     if (reset) {
       clearStorage();
@@ -268,16 +282,21 @@ class ScreenLockController extends GetxController {
   Future<bool> _passwordAuthFlow(
       String? storedEncryptedPassword, BuildContext context,
       {String? title}) async {
-    if (storedEncryptedPassword == null) return Future.value(false);
+    dprint(storedEncryptedPassword);
+    if (storedEncryptedPassword == null) {
+      dprint("NO password parsed");
+      return Future.value(false);
+    }
+    // dprint("Password prsent");
     bool authenticated = false;
     // Build a screenLock widget
     // The user will enter their password, and we validate it
-    var correctPassword = _decryptPassword(storedEncryptedPassword);
-    dprint("CORRECT PASS: $correctPassword");
+
     await screenLock(
       context: context,
       title: title != null ? Text(title) : options.authTitle,
-      correctString: correctPassword, // We'll validate manually
+      correctString:
+          _decryptPassword(storedEncryptedPassword), // We'll validate manually
       canCancel: options.authCanCancel,
       maxRetries: options.authMaxRetries ?? 3,
       retryDelay: options.authRetryDelay ?? Duration.zero,
@@ -287,7 +306,6 @@ class ScreenLockController extends GetxController {
       onUnlocked: () {
         // If user enters correct password, didUnlocked called
         authenticated = true;
-
         Navigator.of(context).pop();
       },
       onMaxRetries: (int count) {
