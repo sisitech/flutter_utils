@@ -26,6 +26,7 @@ class ScreenLockOptions {
   final int createDigits;
   final int? createMaxRetries;
   final Duration? createRetryDelay;
+  final bool autoStartSetup;
 
   // Options for authenticating with screenLock
   final Widget authTitle;
@@ -46,6 +47,7 @@ class ScreenLockOptions {
     this.authDigits = const [1, 2, 3, 4, 5, 6, 7, 8, 9, 0],
     // Core configuration
     this.promptOnStart = false,
+    this.autoStartSetup = true,
     required this.maxTries,
     required this.onMaxTriesExceeded,
     this.storageName = "drowssap_nerekscol",
@@ -88,6 +90,7 @@ class ScreenLockController extends GetxController {
   var biometricAvailable = false.obs;
 
   var selectedAuthType = "".obs;
+  var isSetUpTriggered = false.obs;
 
   String? _encryptionKey;
 
@@ -123,9 +126,16 @@ class ScreenLockController extends GetxController {
     }
   }
 
+  void triggerScreenLockSetup() async {
+    await _secureStorage.write(key: 'triggerSetup', value: "true");
+    isSetUpTriggered.value = true;
+  }
+
   void _checkSetupStatus() async {
     isSetupDone.value =
         await _secureStorage.containsKey(key: options.storageName);
+    isSetUpTriggered.value =
+        await _secureStorage.containsKey(key: "triggerSetup");
     selectedAuthType.value = await _secureStorage.read(key: 'auth_type') ?? '';
   }
 
@@ -266,6 +276,8 @@ class ScreenLockController extends GetxController {
     await _secureStorage.delete(key: options.storageName);
     await _secureStorage.delete(key: 'encryption_key');
     await _secureStorage.delete(key: 'auth_type');
+    await _secureStorage.delete(key: 'triggerSetup');
+
     isSetupDone.value = false;
     // Load new encryption key
     _loadEncryptionKey();

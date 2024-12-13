@@ -6,6 +6,7 @@ var screenLockOptions = ScreenLockOptions(
   // Digits for authentication, if needed.
   promptOnStart: false, // We can manually trigger authentication if desired
   maxTries: 3,
+  autoStartSetup: false,
   // enabled: false,
   onMaxTriesExceeded: () {
     Get.back();

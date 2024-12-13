@@ -63,7 +63,12 @@ class BaseScreenLockPage extends StatelessWidget {
 
     return Obx(() {
       // If setup is not done, allow the user to select authentication type and set a password.
-      if (!controller.isSetupDone.value) {
+
+      if (!controller.options.autoStartSetup &&
+          !controller.isSetUpTriggered.value) {
+        // Wait for the trigger
+        return child;
+      } else if (!controller.isSetupDone.value) {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,

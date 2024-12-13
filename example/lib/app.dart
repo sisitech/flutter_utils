@@ -358,12 +358,12 @@ class MyApp extends StatelessWidget {
                       onPressed: () {
                         dprint("Trying update..");
                         var cont = Get.find<ScreenLockController>();
-                        cont.updatePassowrd(context);
+                        cont.triggerScreenLockSetup();
                         // cont.buildPasswordCreationLock("password", context);
                         // cont.lock();
                       },
                       icon: Icon(Icons.password),
-                      label: Text("Update"),
+                      label: Text("Trigger Screen Lock setup"),
                     ),
                     IconButton(
                       onPressed: () async {
