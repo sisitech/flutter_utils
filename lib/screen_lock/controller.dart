@@ -275,11 +275,14 @@ class ScreenLockController extends GetxController {
     }
   }
 
+  Future<void> resetTriggerSetup() async {
+    await _secureStorage.delete(key: 'triggerSetup');
+  }
+
   Future<void> clearStorage() async {
     await _secureStorage.delete(key: options.storageName);
     await _secureStorage.delete(key: 'encryption_key');
     await _secureStorage.delete(key: 'auth_type');
-    await _secureStorage.delete(key: 'triggerSetup');
 
     isSetupDone.value = false;
     // Load new encryption key
