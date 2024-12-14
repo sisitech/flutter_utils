@@ -290,6 +290,9 @@ class ScreenLockController extends GetxController {
   }
 
   Future<void> lock() async {
+    if (!options.enabled) {
+      return;
+    }
     isAuthenticated.value = false;
     isLocked.value = true;
     if (options.onLock != null) {
