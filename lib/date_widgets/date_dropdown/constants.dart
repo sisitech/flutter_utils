@@ -23,14 +23,14 @@ Map<DateRangeTypes, Map<DateTime, String>> dateToLabelMap = {
     thisWeek: "This Week",
     lastWeek: "Last Week",
   },
-  DateRangeTypes.month: {
-    thisMonth: "This Month",
-    lastMonth: "Last Month",
-  },
-  DateRangeTypes.year: {
-    thisYear: "This Year",
-    lastYear: "Last Year",
-  },
+  // DateRangeTypes.month: {
+  //   thisMonth: "This Month",
+  //   lastMonth: "Last Month",
+  // },
+  // DateRangeTypes.year: {
+  //   thisYear: "This Year",
+  //   lastYear: "Last Year",
+  // },
 };
 
 DateFormat dayFormat = DateFormat('dd/MM/yy');
@@ -101,7 +101,9 @@ var defaultDateRanges = [
   ),
   TimePeriod(
     // This Month
-    displayName: "This Month",
+    // displayName: "This Month",
+    displayName: "@start_date_display#",
+    dateFormat: "MMMM y",
     value: 5,
     type: DateRangeTypes.month,
     startDate: () {
@@ -112,7 +114,9 @@ var defaultDateRanges = [
     },
   ),
   TimePeriod(
-    displayName: 'Last Month',
+    // displayName: 'Last Month',
+    displayName: "@start_date_display#",
+    dateFormat: "MMMM y",
     value: 6,
     type: DateRangeTypes.month,
     startDate: () {
@@ -171,7 +175,9 @@ var defaultDateRanges = [
     },
   ),
   TimePeriod(
-    displayName: "This Year",
+    // displayName: "This Year",
+    displayName: "@start_date_display#",
+    dateFormat: "yyyy",
     type: DateRangeTypes.year,
     value: 11,
     startDate: () {
@@ -182,7 +188,9 @@ var defaultDateRanges = [
     },
   ),
   TimePeriod(
-    displayName: "Last Year",
+    // displayName: "Last Year",
+    displayName: "@start_date_display#",
+    dateFormat: "yyyy",
     type: DateRangeTypes.year,
     value: 12,
     startDate: () {
