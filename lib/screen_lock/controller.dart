@@ -91,6 +91,7 @@ class ScreenLockController extends GetxController {
 
   var selectedAuthType = "".obs;
   var isSetUpTriggered = false.obs;
+  var triggerUnlock = false.obs;
 
   String? _encryptionKey;
 
@@ -289,12 +290,17 @@ class ScreenLockController extends GetxController {
     _loadEncryptionKey();
   }
 
+  Future<void> unLock() async {
+    triggerUnlock.value = true;
+  }
+
   Future<void> lock() async {
     if (!options.enabled) {
       return;
     }
     isAuthenticated.value = false;
     isLocked.value = true;
+    triggerUnlock.value = false;
     if (options.onLock != null) {
       options.onLock!();
     }

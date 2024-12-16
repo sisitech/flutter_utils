@@ -16,6 +16,7 @@ import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'app_controller.dart';
 import 'internalization/translate.dart';
 import 'lockscreen.dart';
 
@@ -120,6 +121,7 @@ void main() async {
   );
 
   Get.put(LocalAuthController());
+  Get.put(AppStateController());
 
   runApp(MyApp());
 }

@@ -54,12 +54,23 @@ const biometricIcons = Row(
 class BaseScreenLockPage extends StatelessWidget {
   final Widget child;
   const BaseScreenLockPage({super.key, required this.child});
+  final String passwordType = "Password";
+  final String biometricType = "Biometric";
+
+  void authenticateAndUpdate(controller, context) async {
+    final success = await controller.authenticate(context, setOngoing: true);
+    controller.resetAuthenticationOngoing();
+
+    if (success) {
+      controller.setAuthenticated();
+    } else {
+      // If authentication fails, show a message or handle accordingly
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     var controller = Get.find<ScreenLockController>();
-    var passwordType = "Password";
-    var biometricType = "Biometric";
 
     return Obx(() {
       // If setup is not done, allow the user to select authentication type and set a password.
@@ -112,19 +123,30 @@ class BaseScreenLockPage extends StatelessWidget {
             ),
           ),
         );
+      } else if (!controller.isAuthenticated.value &&
+          controller.triggerUnlock.value) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (controller.triggerUnlock.value) {
+            dprint("LOCK UNLOCK AUTO PROMPT");
+            controller.isLocked.value = false;
+            authenticateAndUpdate(controller, context);
+            controller.triggerUnlock.value = false;
+          }
+        });
+        return Scaffold(
+          body: Center(
+            child: ElevatedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.lock),
+                label: const Text("Unlock")),
+          ),
+        );
       } else if (!controller.isAuthenticated.value) {
         // If setup is done but not authenticated, attempt authentication when the widget builds.
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           if (!controller.isLocked.value) {
             dprint("UI AUTHENCITA");
-            final success = await controller.authenticate(
-              context,
-            );
-            if (success) {
-              controller.isAuthenticated.value = true;
-            } else {
-              // If authentication fails, show a message or handle accordingly
-            }
+            authenticateAndUpdate(controller, context);
           }
         });
         final authType = controller.isLocked.value ? null : 'password';
@@ -133,8 +155,9 @@ class BaseScreenLockPage extends StatelessWidget {
             ? unlockAuthmessage
             : 'Unlock With Password';
         Widget authIcon = controller.isLocked.value
-            ? Icon(Icons.lock_outline)
-            : Icon(Icons.password);
+            ? const Icon(Icons.lock_outline)
+            : const Icon(Icons.password);
+
         return Scaffold(
           body: Center(
             child: Column(
@@ -147,20 +170,15 @@ class BaseScreenLockPage extends StatelessWidget {
                   ElevatedButton.icon(
                     onPressed: () async {
                       dprint("CLIECKED AGAIN");
-                      final success = await controller.authenticate(context);
-                      if (success) {
-                        controller.isAuthenticated.value = true;
-                      } else {
-                        // If authentication fails, show a message or handle accordingly
-                      }
+                      authenticateAndUpdate(controller, context);
                     },
                     icon: biometricIcons,
                     label: Text("Try Again"),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                 ],
