@@ -20,7 +20,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.18.5 <3.0.0"
+  sdk: ">=3.5.0 <3.6.6"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -43,6 +43,7 @@ dependencies:
   flutter_auth:
     git:
       url: git@github.com:sisitech/flutter_auth.git
+      ref: "03579b9"
 
   flutter_login:
     git:
@@ -52,9 +53,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   get: ^4.6.5
-  intl: ^0.18.0
+  intl: ^0.19.0
   get_storage: ^2.0.3
-  flutter_local_notifications: ^13.0.0
+  flutter_local_notifications: ^18.0.1
   flutter_expandable_fab: ^2.0.0
   nfc_manager: ^3.4.0
   flex_color_scheme: ^7.3.1
@@ -67,13 +68,23 @@ dependencies:
   flutter_secure_storage: ^9.2.2
 
 dependency_overrides:
+  reactive_forms: ^17.0.1
+  # win32: ^5.5.4
+  fl_chart: ^0.63.0
+  intl: ^0.19.0
+
   flutter_utils:
     path: ../
 
   flutter_form:
     git:
       url: git@github.com:sisitech/flutter-forms.git
-      ref: "792f174"
+      ref: "ab32943"
+
+  flutter_auth:
+    git:
+      url: git@github.com:sisitech/flutter_auth.git
+      ref: "03579b9"
 
 dev_dependencies:
   flutter_test:

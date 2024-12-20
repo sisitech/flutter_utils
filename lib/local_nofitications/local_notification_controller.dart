@@ -80,7 +80,8 @@ class LocalNotificationController extends SuperController {
             _notificationsPlugin.resolvePlatformSpecificImplementation<
                 AndroidFlutterLocalNotificationsPlugin>();
 
-        final bool? granted = await androidImplementation?.requestPermission();
+        final bool? granted =
+            await androidImplementation?.areNotificationsEnabled();
         permissionGranted.value = granted ?? false;
 
         dprint("Got the permission is $granted");

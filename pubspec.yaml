@@ -4,18 +4,17 @@ version: 0.0.2
 homepage: sisitech.com
 
 environment:
-  sdk: ">=2.18.5 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=3.5.0 <3.6.6"
 
 dependencies:
   get: ^4.6.5
-  intl: ^0.18.0
+  intl: ^0.19.0
   flutter:
     sdk: flutter
 
-  fl_chart: ^0.61.0
+  fl_chart: ^0.63.0
   url_launcher: ^6.1.10
-  connectivity_plus: ^3.0.3
+  connectivity_plus: ^6.1.1
   internet_connection_checker: ^1.0.0+1
   json_annotation: ^4.7.0
   get_storage: ^2.0.3
@@ -23,23 +22,32 @@ dependencies:
   workmanager: ^0.5.1
   # package_info_plus: ^5.0.1
   package_info_plus: ^8.0.0
-  flutter_local_notifications: ^13.0.0
+  flutter_local_notifications: ^18.0.1
   mixpanel_flutter: ^2.2.0
   nfc_manager: ^3.4.0
   flex_color_scheme: ^7.3.1
-  reactive_forms: ^14.1.0
+  reactive_forms: ^17.0.1
   flutter_svg: ^2.0.10
   cached_network_image: ^3.3.1
   percent_indicator: ^4.2.3
   encrypt: ^5.0.1
   crypto: ^3.0.1
   font_awesome_flutter: ^10.7.0
-  flutter_screen_lock: ^9.0.4
+  flutter_screen_lock: 9.1.0
   flutter_secure_storage: ^9.2.2
   local_auth: ^2.3.0
   flutter_auth:
     git:
       url: git@github.com:sisitech/flutter_auth.git
+      ref: "03579b9"
+
+dependency_overrides:
+  # TODO: Recheck once flutter_inappwebview version >6.0.0 is released
+  flutter_inappwebview_android:
+    git:
+      url: https://github.com/holzgeist/flutter_inappwebview
+      path: flutter_inappwebview_android
+      ref: d89b1d32638b49dfc58c4b7c84153be0c269d057
 
 dev_dependencies:
   flutter_test:

@@ -221,6 +221,10 @@ class _SistchBarChartState extends State<SistchBarChart> {
                       .colorScheme
                       .surfaceVariant
                       .withOpacity(0.4),
+                  // getTooltipColor: (BarChartGroupData data) => Theme.of(context)
+                  //     .colorScheme
+                  //     .surfaceVariant
+                  //     .withOpacity(0.4),
                   getTooltipItem: (BarChartGroupData group, int groupIndex,
                       BarChartRodData rod, int rodIndex) {
                     return BarTooltipItem(

@@ -12,7 +12,7 @@ import '../flutter_utils.dart';
 class NetworkStatusController extends SuperController {
   Rx<ConnectivityResult> connectionStatus = Rx(ConnectivityResult.none);
   final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
   var isDeviceConnected = false.obs;
 
   var connectionSource = "".obs;
@@ -51,7 +51,7 @@ class NetworkStatusController extends SuperController {
   setupCheckInterntet() async {
     _connectivitySubscription = Connectivity()
         .onConnectivityChanged
-        .listen((ConnectivityResult result) async {
+        .listen((List<ConnectivityResult> result) async {
       dprint(result);
       connectionSource.value = getConnectivityName(result);
     });
@@ -76,9 +76,15 @@ class NetworkStatusController extends SuperController {
     dprint("Connection1 ${connectivityResult}");
   }
 
-  getConnectivityName(connectivityResult) {
-    var connectivityString = connectivityResult.toString();
-    var name = connectivityString.replaceAll("ConnectivityResult.", "");
+  getConnectivityName(List<ConnectivityResult> connectivityResult) {
+    String name = "none";
+    if (connectivityResult.contains(ConnectivityResult.none)) {
+      // No available network types
+    } else {
+      var connectivityString = connectivityResult.map((e) => e.toString());
+      name = connectivityString.first.replaceAll("ConnectivityResult.", "");
+    }
+
     if (name == "none") {
       isDeviceConnected.value = false;
     }
