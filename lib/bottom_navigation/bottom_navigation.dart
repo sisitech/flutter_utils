@@ -78,18 +78,22 @@ class SistchLayoutWithDrawerBottomNavigation extends StatelessWidget {
         floatingActionButton: floatingActionButton,
         appBar: appBar,
         drawer: drawer,
-        body: GestureDetector(
-          onTap: () {
-            final controller = Get.find<ExtendedFABController>();
-            if (controller.showOptions.value) {
-              controller.toggleOptions();
-            }
-          },
-          behavior: HitTestBehavior.translucent,
-          child: bottomNavigationController.selectedTab(
-            tabs,
-          ),
-        ),
+        body: floatingActionButton == null
+            ? bottomNavigationController.selectedTab(
+                tabs,
+              )
+            : GestureDetector(
+                onTap: () {
+                  final controller = Get.find<ExtendedFABController>();
+                  if (controller.showOptions.value) {
+                    controller.toggleOptions();
+                  }
+                },
+                behavior: HitTestBehavior.translucent,
+                child: bottomNavigationController.selectedTab(
+                  tabs,
+                ),
+              ),
         bottomNavigationBar: BottomNavigationBar(
           type: tabs.length > 3 ? BottomNavigationBarType.fixed : null,
           items: tabs.map((e) => e.barItem).toList(),

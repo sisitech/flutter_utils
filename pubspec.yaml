@@ -19,7 +19,7 @@ dependencies:
   json_annotation: ^4.7.0
   get_storage: ^2.0.3
   slugify: ^2.0.0
-  workmanager: ^0.5.1
+  workmanager: ^0.5.2
   # package_info_plus: ^5.0.1
   package_info_plus: ^8.0.0
   flutter_local_notifications: ^18.0.1
