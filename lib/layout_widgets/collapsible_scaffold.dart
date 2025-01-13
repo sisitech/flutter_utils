@@ -19,6 +19,22 @@ class CollapsibleSection {
     this.isExpanded = true,
     this.isViewed = true,
   });
+
+  CollapsibleSection copyWith({
+    String? title,
+    IconData? titleIcon,
+    Widget? child,
+    bool? isExpanded,
+    bool? isViewed,
+  }) {
+    return CollapsibleSection(
+      title: title ?? this.title,
+      titleIcon: titleIcon ?? this.titleIcon,
+      child: child ?? this.child,
+      isExpanded: isExpanded ?? this.isExpanded,
+      isViewed: isViewed ?? this.isViewed,
+    );
+  }
 }
 
 /// View
@@ -29,66 +45,26 @@ class SistchCollapsibleScaffold extends StatelessWidget {
   final bool allExpandedAtStart;
   final double sectionsGapSize;
   final bool hideCollapseAllToggle;
+  late final CollapsibleScaffoldCtrl controller;
 
-  const SistchCollapsibleScaffold({
-    super.key,
+  SistchCollapsibleScaffold({
+    Key? key,
     required this.tabs,
     this.initialExpandedIdx,
     this.allExpandedAtStart = false,
     this.hideCollapseAllToggle = false,
     this.sectionsGapSize = 16.0,
-  });
-
-  List<CollapsibleSection> _createSections() {
-    return List.generate(tabs.length, (i) {
-      bool viewToggle = initialExpandedIdx == i ? true : allExpandedAtStart;
-      return CollapsibleSection(
-        title: tabs[i].label,
-        titleIcon: tabs[i].icon,
-        child: tabs[i].widget,
-        isExpanded: viewToggle,
-        isViewed: viewToggle,
-      );
-    });
-  }
-
-  List<CollapsibleSection> toggleSections({
-    required List<CollapsibleSection> items,
-    required bool isExpanded,
-    int? idx,
-    bool toggleAll = false,
-  }) {
-    return items.asMap().entries.map((entry) {
-      int i = entry.key;
-      CollapsibleSection item = entry.value;
-
-      if (toggleAll) {
-        return CollapsibleSection(
-          title: item.title,
-          titleIcon: item.titleIcon,
-          child: item.child,
-          isExpanded: isExpanded,
-          isViewed: true,
-        );
-      } else if (i == idx) {
-        return CollapsibleSection(
-          title: item.title,
-          titleIcon: item.titleIcon,
-          child: item.child,
-          isExpanded: isExpanded,
-          isViewed: true,
-        );
-      }
-
-      return item;
-    }).toList();
+  }) : super(key: key) {
+    controller = Get.put(CollapsibleScaffoldCtrl(
+      tabs: tabs,
+      allExpandedAtStart: allExpandedAtStart,
+      initialExpandedIdx: initialExpandedIdx,
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    RxList<CollapsibleSection> items = RxList(_createSections());
-    RxBool allOpen = RxBool(allExpandedAtStart);
 
     return Column(
       children: [
@@ -97,16 +73,10 @@ class SistchCollapsibleScaffold extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                onPressed: () {
-                  items.value = toggleSections(
-                      items: items,
-                      isExpanded: !allOpen.value,
-                      toggleAll: true);
-                  allOpen.value = !allOpen.value;
-                },
+                onPressed: () => controller.toggleAllSections(),
                 icon: Obx(
                   () => Icon(
-                    allOpen.value
+                    controller.allOpen.value
                         ? Icons.close_fullscreen_rounded
                         : Icons.expand_rounded,
                     color: colorScheme.primary,
@@ -121,15 +91,8 @@ class SistchCollapsibleScaffold extends StatelessWidget {
             () => ExpansionPanelList(
               expandedHeaderPadding: EdgeInsets.zero,
               materialGapSize: sectionsGapSize,
-              expansionCallback: (int index, bool isExpanded) {
-                items.value = toggleSections(
-                    idx: index, items: items, isExpanded: isExpanded);
-                allOpen.value = items
-                    .map((e) => e.isExpanded)
-                    .toList()
-                    .every((element) => element == true);
-              },
-              children: items
+              expansionCallback: controller.toggleSection,
+              children: controller.items
                   .map(
                     (e) => ExpansionPanel(
                       canTapOnHeader: true,
@@ -168,5 +131,59 @@ class SistchCollapsibleScaffold extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class CollapsibleScaffoldCtrl extends GetxController {
+  final List<TabViewItem> tabs;
+  final int? initialExpandedIdx;
+  final bool allExpandedAtStart;
+
+  CollapsibleScaffoldCtrl({
+    required this.tabs,
+    this.initialExpandedIdx,
+    this.allExpandedAtStart = false,
+  }) {
+    viewedTabs.value = List.generate(tabs.length,
+        (index) => allExpandedAtStart || index == initialExpandedIdx);
+    items.value = createSections();
+    allOpen.value = allExpandedAtStart;
+  }
+
+  RxList<bool> viewedTabs = RxList();
+  RxList<CollapsibleSection> items = RxList();
+  RxBool allOpen = false.obs;
+
+  List<CollapsibleSection> createSections() {
+    return List.generate(tabs.length, (i) {
+      bool viewToggle = initialExpandedIdx == i ? true : allExpandedAtStart;
+      return CollapsibleSection(
+        title: tabs[i].label,
+        titleIcon: tabs[i].icon,
+        child: tabs[i].widget,
+        isExpanded: viewToggle,
+        isViewed: viewToggle,
+      );
+    });
+  }
+
+  void toggleAllSections() {
+    items.value = items.map((item) {
+      return item.copyWith(isExpanded: !allOpen.value, isViewed: true);
+    }).toList();
+    allOpen.value = !allOpen.value;
+  }
+
+  void toggleSection(int index, bool isExpanded) {
+    viewedTabs[index] = true;
+    items.value = items.asMap().entries.map((entry) {
+      int i = entry.key;
+      CollapsibleSection item = entry.value;
+      return item.copyWith(
+        isExpanded: i == index ? !item.isExpanded : false,
+        isViewed: i == index ? true : item.isViewed,
+      );
+    }).toList();
+    allOpen.value = items.every((e) => e.isExpanded);
   }
 }
