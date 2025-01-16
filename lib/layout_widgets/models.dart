@@ -88,7 +88,11 @@ class TabViewController extends GetxController {
 
   TabViewController(this.options) {
     viewedTabs = RxList<bool>(List.generate(options.tabs.length, (i) {
-      return options.showUnViewedIndicator ? false : true;
+      return options.showUnViewedIndicator
+          ? i == 0
+              ? true
+              : false
+          : true;
     }));
   }
 
