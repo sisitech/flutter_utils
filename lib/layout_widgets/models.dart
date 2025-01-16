@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/utils/functions.dart';
+import 'package:get/get.dart';
 
 class TabViewOptions {
   final List<TabViewItem> tabs;
   final String? controllerTag;
   final Function(int? val)? onIndexChange;
   final bool showUnViewedIndicator;
-  final int initialIndex;
-  final bool allExpandedAtStart;
-  final bool hideCollapseAllToggle;
   final double sectionsGapSize;
   final bool enableMixpanel;
   //
@@ -23,7 +22,6 @@ class TabViewOptions {
     required this.tabs,
     this.controllerTag,
     this.onIndexChange,
-    this.initialIndex = 0,
     this.showUnViewedIndicator = true,
     //
     this.isScrollable = false,
@@ -34,8 +32,6 @@ class TabViewOptions {
     this.labelStyle,
     this.unselectedLabelStyle,
     this.enableMixpanel = false,
-    this.allExpandedAtStart = false,
-    this.hideCollapseAllToggle = true,
     this.sectionsGapSize = 16.0,
   });
 }
@@ -81,5 +77,46 @@ class CollapsibleSection {
       isExpanded: isExpanded ?? this.isExpanded,
       isViewed: isViewed ?? this.isViewed,
     );
+  }
+}
+
+class TabViewController extends GetxController {
+  TabViewOptions options;
+  late RxList<bool> viewedTabs;
+  RxInt currentTabIdx = 0.obs;
+  RxBool isCurrentExpanded = false.obs;
+
+  TabViewController(this.options) {
+    viewedTabs = RxList<bool>(List.generate(options.tabs.length, (i) {
+      return options.showUnViewedIndicator ? false : true;
+    }));
+  }
+
+  onTabIndexChange(int? val) {
+    if (val != null) {
+      //
+
+      if (currentTabIdx.value == val) {
+        isCurrentExpanded.value = !isCurrentExpanded.value;
+      } else {
+        currentTabIdx.value = val;
+        isCurrentExpanded.value = true;
+      }
+
+      //
+      if (options.showUnViewedIndicator) updateViewedTabs(val);
+
+      //
+      if (options.enableMixpanel) {
+        mixpanelTrackEvent('tab_view:${options.tabs[val].label}');
+      }
+
+      //
+      if (options.onIndexChange != null) options.onIndexChange!(val);
+    }
+  }
+
+  updateViewedTabs(int idx) {
+    if (idx >= 0 && idx < viewedTabs.length) viewedTabs[idx] = true;
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/layout_widgets/models.dart';
-import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
 
 /// ==================================================== View
@@ -93,47 +92,5 @@ class SistchTabBarScaffold extends StatelessWidget {
         );
       }).toList(),
     );
-  }
-}
-
-/// ==================================================== Controller
-///
-
-class TabViewController extends GetxController {
-  TabViewOptions options;
-  late RxList<bool> viewedTabs;
-  RxInt currentTabIdx = 0.obs;
-
-  TabViewController(this.options) {
-    viewedTabs = RxList<bool>(List.generate(options.tabs.length, (i) {
-      return options.showUnViewedIndicator
-          ? options.initialIndex == i
-              ? true
-              : false
-          : true;
-    }));
-    currentTabIdx.value = options.initialIndex;
-  }
-
-  onTabIndexChange(int? val) {
-    if (val != null) {
-      //
-      currentTabIdx.value = val;
-
-      //
-      if (options.showUnViewedIndicator) updateViewedTabs(val);
-
-      //
-      if (options.enableMixpanel) {
-        mixpanelTrackEvent('tab_view:${options.tabs[val].label}');
-      }
-
-      //
-      if (options.onIndexChange != null) options.onIndexChange!(val);
-    }
-  }
-
-  updateViewedTabs(int idx) {
-    if (idx >= 0 && idx < viewedTabs.length) viewedTabs[idx] = true;
   }
 }

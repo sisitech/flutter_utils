@@ -275,7 +275,6 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               getHeaderWidget(title: "Collapsible Sections Scaffold"),
               SistchCollapsibleScaffold(
                 options: TabViewOptions(
-                  initialIndex: 1,
                   // enableMixpanel: true,
                   // showUnViewedIndicator: false,
                   tabs: sampleWidgets.asMap().entries.map((e) {
