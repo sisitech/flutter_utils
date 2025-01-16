@@ -1,56 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/layout_widgets/models.dart';
 import 'package:flutter_utils/utils/functions.dart';
 import 'package:get/get.dart';
-
-/// ==================================================== Models
-///
-class TabViewOptions {
-  final List<TabViewItem> tabs;
-  final String? controllerTag;
-  final Function(int? val)? onIndexChange;
-  final bool showUnViewedIndicator;
-  final int initialIndex;
-  final bool enableMixpanel;
-  //
-  double? maxHeight;
-  bool isScrollable;
-  Color? selectedItemColor;
-  Color? unselectedItemColor;
-  TextStyle? labelStyle;
-  TextStyle? unselectedLabelStyle;
-  double indicatorWeight;
-  Color? dividerColor;
-
-  TabViewOptions({
-    required this.tabs,
-    this.controllerTag,
-    this.onIndexChange,
-    this.initialIndex = 0,
-    this.showUnViewedIndicator = true,
-    //
-    this.maxHeight,
-    this.isScrollable = false,
-    this.dividerColor,
-    this.indicatorWeight = 3,
-    this.selectedItemColor,
-    this.unselectedItemColor,
-    this.labelStyle,
-    this.unselectedLabelStyle,
-    this.enableMixpanel = false,
-  });
-}
-
-class TabViewItem {
-  final Widget widget;
-  final String label;
-  final IconData? icon;
-
-  TabViewItem({
-    required this.widget,
-    required this.label,
-    this.icon,
-  });
-}
 
 /// ==================================================== View
 ///
@@ -58,12 +9,16 @@ class SistchTabBarScaffold extends StatelessWidget {
   final TabViewOptions options;
   late final TabViewController controller;
 
+  /// [SistchTabBarScaffold]
+  /// When defining tabs for this scaffold,
+  /// avoid wrapping the widgets or the children within the widgets with 'Expanded'.
+  /// Leads to RenderFlex issues and would force defining children height!
   SistchTabBarScaffold({
     Key? key,
     required this.options,
   }) : super(key: key) {
     controller = Get.put(
-      TabViewController(options: options),
+      TabViewController(options),
       tag: options.controllerTag,
     );
   }
@@ -72,57 +27,71 @@ class SistchTabBarScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return DefaultTabController(
-      length: options.tabs.length,
-      initialIndex: options.initialIndex,
-      child: Column(
+    return Obx(
+      () => Column(
         children: [
-          TabBar(
-            isScrollable: options.isScrollable,
-            onTap: controller.onTabIndexChange,
-            tabs: options.tabs.asMap().entries.map((e) {
-              int index = e.key;
-              TabViewItem tabItem = e.value;
-
-              return Obx(
-                () => Tab(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (tabItem.icon != null) Icon(tabItem.icon, size: 14),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Text(tabItem.label),
-                      ),
-                      if (!controller.viewedTabs[index])
-                        CircleAvatar(
-                          radius: 2.5,
-                          backgroundColor: theme.primaryColor,
-                        )
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
-            dividerColor:
-                options.dividerColor ?? Theme.of(context).primaryColor,
-            indicatorSize: TabBarIndicatorSize.tab,
-            indicatorWeight: options.indicatorWeight,
-            indicatorColor: options.selectedItemColor,
-            labelColor: options.selectedItemColor,
-            unselectedLabelColor: options.unselectedItemColor,
-            labelStyle: options.labelStyle,
-            unselectedLabelStyle: options.unselectedLabelStyle,
-          ),
-          ConstrainedBox(
-            constraints: BoxConstraints(
-                maxHeight: options.maxHeight ?? Get.height * 0.7),
-            child: TabBarView(
-              children: options.tabs.map((e) => e.widget).toList(),
-            ),
-          ),
+          buildTabHeader(theme),
+          options.tabs[controller.currentTabIdx.value].widget,
         ],
       ),
+    );
+  }
+
+  buildTabHeader(ThemeData theme) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: options.tabs.asMap().entries.map((e) {
+        Color tabColor = controller.currentTabIdx.value == e.key
+            ? theme.colorScheme.primary
+            : theme.colorScheme.onSurface;
+        return GestureDetector(
+          onTap: () => controller.onTabIndexChange(e.key),
+          child: Container(
+            color: Colors.transparent,
+            width: (Get.width * 0.87) / options.tabs.length,
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      e.value.icon,
+                      color: tabColor,
+                      size: 14,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      e.value.label,
+                      style: TextStyle(
+                        color: tabColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                    if (!controller.viewedTabs[e.key])
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: CircleAvatar(
+                          radius: 2.5,
+                          backgroundColor: theme.primaryColor,
+                        ),
+                      ),
+                  ],
+                ),
+                SizedBox(
+                    height: controller.currentTabIdx.value == e.key ? 10 : 13),
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  height: controller.currentTabIdx.value == e.key ? 3 : 1,
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
@@ -133,8 +102,9 @@ class SistchTabBarScaffold extends StatelessWidget {
 class TabViewController extends GetxController {
   TabViewOptions options;
   late RxList<bool> viewedTabs;
+  RxInt currentTabIdx = 0.obs;
 
-  TabViewController({required this.options}) {
+  TabViewController(this.options) {
     viewedTabs = RxList<bool>(List.generate(options.tabs.length, (i) {
       return options.showUnViewedIndicator
           ? options.initialIndex == i
@@ -142,10 +112,14 @@ class TabViewController extends GetxController {
               : false
           : true;
     }));
+    currentTabIdx.value = options.initialIndex;
   }
 
   onTabIndexChange(int? val) {
     if (val != null) {
+      //
+      currentTabIdx.value = val;
+
       //
       if (options.showUnViewedIndicator) updateViewedTabs(val);
 

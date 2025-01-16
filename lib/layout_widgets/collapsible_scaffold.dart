@@ -1,69 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
+import 'package:flutter_utils/layout_widgets/models.dart';
 import 'package:flutter_utils/utils/functions.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 
-/// Models
-///
-class CollapsibleSection {
-  String? title;
-  IconData? titleIcon;
-  Widget? child;
-  bool isExpanded;
-  bool isViewed;
-
-  CollapsibleSection({
-    this.title,
-    this.titleIcon,
-    this.child,
-    this.isExpanded = true,
-    this.isViewed = true,
-  });
-
-  CollapsibleSection copyWith({
-    String? title,
-    IconData? titleIcon,
-    Widget? child,
-    bool? isExpanded,
-    bool? isViewed,
-  }) {
-    return CollapsibleSection(
-      title: title ?? this.title,
-      titleIcon: titleIcon ?? this.titleIcon,
-      child: child ?? this.child,
-      isExpanded: isExpanded ?? this.isExpanded,
-      isViewed: isViewed ?? this.isViewed,
-    );
-  }
-}
-
-/// View
-///
 class SistchCollapsibleScaffold extends StatelessWidget {
-  final List<TabViewItem> tabs;
-  final int? initialExpandedIdx;
-  final bool allExpandedAtStart;
-  final double sectionsGapSize;
-  final bool hideCollapseAllToggle;
+  final TabViewOptions options;
   late final CollapsibleScaffoldCtrl controller;
-  final bool enableMixpanel;
 
-  SistchCollapsibleScaffold({
-    Key? key,
-    required this.tabs,
-    this.initialExpandedIdx,
-    this.allExpandedAtStart = false,
-    this.hideCollapseAllToggle = false,
-    this.sectionsGapSize = 16.0,
-    this.enableMixpanel = false,
-  }) : super(key: key) {
-    controller = Get.put(CollapsibleScaffoldCtrl(
-      tabs: tabs,
-      allExpandedAtStart: allExpandedAtStart,
-      initialExpandedIdx: initialExpandedIdx,
-      enableMixpanel: enableMixpanel,
-    ));
+  SistchCollapsibleScaffold({Key? key, required this.options})
+      : super(key: key) {
+    controller = Get.put(CollapsibleScaffoldCtrl(options));
   }
 
   @override
@@ -72,7 +19,7 @@ class SistchCollapsibleScaffold extends StatelessWidget {
 
     return Column(
       children: [
-        if (!hideCollapseAllToggle)
+        if (!options.hideCollapseAllToggle)
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -94,7 +41,7 @@ class SistchCollapsibleScaffold extends StatelessWidget {
           child: Obx(
             () => ExpansionPanelList(
               expandedHeaderPadding: EdgeInsets.zero,
-              materialGapSize: sectionsGapSize,
+              materialGapSize: options.sectionsGapSize,
               expansionCallback: controller.toggleSection,
               children: controller.items
                   .map(
@@ -139,21 +86,13 @@ class SistchCollapsibleScaffold extends StatelessWidget {
 }
 
 class CollapsibleScaffoldCtrl extends GetxController {
-  final List<TabViewItem> tabs;
-  final int? initialExpandedIdx;
-  final bool allExpandedAtStart;
-  final bool enableMixpanel;
+  TabViewOptions options;
 
-  CollapsibleScaffoldCtrl({
-    required this.tabs,
-    this.initialExpandedIdx,
-    this.allExpandedAtStart = false,
-    this.enableMixpanel = false,
-  }) {
-    viewedTabs.value = List.generate(tabs.length,
-        (index) => allExpandedAtStart || index == initialExpandedIdx);
+  CollapsibleScaffoldCtrl(this.options) {
+    viewedTabs.value = List.generate(options.tabs.length,
+        (index) => options.allExpandedAtStart || index == options.initialIndex);
     items.value = createSections();
-    allOpen.value = allExpandedAtStart;
+    allOpen.value = options.allExpandedAtStart;
   }
 
   RxList<bool> viewedTabs = RxList();
@@ -161,12 +100,13 @@ class CollapsibleScaffoldCtrl extends GetxController {
   RxBool allOpen = false.obs;
 
   List<CollapsibleSection> createSections() {
-    return List.generate(tabs.length, (i) {
-      bool viewToggle = initialExpandedIdx == i ? true : allExpandedAtStart;
+    return List.generate(options.tabs.length, (i) {
+      bool viewToggle =
+          options.initialIndex == i ? true : options.allExpandedAtStart;
       return CollapsibleSection(
-        title: tabs[i].label,
-        titleIcon: tabs[i].icon,
-        child: tabs[i].widget,
+        title: options.tabs[i].label,
+        titleIcon: options.tabs[i].icon,
+        child: options.tabs[i].widget,
         isExpanded: viewToggle,
         isViewed: viewToggle,
       );
@@ -192,8 +132,8 @@ class CollapsibleScaffoldCtrl extends GetxController {
     }).toList();
 
     //
-    if (enableMixpanel) {
-      mixpanelTrackEvent('collapse_view:${tabs[index].label}');
+    if (options.enableMixpanel) {
+      mixpanelTrackEvent('collapse_view:${options.tabs[index].label}');
     }
 
     allOpen.value = items.every((e) => e.isExpanded);

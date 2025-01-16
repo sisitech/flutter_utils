@@ -132,26 +132,41 @@ Widget getDropDownFormField({
   );
 }
 
-Widget getBottomSheetScaffold(
-    {required List<Widget> widgetList,
-    required double height,
-    bool isScrollable = true}) {
-  final scrollCtrl = ScrollController();
-  return Container(
-    height: height,
-    decoration: BoxDecoration(color: Get.theme.colorScheme.surface),
-    padding: const EdgeInsets.all(15),
-    child: Scrollbar(
-      controller: scrollCtrl,
-      thumbVisibility: isScrollable,
+Future<dynamic> getBottomSheet({
+  required List<Widget> children,
+  required ThemeData theme,
+  double heightFactor = 0.9,
+}) async {
+  return Get.bottomSheet(
+    backgroundColor: theme.colorScheme.tertiary,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(20.0),
+      ),
+    ),
+    Container(
+      width: Get.width,
+      height: Get.height * heightFactor,
+      decoration: BoxDecoration(
+        color: theme.canvasColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
+      ),
       child: SingleChildScrollView(
-        controller: scrollCtrl,
-        physics: isScrollable
-            ? const ClampingScrollPhysics()
-            : const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(15),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: widgetList,
+          children: [
+            Container(
+              width: 40,
+              height: 5,
+              margin: const EdgeInsets.symmetric(vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.grey[400],
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            ...children
+          ],
         ),
       ),
     ),

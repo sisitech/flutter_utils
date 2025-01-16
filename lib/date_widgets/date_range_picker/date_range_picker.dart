@@ -4,6 +4,7 @@ import 'package:flutter_utils/date_widgets/date_dropdown/models.dart';
 import 'package:flutter_utils/date_widgets/date_range_picker/utils.dart';
 import 'package:flutter_utils/date_widgets/date_range_picker/widgets.dart';
 import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
+import 'package:flutter_utils/layout_widgets/models.dart';
 import 'package:flutter_utils/utils/functions.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
@@ -16,7 +17,6 @@ class SistchDateRangePicker extends StatelessWidget {
   final DateRangeDefaults defaultPicker;
   final Function(SelectedDateRange dates) onDatesSelected;
   final Function(TimePeriod timePeriod)? onTimePeriodChange;
-  final bool hideSuggestions;
   final SelectedDateRange selectedRange;
   final String btnLabel;
   final bool enableMixpanel;
@@ -30,7 +30,6 @@ class SistchDateRangePicker extends StatelessWidget {
     required this.onDatesSelected,
     this.onTimePeriodChange,
     required this.selectedRange,
-    this.hideSuggestions = true,
     this.btnLabel = "Show Me The Data",
     this.enableMixpanel = false,
   });
@@ -42,21 +41,18 @@ class SistchDateRangePicker extends StatelessWidget {
     DateFormat chosenFormat = dateFormat ?? DateFormat("dd/MM/yyy");
 
     onOpenDatePickerBottomSheet() async {
-      SelectedDateRange? val = await Get.bottomSheet(
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20.0),
+      SelectedDateRange? val = await getBottomSheet(
+        theme: theme,
+        heightFactor: 0.8,
+        children: [
+          DatePickerScaffold(
+            chosenFormat: chosenFormat,
+            maxRangeCount: maxRangeCount,
+            lastYrPicker: lastYrPicker,
+            btnLabel: btnLabel,
+            enableMixpanel: enableMixpanel,
           ),
-        ),
-        DatePickerScaffold(
-          chosenFormat: chosenFormat,
-          maxRangeCount: maxRangeCount,
-          lastYrPicker: lastYrPicker,
-          hideSuggestions: hideSuggestions,
-          btnLabel: btnLabel,
-          enableMixpanel: enableMixpanel,
-        ),
+        ],
       );
       if (val != null) {
         if (onTimePeriodChange != null) {
@@ -103,7 +99,6 @@ class DatePickerScaffold extends StatelessWidget {
   final DateFormat chosenFormat;
   final int lastYrPicker;
   final int maxRangeCount;
-  final bool hideSuggestions;
   final String btnLabel;
   final bool enableMixpanel;
   const DatePickerScaffold({
@@ -111,7 +106,6 @@ class DatePickerScaffold extends StatelessWidget {
     required this.chosenFormat,
     required this.lastYrPicker,
     required this.maxRangeCount,
-    this.hideSuggestions = true,
     required this.btnLabel,
     required this.enableMixpanel,
   });
@@ -136,9 +130,8 @@ class DatePickerScaffold extends StatelessWidget {
       showFullPicker.value = !showFullPicker.value;
     }
 
-    return getBottomSheetScaffold(
-      height: Get.height * (hideSuggestions ? 0.72 : 0.82),
-      widgetList: [
+    return Column(
+      children: [
         Row(
           children: [
             Expanded(
@@ -174,6 +167,7 @@ class DatePickerScaffold extends StatelessWidget {
                   enableMixpanel: enableMixpanel,
                 ),
         ),
+        const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.all(5),
           child: ElevatedButton(
@@ -216,7 +210,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
     RxString selectedOption = ''.obs;
     final scrollCtrl = ScrollController();
     return SizedBox(
-      height: Get.height * 0.5,
+      height: Get.height * 0.55,
       child: Scrollbar(
         controller: scrollCtrl,
         thumbVisibility: true,
@@ -272,7 +266,6 @@ class DateRangePickerWidget extends StatelessWidget {
   final DateFormat chosenFormat;
   final int lastYrPicker;
   final int maxRangeCount;
-  final bool hideSuggestions;
   final Function(SelectedDateRange val) onRangeSelected;
   final bool enableMixpanel;
 
@@ -281,7 +274,6 @@ class DateRangePickerWidget extends StatelessWidget {
     required this.chosenFormat,
     required this.lastYrPicker,
     required this.maxRangeCount,
-    this.hideSuggestions = true,
     required this.onRangeSelected,
     required this.enableMixpanel,
   });
@@ -346,22 +338,6 @@ class DateRangePickerWidget extends StatelessWidget {
       ));
     }
 
-    onSuggestionChipSelected(String? val) {
-      if (val != null) {
-        TimePeriod? selectedPeriod =
-            defaultDateRanges.where((e) => e.displayName == val).firstOrNull;
-        if (selectedPeriod != null) {
-          onRangeSelected(SelectedDateRange(
-              startDate: selectedPeriod.startDateFunc!(),
-              endDate: selectedPeriod.endDateFunc!(),
-              rangeType: selectedPeriod.type,
-              rangeLabel: selectedPeriod.displayName));
-          // reset picker values
-          startEndDates.clear();
-        }
-      }
-    }
-
     /// ============================================== Dropdown logic
 
     Rx<int> selectedDrpMonth = Rx<int>(now.month);
@@ -416,8 +392,6 @@ class DateRangePickerWidget extends StatelessWidget {
             maxRangeCount: maxRangeCount,
             startEndDates: startEndDates,
             onDateRangeSelected: onDateRangeSelected,
-            onSuggestionSelected: onSuggestionChipSelected,
-            hideSuggestions: hideSuggestions,
             selectedDecade: selectedDecade.value,
             selectedDrpMonth: selectedDrpMonth.value,
             selectedDrpYear: selectedDrpYear.value,
@@ -436,7 +410,6 @@ class DateRangePickerWidget extends StatelessWidget {
         controllerTag: "sistch_date_range_picker",
         enableMixpanel: enableMixpanel,
         showUnViewedIndicator: false,
-        maxHeight: Get.height * (hideSuggestions ? 0.48 : 0.6),
         onIndexChange: (val) => startEndDates.clear(),
         tabs: [
           buildTabViewItem(
@@ -465,8 +438,6 @@ Widget getRangePickerScaffold({
   required DateRangeTypes rangeType,
   required int firstYearPicker,
   required int maxRangeCount,
-  required Function(String suggestion) onSuggestionSelected,
-  required bool hideSuggestions,
 
   ///
   required List<DateTime> startEndDates,
@@ -490,18 +461,6 @@ Widget getRangePickerScaffold({
 }) {
   final width = Get.size.width;
 
-  List<String> dateSuggestions = defaultDateRanges
-      .where((element) => element.type == rangeType)
-      .map((e) => e.displayName)
-      .toList();
-  Rx<int?> selectedSuggestion = Rx<int?>(null);
-  onSuggestionChipSelected(int? val) {
-    if (val != null) {
-      selectedSuggestion.value = val;
-      onSuggestionSelected(dateSuggestions[selectedSuggestion.value!]);
-    }
-  }
-
   handleRangeCountChange(int? val) {
     if (val != null) onRangeCountSelected(val, rangeType);
   }
@@ -518,24 +477,9 @@ Widget getRangePickerScaffold({
   double drpWidth = Get.width * 0.2;
 
   return Column(
+    mainAxisSize: MainAxisSize.min,
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      /// the suggestions
-      if (!hideSuggestions)
-        Padding(
-          padding: const EdgeInsets.only(top: 10),
-          child: Obx(
-            () => getChipsWidget(
-              title: "Suggested",
-              chipLabels: dateSuggestions,
-              selectedIdx: selectedSuggestion.value,
-              onChipSelected: onSuggestionChipSelected,
-              width: width,
-              bgColor: Get.theme.colorScheme.tertiaryContainer,
-            ),
-          ),
-        ),
-
       /// the range dropdowns
       Padding(
         padding: const EdgeInsets.only(top: 15),
@@ -593,32 +537,31 @@ Widget getRangePickerScaffold({
       const SizedBox(height: 10),
 
       /// the calendars
-      Expanded(
-        child: [DateRangeTypes.day, DateRangeTypes.week].contains(rangeType)
-            ? getDayWeekView(
-                currentPickerDt: DateTime(selectedDrpYear, selectedDrpMonth, 1),
-                rangeType: rangeType,
-                startEndDates: startEndDates,
-                onRangeSelected: handleDateRangeChange,
-                selectedRangeCount: selectedRangeCount,
-              )
-            : [DateRangeTypes.month, DateRangeTypes.monthRange]
-                    .contains(rangeType)
-                ? getMonthYearView(
-                    currentPickerYear: selectedDrpYear,
-                    rangeType: rangeType,
-                    selectedRangeCount: selectedRangeCount,
-                    startEndDates: startEndDates,
-                    onRangeSelected: handleDateRangeChange,
-                  )
-                : getMonthYearView(
-                    currentPickerDecade: selectedDecade,
-                    rangeType: rangeType,
-                    selectedRangeCount: selectedRangeCount,
-                    startEndDates: startEndDates,
-                    onRangeSelected: handleDateRangeChange,
-                  ),
-      ),
+      [DateRangeTypes.day, DateRangeTypes.week].contains(rangeType)
+          ? getDayWeekView(
+              currentPickerDt: DateTime(selectedDrpYear, selectedDrpMonth, 1),
+              rangeType: rangeType,
+              startEndDates: startEndDates,
+              onRangeSelected: handleDateRangeChange,
+              selectedRangeCount: selectedRangeCount,
+            )
+          : [DateRangeTypes.month, DateRangeTypes.monthRange]
+                  .contains(rangeType)
+              ? getMonthYearView(
+                  currentPickerYear: selectedDrpYear,
+                  rangeType: rangeType,
+                  selectedRangeCount: selectedRangeCount,
+                  startEndDates: startEndDates,
+                  onRangeSelected: handleDateRangeChange,
+                )
+              : getMonthYearView(
+                  currentPickerDecade: selectedDecade,
+                  rangeType: rangeType,
+                  selectedRangeCount: selectedRangeCount,
+                  startEndDates: startEndDates,
+                  onRangeSelected: handleDateRangeChange,
+                ),
+      const SizedBox(height: 5),
     ],
   );
 }
