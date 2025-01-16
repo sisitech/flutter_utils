@@ -49,64 +49,17 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
   bool useFirstChartSeries = true;
   int currentChartIdx = 0;
   List<List<double>> chartData = [
-    [
-      100,
-      90,
-      80,
-      70,
-      100,
-      90,
-      80,
-      70,
-      100,
-      90,
-      80,
-      70,
-      100,
-      90,
-      80,
-      70,
-      100,
-      90,
-      80,
-      70,
-    ], // series 0
-    [
-      40,
-      30,
-      20,
-      10,
-    ] // series 1
+    [100, 90, 80, 70], // series 0
+    [40, 30, 20, 10] // series 1
   ];
   List<List<String>> chartLabels = [
     [
       "Government Services long very long long name name name name name",
       "Two",
       "Three",
-      "Four",
-      "Government Services long very long long name name name name name",
-      "Two",
-      "Three",
-      "Four",
-      "Government Services long very long long name name name name name",
-      "Two",
-      "Three",
-      "Four",
-      "Government Services long very long long name name name name name",
-      "Two",
-      "Three",
-      "Four",
-      "Government Services long very long long name name name name name",
-      "Two",
-      "Three",
-      "Four",
+      "Four"
     ], // series 0
-    [
-      "Six",
-      "Seven",
-      "Eight",
-      "Nine",
-    ] // series 1
+    ["Six", "Seven", "Eight", "Nine"] // series 1
   ];
   void updateChart() {
     debugPrint("calling updateChart");
@@ -138,6 +91,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chart Widgets'),
@@ -187,16 +141,16 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                         selectedTile: selectedTile.value,
                         onChartTileTap: onLinearPercChartTileTap,
                         indicatorPrefix: 'KES.',
-                        // tileHeight: 50.0,
-                        // selectedColor: theme.colorScheme.primaryContainer,
+                        tileHeight: 50.0,
+                        selectedColor: theme.colorScheme.primaryContainer,
                         leadingWidgets: defaultIconMapper.values
                             .toList()
                             .sublist(0, chartData[currentChartIdx].length)
                             .map((e) => Icon(e))
                             .toList(),
-                        // trailingWidgets: chartData[currentChartIdx]
-                        //     .map((e) => Text('KES. ${e.toString()}'))
-                        //     .toList(),
+                        trailingWidgets: chartData[currentChartIdx]
+                            .map((e) => Text('KES. ${e.toString()}'))
+                            .toList(),
                       ),
                       const SizedBox(height: 4),
                       Text('Selected: ${selectedTile.value}'),
