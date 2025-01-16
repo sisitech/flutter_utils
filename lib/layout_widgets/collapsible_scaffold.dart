@@ -9,7 +9,7 @@ class SistchCollapsibleScaffold extends StatelessWidget {
 
   SistchCollapsibleScaffold({Key? key, required this.options})
       : super(key: key) {
-    controller = Get.put(TabViewController(options));
+    controller = Get.put(TabViewController(options, TabViewTypes.collapsible));
   }
 
   @override

@@ -17,7 +17,7 @@ class SistchTabBarScaffold extends StatelessWidget {
     required this.options,
   }) : super(key: key) {
     controller = Get.put(
-      TabViewController(options),
+      TabViewController(options, TabViewTypes.tabBar),
       tag: options.controllerTag,
     );
   }

@@ -80,18 +80,23 @@ class CollapsibleSection {
   }
 }
 
+enum TabViewTypes { tabBar, collapsible }
+
 class TabViewController extends GetxController {
   TabViewOptions options;
+  TabViewTypes tabType;
   late RxList<bool> viewedTabs;
   RxInt currentTabIdx = 0.obs;
   RxBool isCurrentExpanded = false.obs;
 
-  TabViewController(this.options) {
+  TabViewController(this.options, this.tabType) {
     viewedTabs = RxList<bool>(List.generate(options.tabs.length, (i) {
       return options.showUnViewedIndicator
-          ? i == 0
-              ? true
-              : false
+          ? tabType == TabViewTypes.collapsible
+              ? false
+              : i == 0
+                  ? true
+                  : false
           : true;
     }));
   }

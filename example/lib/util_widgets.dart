@@ -251,6 +251,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 margin: const EdgeInsets.symmetric(vertical: 20),
                 child: SistchTabBarScaffold(
                   options: TabViewOptions(
+                    controllerTag: "tabViewExpCtrl",
                     // enableMixpanel: true,
                     // showUnViewedIndicator: false,
                     onIndexChange: onTabChange,
@@ -275,6 +276,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               getHeaderWidget(title: "Collapsible Sections Scaffold"),
               SistchCollapsibleScaffold(
                 options: TabViewOptions(
+                  controllerTag: "collapsibleExpCtrl",
                   // enableMixpanel: true,
                   // showUnViewedIndicator: false,
                   tabs: sampleWidgets.asMap().entries.map((e) {
