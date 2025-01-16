@@ -180,7 +180,23 @@ List<Widget> getChartIndicators(
 }
 
 List<Color> getChartColors(int seriesLength) {
-  return defaultChartColors.sublist(0, seriesLength);
+  return seriesLength > defaultChartColors.length
+      ? List.generate(
+          seriesLength,
+          (i) => Get.theme.colorScheme.primaryContainer,
+        )
+      : defaultChartColors.sublist(0, seriesLength);
+}
+
+List<Color> getOnChartColors(int seriesLength) {
+  return seriesLength > defaultChartColors.length
+      ? List.generate(
+          seriesLength,
+          (i) => Get.theme.colorScheme.onPrimaryContainer,
+        )
+      : defaultChartColors
+          .map((e) => defaultTextChartColors[e] ?? Colors.white)
+          .toList();
 }
 
 // chart constants

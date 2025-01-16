@@ -46,8 +46,8 @@ class SistchLinearPercentChart extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    List<Color> chtColors =
-        tileColors != null ? [...tileColors!] : [...defaultChartColors];
+    List<Color> bgColors = tileColors ?? getChartColors(dataSeries.length);
+    List<Color> fgColors = textColors ?? getOnChartColors(dataSeries.length);
 
     double total = dataSeries.fold(0, (sum, item) => sum + item);
     List<double> percentages = total != 0
@@ -80,7 +80,7 @@ class SistchLinearPercentChart extends StatelessWidget {
                 padding: EdgeInsets.all(isSelected ? 8 : 4),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? selectedColor ?? colorScheme.surfaceVariant
+                      ? selectedColor ?? colorScheme.surfaceContainerHighest
                       : Colors.transparent,
                   borderRadius: BorderRadius.circular(2),
                 ),
@@ -101,8 +101,8 @@ class SistchLinearPercentChart extends StatelessWidget {
                               lineHeight: tileHeight,
                               animationDuration: 1000,
                               percent: percent,
-                              backgroundColor: colorScheme.background,
-                              progressColor: chtColors[idx],
+                              backgroundColor: colorScheme.surface,
+                              progressColor: bgColors[idx],
                               barRadius: const Radius.circular(5),
                               leading: leadingWidgets == null
                                   ? null
@@ -121,11 +121,8 @@ class SistchLinearPercentChart extends StatelessWidget {
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
                                       color: percent < 0.6
-                                          ? colorScheme.onBackground
-                                          : textColors != null
-                                              ? textColors![idx]
-                                              : defaultTextChartColors[
-                                                  chtColors[idx]],
+                                          ? colorScheme.onSurface
+                                          : fgColors[idx],
                                     ),
                                   ),
                                   const SizedBox(height: 2),
@@ -134,11 +131,8 @@ class SistchLinearPercentChart extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 10,
                                       color: percent < 0.6
-                                          ? colorScheme.onBackground
-                                          : textColors != null
-                                              ? textColors![idx]
-                                              : defaultTextChartColors[
-                                                  chtColors[idx]],
+                                          ? colorScheme.onSurface
+                                          : fgColors[idx],
                                     ),
                                   ),
                                 ],
