@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
+import 'package:flutter_utils/utils/functions.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 
@@ -46,6 +47,7 @@ class SistchCollapsibleScaffold extends StatelessWidget {
   final double sectionsGapSize;
   final bool hideCollapseAllToggle;
   late final CollapsibleScaffoldCtrl controller;
+  final bool enableMixpanel;
 
   SistchCollapsibleScaffold({
     Key? key,
@@ -54,11 +56,13 @@ class SistchCollapsibleScaffold extends StatelessWidget {
     this.allExpandedAtStart = false,
     this.hideCollapseAllToggle = false,
     this.sectionsGapSize = 16.0,
+    this.enableMixpanel = false,
   }) : super(key: key) {
     controller = Get.put(CollapsibleScaffoldCtrl(
       tabs: tabs,
       allExpandedAtStart: allExpandedAtStart,
       initialExpandedIdx: initialExpandedIdx,
+      enableMixpanel: enableMixpanel,
     ));
   }
 
@@ -138,11 +142,13 @@ class CollapsibleScaffoldCtrl extends GetxController {
   final List<TabViewItem> tabs;
   final int? initialExpandedIdx;
   final bool allExpandedAtStart;
+  final bool enableMixpanel;
 
   CollapsibleScaffoldCtrl({
     required this.tabs,
     this.initialExpandedIdx,
     this.allExpandedAtStart = false,
+    this.enableMixpanel = false,
   }) {
     viewedTabs.value = List.generate(tabs.length,
         (index) => allExpandedAtStart || index == initialExpandedIdx);
@@ -184,6 +190,12 @@ class CollapsibleScaffoldCtrl extends GetxController {
         isViewed: i == index ? true : item.isViewed,
       );
     }).toList();
+
+    //
+    if (enableMixpanel) {
+      mixpanelTrackEvent('collapse_view:${tabs[index].label}');
+    }
+
     allOpen.value = items.every((e) => e.isExpanded);
   }
 }
