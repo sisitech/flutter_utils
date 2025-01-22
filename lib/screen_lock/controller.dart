@@ -136,7 +136,7 @@ class ScreenLockController extends GetxController {
     }
     var alreadyTriggeredFirst =
         await _secureStorage.containsKey(key: 'triggerSetup');
-    if (alreadyTriggeredFirst && force) {
+    if (!alreadyTriggeredFirst || force) {
       await _secureStorage.write(key: 'triggerSetup', value: "true");
       isSetUpTriggered.value = true;
     } else {
