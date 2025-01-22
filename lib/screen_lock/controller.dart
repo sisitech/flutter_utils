@@ -100,6 +100,7 @@ class ScreenLockController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
     _loadEncryptionKey();
     _checkSetupStatus();
     _fetchAvailableAuthTypes();
@@ -133,6 +134,14 @@ class ScreenLockController extends GetxController {
     }
     await _secureStorage.write(key: 'triggerSetup', value: "true");
     isSetUpTriggered.value = true;
+  }
+
+  Future<void> clearTriggerScreenLockSetup() async {
+    if (isSetupDone.value) {
+      return;
+    }
+    await _secureStorage.delete(key: 'triggerSetup');
+    isSetUpTriggered.value = false;
   }
 
   void _checkSetupStatus() async {

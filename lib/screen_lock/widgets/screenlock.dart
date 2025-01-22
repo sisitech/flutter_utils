@@ -53,7 +53,10 @@ const biometricIcons = Row(
 
 class BaseScreenLockPage extends StatelessWidget {
   final Widget child;
-  const BaseScreenLockPage({super.key, required this.child});
+  final String? title;
+  final String? subTitle;
+  const BaseScreenLockPage(
+      {super.key, required this.child, this.title, this.subTitle});
   final String passwordType = "Password";
   final String biometricType = "Biometric";
 
@@ -80,46 +83,126 @@ class BaseScreenLockPage extends StatelessWidget {
         // Wait for the trigger
         return child;
       } else if (!controller.isSetupDone.value) {
-        return Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text("Screen Lock Setup"),
+        var buttonStyle = ElevatedButton.styleFrom(
+          foregroundColor: Theme.of(context).colorScheme.primary,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+          minimumSize: const Size(double.infinity, 48),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
+        );
+        return Scaffold(
+          // appBar: AppBar(
+          //   centerTitle: true,
+          //   // title: const Text("Screen Lock Setup"),
+          // ),
           body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Select Authentication Type',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 20),
-                if (controller.biometricAvailable.value)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: ElevatedButton.icon(
-                      icon: biometricIcons,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Text(
+                  //   'Select Authentication Type',
+                  //   style: Theme.of(context).textTheme.titleMedium,
+                  // ),
+                  // const SizedBox(height: 20),
+                  // if (controller.biometricAvailable.value)
+                  //   Padding(
+                  //     padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  //     child: ElevatedButton.icon(
+                  //       icon: biometricIcons,
+                  //       onPressed: () {
+                  //         // Start the password creation flow for the selected auth type
+                  //         controller.buildPasswordCreationLock(
+                  //             biometricType, context);
+                  //       },
+                  //       label: Text(biometricType),
+                  //     ),
+                  //   ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  //   child: ElevatedButton.icon(
+                  //     icon: Icon(Icons.keyboard_alt_outlined),
+                  //     onPressed: () {
+                  //       // Start the password creation flow for the selected auth type
+                  //       controller.buildPasswordCreationLock(
+                  //           passwordType, context);
+                  //     },
+                  //     label: Text(passwordType),
+                  //   ),
+                  // ),
+                  Text(
+                    title ?? "Secure Your App",
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineSmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  // Description
+                  Text(
+                    subTitle ??
+                        "Secure your financial data with a screen lock. Protect your expenses and transactions by choosing a lock method.",
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.8),
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
+                  if (controller.biometricAvailable.value)
+                    // Biometric Button
+                    ...[
+                    ElevatedButton.icon(
                       onPressed: () {
-                        // Start the password creation flow for the selected auth type
+                        // Handle Biometric Setup
                         controller.buildPasswordCreationLock(
                             biometricType, context);
                       },
-                      label: Text(biometricType),
+                      icon: Icon(
+                        Icons.fingerprint,
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                      label: const Text("Biometric"),
+                      style: buttonStyle,
                     ),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: ElevatedButton.icon(
-                    icon: Icon(Icons.keyboard_alt_outlined),
+                  ],
+                  const SizedBox(height: 16),
+                  // Password Button
+                  ElevatedButton.icon(
                     onPressed: () {
-                      // Start the password creation flow for the selected auth type
+                      // Handle Password Setup
                       controller.buildPasswordCreationLock(
                           passwordType, context);
                     },
-                    label: Text(passwordType),
+                    icon: Icon(Icons.lock,
+                        color: Theme.of(context).colorScheme.secondary),
+                    label: const Text("Password"),
+                    style: buttonStyle,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 32),
+
+                  // Set Up Later Button
+                  TextButton(
+                    onPressed: () async {
+                      // Handle "Set Up Later" action
+                      await controller.clearTriggerScreenLockSetup();
+                    },
+                    child: Text(
+                      "Set Up Later",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 16,
+                        // decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
