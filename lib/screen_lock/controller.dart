@@ -93,6 +93,8 @@ class ScreenLockController extends GetxController {
   var isSetUpTriggered = false.obs;
   var triggerUnlock = false.obs;
 
+  var isFirstTime = false.obs;
+
   String? _encryptionKey;
 
   ScreenLockController({required this.options});
@@ -128,27 +130,38 @@ class ScreenLockController extends GetxController {
     }
   }
 
-  Future<void> triggerScreenLockSetup() async {
+  Future<bool> triggerScreenLockSetup({bool force = false}) async {
     if (isSetupDone.value) {
-      return;
+      return false;
     }
-    await _secureStorage.write(key: 'triggerSetup', value: "true");
-    isSetUpTriggered.value = true;
+    var alreadyTriggeredFirst =
+        await _secureStorage.containsKey(key: 'triggerSetup');
+    if (alreadyTriggeredFirst && force) {
+      await _secureStorage.write(key: 'triggerSetup', value: "true");
+      isSetUpTriggered.value = true;
+    } else {
+      _checkSetupStatus();
+    }
+    return isSetUpTriggered.value;
   }
 
   Future<void> clearTriggerScreenLockSetup() async {
     if (isSetupDone.value) {
       return;
     }
-    await _secureStorage.delete(key: 'triggerSetup');
+    await _secureStorage.write(key: 'triggerSetup', value: "false");
     isSetUpTriggered.value = false;
   }
 
   void _checkSetupStatus() async {
     isSetupDone.value =
         await _secureStorage.containsKey(key: options.storageName);
-    isSetUpTriggered.value =
-        await _secureStorage.containsKey(key: "triggerSetup");
+    isFirstTime.value =
+        !(await _secureStorage.containsKey(key: "triggerSetup"));
+
+    var triggerSetup =
+        await _secureStorage.read(key: "triggerSetup") ?? "false";
+    isSetUpTriggered.value = triggerSetup == "true";
     selectedAuthType.value = await _secureStorage.read(key: 'auth_type') ?? '';
   }
 

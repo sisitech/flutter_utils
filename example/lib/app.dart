@@ -358,12 +358,29 @@ class MyApp extends StatelessWidget {
                       onPressed: () {
                         dprint("Trying update..");
                         var cont = Get.find<ScreenLockController>();
+                        if (cont.isFirstTime.value) {
+                          dprint("First time request");
+                        } else {
+                          dprint("Not first time ");
+                        }
+
                         cont.triggerScreenLockSetup();
                         // cont.buildPasswordCreationLock("password", context);
                         // cont.lock();
                       },
                       icon: Icon(Icons.password),
-                      label: Text("Trigger Screen Lock setup"),
+                      label: Text("Trigger Screen Lock "),
+                    ),
+                    TextButton.icon(
+                      onPressed: () {
+                        dprint("Trying update..");
+                        var cont = Get.find<ScreenLockController>();
+                        cont.triggerScreenLockSetup(force: true);
+                        // cont.buildPasswordCreationLock("password", context);
+                        // cont.lock();
+                      },
+                      icon: Icon(Icons.password),
+                      label: Text("Trigger Screen Lock Force"),
                     ),
                     IconButton(
                       onPressed: () async {
