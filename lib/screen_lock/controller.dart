@@ -151,6 +151,7 @@ class ScreenLockController extends GetxController {
     }
     await _secureStorage.write(key: 'triggerSetup', value: "false");
     isSetUpTriggered.value = false;
+    _checkSetupStatus();
   }
 
   void _checkSetupStatus() async {
