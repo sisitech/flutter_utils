@@ -16,6 +16,7 @@ class SistchPieDonutChart extends StatelessWidget {
   final List<double> dataSeries;
   final List<String> pieLabels;
   final List<Color>? pieColors;
+  final List<Color>? onPieColors;
   final Axis? chartDirection;
   final double chartHeight;
   final double? donutCenterRadius;
@@ -46,6 +47,7 @@ class SistchPieDonutChart extends StatelessWidget {
     required this.dataSeries,
     required this.pieLabels,
     this.pieColors,
+    this.onPieColors,
     this.chartDirection,
     this.chartHeight = 220,
     this.donutCenterRadius,
@@ -71,10 +73,12 @@ class SistchPieDonutChart extends StatelessWidget {
     List<double> chartSeries =
         isHalfArcChart ? getHalfArcChartValues(dataSeries) : dataSeries;
 
-    List<Color> chartColors = pieColors ?? getChartColors(chartSeries.length);
+    List<Color> bgColors = pieColors ?? getChartColors(chartSeries.length);
+    List<Color> fgColors = onPieColors ?? getOnChartColors(chartSeries.length);
+
     List<Widget> pieChartIndicators = getChartIndicators(
       pieLabels,
-      chartColors,
+      bgColors,
       hideIndicatorExt == true ? [] : dataSeries,
       useIcons: useIndIcons,
       indicatorPrefix: indicatorPrefix,
@@ -84,7 +88,8 @@ class SistchPieDonutChart extends StatelessWidget {
     List<String> chartLabels = isHalfArcChart ? [...pieLabels, ''] : pieLabels;
 
     List<PieChartSectionData> chartData = getPieChartSections(
-      chartColors: chartColors,
+      chartColors: bgColors,
+      onChartColors: fgColors,
       isPieChart: donutCenterRadius == 0,
       chartLabels: chartLabels,
     );
@@ -94,6 +99,7 @@ class SistchPieDonutChart extends StatelessWidget {
 
   List<PieChartSectionData> getPieChartSections(
       {required List<Color> chartColors,
+      required List<Color> onChartColors,
       required bool isPieChart,
       required List<String> chartLabels}) {
     List<PieChartSectionData> pieSections = [];
@@ -113,11 +119,7 @@ class SistchPieDonutChart extends StatelessWidget {
       String sectionTitle = hideIndicators == true && i < chartSeriesMax
           ? "${chartLabels[i]} • $percentTitle"
           : chartLabels[i];
-      Color? textColor = i < chartSeriesMax
-          ? textColors != null
-              ? textColors![i]
-              : defaultTextChartColors[chartColors[i]]
-          : null;
+      Color? textColor = i < chartSeriesMax ? onChartColors[i] : null;
       TextStyle chartTxtStyle = TextStyle(
         color: textColor,
         fontWeight: FontWeight.bold,

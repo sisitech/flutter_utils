@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
-import 'package:flutter_utils/utils/functions.dart';
-import 'package:get/get.dart';
-import 'package:percent_indicator/linear_percent_indicator.dart';
 
 // View
 //
@@ -46,8 +43,8 @@ class SistchLinearPercentChart extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
-    List<Color> chtColors =
-        tileColors != null ? [...tileColors!] : [...defaultChartColors];
+    List<Color> bgColors = tileColors ?? getChartColors(dataSeries.length);
+    List<Color> fgColors = textColors ?? getOnChartColors(dataSeries.length);
 
     double total = dataSeries.fold(0, (sum, item) => sum + item);
     List<double> percentages = total != 0
@@ -71,88 +68,31 @@ class SistchLinearPercentChart extends StatelessWidget {
               ],
             ),
           if (percentages.isNotEmpty)
-            ...percentages.asMap().entries.map((entry) {
-              int idx = entry.key;
-              double percent = percentages[idx];
+            ...percentages.asMap().entries.map(
+              (entry) {
+                int idx = entry.key;
+                double percent = percentages[idx];
 
-              bool isSelected = selectedTile == chartLabels[idx];
-              return Container(
-                padding: EdgeInsets.all(isSelected ? 8 : 4),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? selectedColor ?? colorScheme.surfaceVariant
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    if (onChartTileTap != null) {
-                      onChartTileTap!(chartLabels[idx]);
-                    }
-                  },
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            LinearPercentIndicator(
-                              animation: true,
-                              lineHeight: tileHeight,
-                              animationDuration: 1000,
-                              percent: percent,
-                              backgroundColor: colorScheme.background,
-                              progressColor: chtColors[idx],
-                              barRadius: const Radius.circular(5),
-                              leading: leadingWidgets == null
-                                  ? null
-                                  : leadingWidgets![idx],
-                            ),
-                            Container(
-                              width: Get.width * 0.4,
-                              margin: const EdgeInsets.only(left: 5),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    chartLabels[idx],
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
-                                      color: percent < 0.6
-                                          ? colorScheme.onBackground
-                                          : textColors != null
-                                              ? textColors![idx]
-                                              : defaultTextChartColors[
-                                                  chtColors[idx]],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    "${indicatorPrefix ?? ""}${addThousandSeparators(dataSeries[idx])} • ${(percent * 100).toStringAsFixed(1)}%",
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: percent < 0.6
-                                          ? colorScheme.onBackground
-                                          : textColors != null
-                                              ? textColors![idx]
-                                              : defaultTextChartColors[
-                                                  chtColors[idx]],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      if (trailingWidgets != null) trailingWidgets![idx]
-                    ],
-                  ),
-                ),
-              );
-            }),
+                bool isSelected = selectedTile == chartLabels[idx];
+                return buildLinearPercentTile(
+                  colorScheme: colorScheme,
+                  label: chartLabels[idx],
+                  percent: percent,
+                  bgColor: bgColors[idx],
+                  fgColor: fgColors[idx],
+                  value: dataSeries[idx],
+                  indicatorPrefix: indicatorPrefix,
+                  leadingWidget:
+                      leadingWidgets == null ? null : leadingWidgets![idx],
+                  trailingWidget:
+                      trailingWidgets != null ? trailingWidgets![idx] : null,
+                  tileHeight: tileHeight,
+                  isSelected: isSelected,
+                  selectedColor: selectedColor,
+                  onChartTileTap: onChartTileTap,
+                );
+              },
+            ),
         ],
       ),
     );

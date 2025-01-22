@@ -30,7 +30,7 @@ class SistchCardGridView extends StatelessWidget {
     this.onCardTap,
     this.cardAspectRatio,
     this.chartTitle,
-    this.spacing = 0,
+    this.spacing = 1.5,
     this.showPercentages = true,
     this.actionIconPath = Icons.call_made,
   });
@@ -41,11 +41,8 @@ class SistchCardGridView extends StatelessWidget {
     final colorScheme = Get.theme.colorScheme;
 
     double total = getListOfDoublesSum(dataSeries);
-    List<Color> bgColors = cardColors ?? defaultChartColors;
-    List<Color> fgColors = onCardColors ??
-        defaultChartColors
-            .map((e) => defaultTextChartColors[e] ?? Colors.white)
-            .toList();
+    List<Color> bgColors = cardColors ?? getChartColors(dataSeries.length);
+    List<Color> fgColors = onCardColors ?? getOnChartColors(dataSeries.length);
 
     return Column(
       children: [
@@ -60,7 +57,7 @@ class SistchCardGridView extends StatelessWidget {
           ),
         GridView.count(
           crossAxisCount: crossCount,
-          childAspectRatio: cardAspectRatio ?? (crossCount == 1 ? 3 : 1.3),
+          childAspectRatio: cardAspectRatio ?? (crossCount == 1 ? 3 : 1.4),
           mainAxisSpacing: spacing,
           crossAxisSpacing: spacing,
           shrinkWrap: true,

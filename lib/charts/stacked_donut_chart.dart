@@ -37,7 +37,6 @@ class SistchStackedDonutChart extends StatelessWidget {
   final String? chartTitle;
   final double? chartWidth;
   final Widget? centerWidget;
-  final Color? firstColor;
   final bool? useIndIcons;
   final double? firstStartAngle;
   final String indicatorPrefix;
@@ -58,7 +57,6 @@ class SistchStackedDonutChart extends StatelessWidget {
     this.chartTitle,
     this.chartWidth = defChartWidth,
     this.centerWidget,
-    this.firstColor,
     this.useIndIcons,
     this.firstStartAngle,
     this.indicatorPrefix = '',
@@ -70,11 +68,7 @@ class SistchStackedDonutChart extends StatelessWidget {
   /// [_createChartData]
   ///Returns [0]: chartData, [1] chartIndicators
   List<dynamic> _createChartData() {
-    List<Color> chartColors = dtColors != null
-        ? dtColors!
-        : firstColor != null
-            ? [firstColor!, ...getChartColors(dataSeries.length)]
-            : getChartColors(dataSeries.length);
+    List<Color> chartColors = dtColors ?? getChartColors(dataSeries.length);
     double seriesTotal = getListOfDoublesSum(dataSeries);
     double startRadius = (chartWidth ?? defChartWidth) * 0.6;
     double radDcr = 10;

@@ -7,7 +7,6 @@ import 'package:flutter_utils/charts/pie_donut_chart.dart';
 import 'package:flutter_utils/charts/linear_percent_chart.dart';
 import 'package:flutter_utils/charts/time_lapse_chart.dart';
 import 'package:flutter_utils/charts/block_chart.dart';
-import 'package:flutter_utils/charts/utils.dart';
 import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:get/get.dart';
 
@@ -92,6 +91,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chart Widgets'),
@@ -131,6 +131,34 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                 ],
               ),
               chartScaffold(
+                chartWidget: Obx(
+                  () => Column(
+                    children: [
+                      SistchLinearPercentChart(
+                        chartTitle: "Linear Percent Chart",
+                        dataSeries: chartData[currentChartIdx],
+                        chartLabels: chartLabels[currentChartIdx],
+                        selectedTile: selectedTile.value,
+                        onChartTileTap: onLinearPercChartTileTap,
+                        indicatorPrefix: 'KES.',
+                        tileHeight: 50.0,
+                        selectedColor: theme.colorScheme.primaryContainer,
+                        leadingWidgets: defaultIconMapper.values
+                            .toList()
+                            .sublist(0, chartData[currentChartIdx].length)
+                            .map((e) => Icon(e))
+                            .toList(),
+                        trailingWidgets: chartData[currentChartIdx]
+                            .map((e) => Text('KES. ${e.toString()}'))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 4),
+                      Text('Selected: ${selectedTile.value}'),
+                    ],
+                  ),
+                ),
+              ),
+              chartScaffold(
                 chartWidget: SistchStackedDonutChart(
                   chartTitle: "Stacked Donut Chart",
                   dataSeries: chartData[currentChartIdx],
@@ -143,7 +171,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
               ),
               chartScaffold(
                 chartWidget:
-                    //
+
                     //   Obx(
                     // () =>
                     SistchPieDonutChart(
@@ -171,9 +199,6 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                     selectedIndicator: selectedIndicator.value,
                     onIndicatorTap: onIndicatorTap,
                     // hideIndicators: true,
-                    pieColors: defaultChartColors.reversed
-                        .toList()
-                        .sublist(0, chartData[currentChartIdx].length),
                   ),
                 ),
               ),
@@ -191,34 +216,6 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                     centerWidget: const Text('Ola'),
                     selectedIndicator: selectedIndicator.value,
                     onIndicatorTap: onIndicatorTap,
-                  ),
-                ),
-              ),
-              chartScaffold(
-                chartWidget: Obx(
-                  () => Column(
-                    children: [
-                      SistchLinearPercentChart(
-                        chartTitle: "Linear Percent Chart",
-                        dataSeries: chartData[currentChartIdx],
-                        chartLabels: chartLabels[currentChartIdx],
-                        selectedTile: selectedTile.value,
-                        onChartTileTap: onLinearPercChartTileTap,
-                        indicatorPrefix: 'KES.',
-                        // tileHeight: 50.0,
-                        // selectedColor: theme.colorScheme.primaryContainer,
-                        leadingWidgets: defaultIconMapper.values
-                            .toList()
-                            .sublist(0, chartData[currentChartIdx].length)
-                            .map((e) => Icon(e))
-                            .toList(),
-                        // trailingWidgets: chartData[currentChartIdx]
-                        //     .map((e) => Text('KES. ${e.toString()}'))
-                        //     .toList(),
-                      ),
-                      const SizedBox(height: 4),
-                      Text('Selected: ${selectedTile.value}'),
-                    ],
                   ),
                 ),
               ),

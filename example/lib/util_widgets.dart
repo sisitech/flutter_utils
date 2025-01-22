@@ -6,6 +6,7 @@ import 'package:flutter_utils/date_widgets/date_dropdown/models.dart';
 import 'package:flutter_utils/date_widgets/date_range_picker/date_range_picker.dart';
 import 'package:flutter_utils/date_widgets/date_range_picker/utils.dart';
 import 'package:flutter_utils/flutter_utils.dart';
+import 'package:flutter_utils/layout_widgets/models.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:flutter_utils/text_widgets/text_carousel.dart';
 import 'package:flutter_utils/text_widgets/carousel.dart';
@@ -56,19 +57,19 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
   List<Widget> sampleWidgets = [
     Container(
         width: 150,
-        height: 70,
+        height: 100,
         color: Colors.pink,
         child: const Center(child: Text('Box 1'))),
     Container(
       width: 150,
-      height: 70,
+      height: 150,
       color: Colors.green,
       margin: const EdgeInsets.symmetric(horizontal: 5),
       child: const Center(child: Text('Box 2')),
     ),
     Container(
       width: 150,
-      height: 70,
+      height: 100,
       color: Colors.blue,
       child: const Center(child: Text('Box 3')),
     ),
@@ -246,18 +247,22 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               ///
               getHeaderWidget(title: "Tab Bar Scaffold"),
               Container(
-                color: theme.colorScheme.surfaceVariant,
+                color: theme.colorScheme.surfaceContainerHighest,
                 margin: const EdgeInsets.symmetric(vertical: 20),
                 child: SistchTabBarScaffold(
                   options: TabViewOptions(
-                    maxHeight: Get.height * 0.2,
+                    controllerTag: "tabViewExpCtrl",
                     // enableMixpanel: true,
                     // showUnViewedIndicator: false,
                     onIndexChange: onTabChange,
                     tabs: sampleWidgets.asMap().entries.map((e) {
                       int index = e.key;
                       return TabViewItem(
-                        widget: e.value,
+                        widget:
+                            //
+                            e.value,
+
+                        //
                         label: sampleLabels[index],
                         icon: sampleIcons[index],
                       );
@@ -270,15 +275,19 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               ///
               getHeaderWidget(title: "Collapsible Sections Scaffold"),
               SistchCollapsibleScaffold(
-                tabs: sampleWidgets.asMap().entries.map((e) {
-                  int index = e.key;
-                  return TabViewItem(
-                    widget: e.value,
-                    label: sampleLabels[index],
-                    icon: sampleIcons[index],
-                  );
-                }).toList(),
-                initialExpandedIdx: 1,
+                options: TabViewOptions(
+                  controllerTag: "collapsibleExpCtrl",
+                  // enableMixpanel: true,
+                  // showUnViewedIndicator: false,
+                  tabs: sampleWidgets.asMap().entries.map((e) {
+                    int index = e.key;
+                    return TabViewItem(
+                      widget: e.value,
+                      label: sampleLabels[index],
+                      icon: sampleIcons[index],
+                    );
+                  }).toList(),
+                ),
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
