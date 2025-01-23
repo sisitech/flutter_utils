@@ -68,7 +68,10 @@ class SistchProductTour extends StatelessWidget {
                 Stack(
                   children: [
                     Positioned(
-                      bottom: -(Get.height * overlayOffset),
+                      // bottom: -(Get.height * overlayOffset),
+                      bottom: 0,
+                      right: 0,
+
                       child: _TourOverlay(
                         step: controller.currentStep.value,
                         isLastStep: controller.showFinish.value,
@@ -116,75 +119,79 @@ class _TourOverlay extends StatelessWidget {
     final theme = Get.theme;
     final colorScheme = theme.colorScheme;
     double contentPadding = Get.height * 0.24;
-    double contentWidth = Get.width * 0.72;
+    double contentWidth = Get.width * 0.82;
     double bgRadius = Get.height * 0.52;
     Color bgColor = colorScheme.primaryContainer.withOpacity(0.5);
     TextStyle stepStyle = const TextStyle(fontSize: 11);
-
-    return Container(
-      width: bgRadius,
-      height: bgRadius,
-      margin: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: bgColor,
-      ),
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            width: contentWidth,
-            margin: EdgeInsets.only(
-              bottom: contentPadding,
-              right: Get.height * 0.05,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (step.icon != null)
-                  Icon(step.icon, color: colorScheme.tertiary),
-                Text(
-                  stepNoTxt,
-                  style: theme.textTheme.labelSmall!
-                      .copyWith(color: colorScheme.tertiary),
-                ),
-                Text(
-                  step.title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.tertiary,
-                  ),
-                ),
-                const SizedBox(height: 7),
-                Text(
-                  step.description,
-                  style: stepStyle,
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
-                const Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(onPressed: onFinish, child: const Text("Skip")),
-                    ElevatedButton.icon(
-                      onPressed: allowNext
-                          ? isLastStep
-                              ? onFinish
-                              : onNext
-                          : null,
-                      label: Text(isLastStep ? "Finish" : "Next"),
-                      icon: const Icon(Icons.arrow_forward_rounded),
-                    ),
-                  ],
-                ),
-              ],
+    var width = contentWidth;
+    var height = contentWidth;
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Positioned(
+          // right: 0,
+          height: height * 2,
+          right: -width,
+          width: width * 2,
+          child: Container(
+            width: width,
+            height: height * 2,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              color: bgColor,
+              borderRadius: BorderRadius.all(Radius.circular(height)),
             ),
           ),
-        ],
-      ),
+        ),
+        Container(
+          width: contentWidth,
+          padding: EdgeInsets.all(4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (step.icon != null)
+                Icon(step.icon, color: colorScheme.tertiary),
+              Text(
+                stepNoTxt,
+                style: theme.textTheme.labelSmall!
+                    .copyWith(color: colorScheme.tertiary),
+              ),
+              Text(
+                step.title,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.tertiary,
+                ),
+              ),
+              const SizedBox(height: 7),
+              Text(
+                step.description,
+                style: stepStyle,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+              ),
+              const Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(onPressed: onFinish, child: const Text("Skip")),
+                  ElevatedButton.icon(
+                    onPressed: allowNext
+                        ? isLastStep
+                            ? onFinish
+                            : onNext
+                        : null,
+                    label: Text(isLastStep ? "Finish" : "Next"),
+                    icon: const Icon(Icons.arrow_forward_rounded),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
