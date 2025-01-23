@@ -63,7 +63,8 @@ class SistchProductTour extends StatelessWidget {
             return Stack(
               alignment: Alignment.topCenter,
               children: [
-                controller.currentStep.value.stepWidget,
+                SingleChildScrollView(
+                    child: controller.currentStep.value.stepWidget),
                 //
                 Stack(
                   children: [
