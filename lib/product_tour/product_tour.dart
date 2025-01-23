@@ -63,8 +63,9 @@ class SistchProductTour extends StatelessWidget {
             double contentWidth = Get.width * 0.82;
             var width = contentWidth;
             var height = contentWidth;
-            Color bgColor =
-                Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5);
+            Color bgColor = Theme.of(context)
+                .colorScheme
+                .primaryContainer; //.withOpacity(0.5);
             var size = MediaQuery.of(context).size;
             return Stack(
               alignment: Alignment.topCenter,
@@ -142,7 +143,7 @@ class _TourOverlay extends StatelessWidget {
     double contentPadding = Get.height * 0.24;
     double contentWidth = Get.width * 0.82;
     double bgRadius = Get.height * 0.52;
-    Color bgColor = colorScheme.primaryContainer.withOpacity(0.5);
+    Color bgColor = colorScheme.primaryContainer; //.withOpacity(0.5);
     TextStyle stepStyle = const TextStyle(fontSize: 11);
     var width = contentWidth;
     var height = contentWidth;
