@@ -60,6 +60,12 @@ class SistchProductTour extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Obx(
           () {
+            double contentWidth = Get.width * 0.82;
+            var width = contentWidth;
+            var height = contentWidth;
+            Color bgColor =
+                Theme.of(context).colorScheme.primaryContainer.withOpacity(0.5);
+            var size = MediaQuery.of(context).size;
             return Stack(
               alignment: Alignment.topCenter,
               children: [
@@ -68,10 +74,25 @@ class SistchProductTour extends StatelessWidget {
                 Stack(
                   children: [
                     Positioned(
+                      bottom: -width / 4,
+                      height: height,
+                      right: -width * 1.1,
+                      width: width * 2.1,
+                      child: Container(
+                        width: width / 2,
+                        height: height * 2,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          color: bgColor,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(height * 2)),
+                        ),
+                      ),
+                    ),
+                    Positioned(
                       // bottom: -(Get.height * overlayOffset),
                       bottom: 0,
                       right: 0,
-
                       child: _TourOverlay(
                         step: controller.currentStep.value,
                         isLastStep: controller.showFinish.value,
@@ -128,21 +149,21 @@ class _TourOverlay extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Positioned(
-          // right: 0,
-          height: height * 2,
-          right: -width,
-          width: width * 2,
-          child: Container(
-            width: width,
-            height: height * 2,
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: bgColor,
-              borderRadius: BorderRadius.all(Radius.circular(height)),
-            ),
-          ),
-        ),
+        // Positioned(
+        //   bottom: -width / 4,
+        //   height: height,
+        //   right: -width * 1.1,
+        //   width: width * 2.1,
+        //   child: Container(
+        //     width: width,
+        //     height: height * 2,
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.rectangle,
+        //       // color: bgColor,
+        //       borderRadius: BorderRadius.all(Radius.circular(height * 2)),
+        //     ),
+        //   ),
+        // ),
         Container(
           width: contentWidth,
           padding: EdgeInsets.all(4),
