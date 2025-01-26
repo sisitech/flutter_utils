@@ -24,6 +24,7 @@ class BackgroundWorkManagerTask {
   BackoffPolicy? backoffPolicy;
   Duration backoffPolicyDelay;
   OutOfQuotaPolicy? outOfQuotaPolicy;
+  bool cancelPrevious;
 
   /// Function executed by the callback dispatcher
   /// Make sure all the required plugins are loaded in
@@ -39,6 +40,7 @@ class BackgroundWorkManagerTask {
     required this.type,
     this.backoffPolicyDelay = Duration.zero,
     this.initialDelay = Duration.zero,
+    this.cancelPrevious = false,
     this.existingWorkPolicy,
     this.outOfQuotaPolicy,
     this.backoffPolicy,
@@ -100,7 +102,9 @@ void getCallbackDispathcer(
 }
 
 Future<void> registerTask(BackgroundWorkManagerTask task) async {
-  await task.cancel();
+  if (task.cancelPrevious) {
+    await task.cancel();
+  }
   if (task.type == BackgroundWorkManagerTaskType.oneOff) {
     Workmanager().registerOneOffTask(
       task.uniqueName,
