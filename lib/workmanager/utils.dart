@@ -1,6 +1,11 @@
+import 'package:flutter_utils/flutter_utils.dart';
+import 'package:flutter_utils/text_view/text_view_extensions.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:workmanager/workmanager.dart';
 
 enum BackgroundWorkManagerTaskType { oneOff, periodic }
+
+const tasksStorageName = "BackgroundTasks";
 
 /// Represents a single background task and implements / copies all the fields
 /// required when starting a `oneOff` or `periodic` task.
@@ -19,6 +24,7 @@ class BackgroundWorkManagerTask {
   final BackgroundWorkManagerTaskType type;
   final String? tag;
   Map<String, dynamic>? inputData;
+  bool removeAndCleanupTasks;
   ExistingWorkPolicy? existingWorkPolicy;
   Constraints? constraints;
   BackoffPolicy? backoffPolicy;
@@ -43,6 +49,7 @@ class BackgroundWorkManagerTask {
     this.cancelPrevious = false,
     this.existingWorkPolicy,
     this.outOfQuotaPolicy,
+    this.removeAndCleanupTasks = false,
     this.backoffPolicy,
     this.constraints,
     this.inputData,
@@ -50,6 +57,11 @@ class BackgroundWorkManagerTask {
     required this.executeFunction,
     this.frequency,
   });
+
+  String getUniqueIdHash() {
+    return "${name}${uniqueName}${type}${existingWorkPolicy}${cancelPrevious}${constraints}${inputData}"
+        .md5Hash;
+  }
 
   Future<void> cancel() async {
     return Workmanager().cancelByUniqueName(uniqueName);
@@ -102,9 +114,37 @@ void getCallbackDispathcer(
 }
 
 Future<void> registerTask(BackgroundWorkManagerTask task) async {
+  var box = GetStorage();
+
+  if (task.removeAndCleanupTasks) {
+    await task.cancel();
+    Map<String, dynamic> readAllTasks =
+        box.read(tasksStorageName) ?? {"none": "one"} as Map<String, dynamic>;
+    bool isAlreadyRegistered = readAllTasks.containsKey(task.getUniqueIdHash());
+    if (isAlreadyRegistered) {
+      readAllTasks.remove(task.getUniqueIdHash());
+      await box.write(tasksStorageName, readAllTasks);
+    }
+    return;
+  }
+
+  // Check if task already registered
   if (task.cancelPrevious) {
     await task.cancel();
   }
+  Map<String, dynamic> readAllTasks =
+      box.read(tasksStorageName) ?? {"none": "one"} as Map<String, dynamic>;
+  bool isAlreadyRegistered = readAllTasks.containsKey(task.getUniqueIdHash());
+  // Get the unique tag hash id to see if anything changed
+
+  if (isAlreadyRegistered && !task.cancelPrevious) {
+    dprint("Already registered");
+    return;
+  }
+  // Check if already registred
+
+  // If registered ignore
+  dprint("REGISTERING NEW");
   if (task.type == BackgroundWorkManagerTaskType.oneOff) {
     Workmanager().registerOneOffTask(
       task.uniqueName,
@@ -131,4 +171,8 @@ Future<void> registerTask(BackgroundWorkManagerTask task) async {
       backoffPolicyDelay: task.backoffPolicyDelay,
     );
   }
+
+  var allTasks = box.read(tasksStorageName) ?? {"none": "one"};
+  allTasks[task.getUniqueIdHash()] = "true";
+  box.write(tasksStorageName, allTasks);
 }

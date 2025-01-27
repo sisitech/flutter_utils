@@ -11,9 +11,52 @@ const backgroundConter = "BACKGROUND_COUNTER";
 
 List<BackgroundWorkManagerTask> tasks = [
   BackgroundWorkManagerTask(
-    uniqueName: 'main',
-    name: 'name',
+    uniqueName: 'main_task',
+    name: 'one_off_main_task',
+    type: BackgroundWorkManagerTaskType.oneOff,
+    frequency: Duration(minutes: 15),
+    initialDelay: Duration(seconds: 2),
+    removeAndCleanupTasks: true,
+    executeFunction: (
+      BackgroundWorkManagerTask task,
+      Map<String, dynamic>? inputData,
+    ) async {
+      print("DAAAMM... got herer...");
+      final storage = GetStorage();
+      int count = storage.read<int>(backgroundConter) ?? 0;
+      print(
+          "Native called Bkaco background COUNT: $count TASK: $task"); //simpleTask will be emitted here.
+      await storage.write(backgroundConter, count + 1);
+      print(DateTime.now());
+      await Future.delayed(Duration(seconds: 7));
+      return Future.value(true);
+    },
+  ),
+  BackgroundWorkManagerTask(
+    uniqueName: 'main_task_two',
+    name: 'one_off_main_task_wto',
     type: BackgroundWorkManagerTaskType.periodic,
+    frequency: Duration(minutes: 15),
+    initialDelay: Duration(seconds: 2),
+    executeFunction: (
+      BackgroundWorkManagerTask task,
+      Map<String, dynamic>? inputData,
+    ) async {
+      print("DAAAMM... got herer...");
+      final storage = GetStorage();
+      int count = storage.read<int>(backgroundConter) ?? 0;
+      print(
+          "Native called Bkaco background COUNT: $count TASK: $task"); //simpleTask will be emitted here.
+      await storage.write(backgroundConter, count + 1);
+      print(DateTime.now());
+      await Future.delayed(Duration(seconds: 7));
+      return Future.value(true);
+    },
+  ),
+  BackgroundWorkManagerTask(
+    uniqueName: 'main_task_three',
+    name: 'one_off_main_task_three',
+    type: BackgroundWorkManagerTaskType.oneOff,
     frequency: Duration(minutes: 15),
     initialDelay: Duration(seconds: 2),
     executeFunction: (
@@ -69,11 +112,11 @@ void main() async {
 
   await workManSerializer.cancelAll();
   await workManSerializer.registerTasks();
-  runApp(const MyApp());
+  runApp(const MyAppBackground());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyAppBackground extends StatelessWidget {
+  const MyAppBackground({super.key});
 
   // This widget is the root of your application.
   @override

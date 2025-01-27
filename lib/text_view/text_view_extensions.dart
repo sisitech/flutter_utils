@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:intl/intl.dart';
@@ -162,6 +165,13 @@ extension MyStringExt on String {
 
   String get slug {
     return slugify(this, delimiter: '_');
+  }
+
+  String get md5Hash {
+    // Convert the string to a list of bytes
+    List<int> bytes = utf8.encode(this);
+    // Generate the MD5 hash
+    return md5.convert(bytes).toString();
   }
 
   String get capitalize =>
