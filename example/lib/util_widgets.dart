@@ -4,7 +4,7 @@ import 'package:flutter_utils/date_widgets/date_dropdown/constants.dart';
 import 'package:flutter_utils/date_widgets/date_dropdown/date_dropdown.dart';
 import 'package:flutter_utils/date_widgets/date_dropdown/models.dart';
 import 'package:flutter_utils/date_widgets/date_range_picker/date_range_picker.dart';
-import 'package:flutter_utils/date_widgets/date_range_picker/utils.dart';
+import 'package:flutter_utils/date_widgets/utils.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/layout_widgets/models.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
@@ -30,6 +30,8 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
   final ThemeController themeController = Get.find<ThemeController>();
   Rx<SelectedDateRange> selectedRange = Rx(SelectedDateRange());
   final String tourTag = "example_tour";
+  RxList<DateTime> startEndDates = RxList([]);
+  Rx<DateTime?> currentDate = Rx(null);
 
   onTourNxt() {
     final ProductTourController tourCtrl =
