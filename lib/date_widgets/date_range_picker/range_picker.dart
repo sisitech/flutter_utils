@@ -30,6 +30,7 @@ class YearDatePicker extends StatelessWidget {
 
     RxBool isNowAddingLastDate = RxBool(false);
     RxList<DateTime> selectedDates = RxList([]);
+    double calendarHeight = Get.height * 0.43;
 
     onCustomDateChosen(DateTime dt) {
       // first date
@@ -64,6 +65,14 @@ class YearDatePicker extends StatelessWidget {
       }
     }
 
+    onScrollToMonth(int month) {
+      scrollCtrl.animateTo(
+        calendarHeight * 0.75 * month,
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.easeInOut,
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -92,6 +101,10 @@ class YearDatePicker extends StatelessWidget {
             ),
           ),
         ),
+        getMonthBtns(
+          theme: theme,
+          action: onScrollToMonth,
+        ),
         const Divider(),
         Obx(
           () => Row(
@@ -118,7 +131,7 @@ class YearDatePicker extends StatelessWidget {
         ),
         const Divider(),
         SizedBox(
-          height: Get.height * 0.43,
+          height: calendarHeight,
           child: Scrollbar(
             controller: scrollCtrl,
             thumbVisibility: true,
@@ -133,11 +146,10 @@ class YearDatePicker extends StatelessWidget {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      //
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 4),
                         child: Text(
-                          getMonthName(month),
+                          monthNames[month - 1],
                           style: theme.textTheme.labelLarge!.copyWith(
                             fontWeight: FontWeight.bold,
                           ),

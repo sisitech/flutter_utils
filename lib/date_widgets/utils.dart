@@ -42,22 +42,47 @@ Map<DateRangeDefaults, SelectedDateRange> defaultRanges = {
   ),
 };
 
-String getMonthName(int month) {
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ];
-  return monthNames[month - 1];
+const List<String> monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December"
+];
+
+Widget getMonthBtns({
+  required ThemeData theme,
+  required Function(int month) action,
+}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 5),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: monthNames
+          .asMap()
+          .entries
+          .map(
+            (e) => GestureDetector(
+              onTap: () => action(e.key),
+              child: CircleAvatar(
+                radius: 10,
+                child: Text(
+                  e.value[0],
+                  style: theme.textTheme.bodySmall,
+                ),
+              ),
+            ),
+          )
+          .toList(),
+    ),
+  );
 }
 
 /// Widgets
