@@ -37,7 +37,7 @@ class SisitechCard extends StatelessWidget {
   final IconData? unlockedIcon;
   final Widget? topRightWidget;
   final double? cardWidth;
-
+  final double borderRadius;
   final bool enableMixpanel;
 
   const SisitechCard({
@@ -62,6 +62,7 @@ class SisitechCard extends StatelessWidget {
     this.unlockedIcon,
     this.topRightWidget,
     this.cardWidth,
+    this.borderRadius = 12.0,
   });
 
   @override
@@ -74,91 +75,98 @@ class SisitechCard extends StatelessWidget {
               enableMixpanel: enableMixpanel),
           child: SizedBox(
             width: cardWidth,
-            child: Card(
-              color: color,
-              elevation: 2,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Column(
-                  crossAxisAlignment:
-                      cardAxisAlignment ?? CrossAxisAlignment.center,
-                  mainAxisAlignment:
-                      cardMainAxisAlignment ?? MainAxisAlignment.center,
-                  children: [
-                    if (topRightWidget != null)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [topRightWidget!],
+            child: Container(
+              margin: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(borderRadius),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment:
+                    cardAxisAlignment ?? CrossAxisAlignment.center,
+                mainAxisAlignment:
+                    cardMainAxisAlignment ?? MainAxisAlignment.center,
+                children: [
+                  if (topRightWidget != null)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [topRightWidget!],
+                    ),
+                  if (assetImage != null)
+                    Image.asset(
+                      assetImage!,
+                      scale: imageScale ?? 1.0,
+                    )
+                  else if (iconData != null)
+                    Icon(
+                      iconData,
+                      size: iconSize ?? 24.0,
+                      color: iconColor ?? Colors.white,
+                    ),
+                  SizedBox(height: Get.height * 0.006),
+                  Text(
+                    title ?? '',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(color: titleColor),
+                  ),
+                  SizedBox(height: Get.height * 0.01),
+                  if (enableTextVisibilityToggle && controller != null)
+                    Obx(
+                      () => Visibility(
+                        visible: controller!.isTextVisible.value,
+                        replacement: Column(
+                          children: [
+                            Text(
+                              '___,___,___',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(color: descriptionColor),
+                            ),
+                            SizedBox(height: Get.height * 0.008),
+                          ],
+                        ),
+                        child: Text(
+                          description ?? '',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(color: descriptionColor),
+                        ),
                       ),
-                    if (assetImage != null)
-                      Image.asset(
-                        assetImage!,
-                        scale: imageScale ?? 1.0,
-                      )
-                    else if (iconData != null)
-                      Icon(
-                        iconData,
-                        size: iconSize ?? 24.0,
-                        color: iconColor ?? Colors.white,
-                      ),
-                    SizedBox(height: Get.height * 0.006),
+                    ),
+                  if (!enableTextVisibilityToggle)
                     Text(
-                      title ?? '',
+                      description ?? '',
                       textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .textTheme
-                          .titleSmall
-                          ?.copyWith(color: titleColor),
+                          .titleLarge
+                          ?.copyWith(color: descriptionColor),
                     ),
-                    SizedBox(height: Get.height * 0.01),
-                    if (enableTextVisibilityToggle && controller != null)
-                      Obx(
-                        () => Visibility(
-                          visible: controller!.isTextVisible.value,
-                          replacement: Column(
-                            children: [
-                              Text(
-                                '___,___,___',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleLarge
-                                    ?.copyWith(color: descriptionColor),
-                              ),
-                              SizedBox(height: Get.height * 0.008),
-                            ],
-                          ),
-                          child: Text(
-                            description ?? '',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(color: descriptionColor),
-                          ),
-                        ),
+                  if (enableTextVisibilityToggle && controller != null)
+                    Obx(
+                      () => Icon(
+                        controller!.isTextVisible.value
+                            ? (unlockedIcon ?? Icons.lock_open)
+                            : (lockedIcon ?? Icons.lock),
+                        color: iconColor ??
+                            Theme.of(context).colorScheme.primaryContainer,
                       ),
-                    if (!enableTextVisibilityToggle)
-                      Text(
-                        description ?? '',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(color: descriptionColor),
-                      ),
-                    if (enableTextVisibilityToggle && controller != null)
-                      Obx(
-                        () => Icon(
-                          controller!.isTextVisible.value
-                              ? (unlockedIcon ?? Icons.lock_open)
-                              : (lockedIcon ?? Icons.lock),
-                          color: iconColor ??
-                              Theme.of(context).colorScheme.primaryContainer,
-                        ),
-                      ),
-                    SizedBox(height: Get.height * 0.01),
-                  ],
-                ),
+                    ),
+                  SizedBox(height: Get.height * 0.01),
+                ],
               ),
             ),
           ),

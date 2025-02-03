@@ -416,6 +416,7 @@ class MyApp extends StatelessWidget {
                           title: 'In',
                           enableTextVisibilityToggle: true,
                           controller: SisitechCardController(),
+                          borderRadius: 0,
                         ),
                         SisitechCard(
                           cardWidth: Get.width * 0.43,

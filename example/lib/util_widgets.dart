@@ -198,7 +198,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                     },
                     selectedRange: selectedRange.value,
                     // enableMixpanel: true,
-                    hideCustomPicker: true,
+                    // hideCustomPicker: true,
                   ),
                 ),
               ),
