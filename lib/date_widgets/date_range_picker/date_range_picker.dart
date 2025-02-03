@@ -18,6 +18,7 @@ class SistchDateRangePicker extends StatelessWidget {
   final SelectedDateRange selectedRange;
   final String btnLabel;
   final bool enableMixpanel;
+  final bool hideCustomPicker;
 
   const SistchDateRangePicker({
     super.key,
@@ -30,6 +31,7 @@ class SistchDateRangePicker extends StatelessWidget {
     required this.selectedRange,
     this.btnLabel = "Show Me The Data",
     this.enableMixpanel = false,
+    this.hideCustomPicker = false,
   });
 
   @override
@@ -49,6 +51,7 @@ class SistchDateRangePicker extends StatelessWidget {
             lastYrPicker: lastYrPicker,
             btnLabel: btnLabel,
             enableMixpanel: enableMixpanel,
+            hideCustomPicker: hideCustomPicker,
           ),
         ],
       );
@@ -100,6 +103,7 @@ class DatePickerScaffold extends StatelessWidget {
   final int maxRangeCount;
   final String btnLabel;
   final bool enableMixpanel;
+  final bool hideCustomPicker;
   const DatePickerScaffold({
     super.key,
     required this.chosenFormat,
@@ -107,6 +111,7 @@ class DatePickerScaffold extends StatelessWidget {
     required this.maxRangeCount,
     required this.btnLabel,
     required this.enableMixpanel,
+    required this.hideCustomPicker,
   });
 
   @override
@@ -140,12 +145,15 @@ class DatePickerScaffold extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 5),
-            getIconBtn(
-              fgColor: colorScheme.primary,
-              action: onSwitchPickers,
-              iconPath: Icons.switch_access_shortcut,
-            ),
+            if (!hideCustomPicker)
+              Padding(
+                padding: const EdgeInsets.only(left: 5),
+                child: getIconBtn(
+                  fgColor: colorScheme.primary,
+                  action: onSwitchPickers,
+                  iconPath: Icons.switch_access_shortcut,
+                ),
+              ),
           ],
         ),
         const Divider(),
@@ -162,6 +170,7 @@ class DatePickerScaffold extends StatelessWidget {
                   onRangeSelected: onRangeSelected,
                   onSwitchPickers: onSwitchPickers,
                   enableMixpanel: enableMixpanel,
+                  hideCustomPicker: hideCustomPicker,
                 ),
         ),
         const SizedBox(height: 10),

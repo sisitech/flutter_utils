@@ -9,18 +9,25 @@ class DateOptionsPickerWidget extends StatelessWidget {
   final Function(SelectedDateRange val) onRangeSelected;
   final Function() onSwitchPickers;
   final bool enableMixpanel;
+  final bool hideCustomPicker;
 
   const DateOptionsPickerWidget({
     super.key,
     required this.onRangeSelected,
     required this.onSwitchPickers,
     required this.enableMixpanel,
+    required this.hideCustomPicker,
   });
 
   @override
   Widget build(BuildContext context) {
     RxString selectedOption = ''.obs;
     final scrollCtrl = ScrollController();
+    List<TimePeriod> dateRanges = hideCustomPicker
+        ? defaultDateRanges
+            .where((e) => e.displayName != kCustomTPKeyword)
+            .toList()
+        : defaultDateRanges;
     return SizedBox(
       height: Get.height * 0.55,
       child: Scrollbar(
@@ -30,7 +37,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
           shrinkWrap: true,
           controller: scrollCtrl,
           itemBuilder: (context, index) {
-            String dateTxt = defaultDateRanges[index].displayText;
+            String dateTxt = dateRanges[index].displayText;
             return Obx(
               () => RadioListTile(
                 activeColor: Get.theme.primaryColor,
@@ -43,7 +50,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
                       return;
                     }
 
-                    TimePeriod? tp = defaultDateRanges
+                    TimePeriod? tp = dateRanges
                         .firstWhereOrNull((e) => e.displayText == val);
                     if (tp != null &&
                         tp.startDateFunc != null &&
@@ -67,7 +74,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
               ),
             );
           },
-          itemCount: defaultDateRanges.length,
+          itemCount: dateRanges.length,
         ),
       ),
     );
