@@ -77,6 +77,7 @@ class SisitechCard extends StatelessWidget {
             width: cardWidth,
             child: Container(
               margin: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 color: color,
                 borderRadius: BorderRadius.circular(borderRadius),

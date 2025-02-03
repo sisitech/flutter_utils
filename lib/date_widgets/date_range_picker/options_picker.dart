@@ -9,25 +9,21 @@ class DateOptionsPickerWidget extends StatelessWidget {
   final Function(SelectedDateRange val) onRangeSelected;
   final Function() onSwitchPickers;
   final bool enableMixpanel;
-  final bool hideCustomPicker;
+  final Function? onShowCustomPicker;
 
   const DateOptionsPickerWidget({
     super.key,
     required this.onRangeSelected,
     required this.onSwitchPickers,
     required this.enableMixpanel,
-    required this.hideCustomPicker,
+    required this.onShowCustomPicker,
   });
 
   @override
   Widget build(BuildContext context) {
     RxString selectedOption = ''.obs;
     final scrollCtrl = ScrollController();
-    List<TimePeriod> dateRanges = hideCustomPicker
-        ? defaultDateRanges
-            .where((e) => e.displayName != kCustomTPKeyword)
-            .toList()
-        : defaultDateRanges;
+
     return SizedBox(
       height: Get.height * 0.55,
       child: Scrollbar(
@@ -37,7 +33,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
           shrinkWrap: true,
           controller: scrollCtrl,
           itemBuilder: (context, index) {
-            String dateTxt = dateRanges[index].displayText;
+            String dateTxt = defaultDateRanges[index].displayText;
             return Obx(
               () => RadioListTile(
                 activeColor: Get.theme.primaryColor,
@@ -46,11 +42,15 @@ class DateOptionsPickerWidget extends StatelessWidget {
                 onChanged: (String? val) {
                   if (val != null) {
                     if (val == kCustomTPKeyword) {
+                      if (onShowCustomPicker != null) {
+                        onShowCustomPicker!();
+                        return;
+                      }
                       onSwitchPickers();
                       return;
                     }
 
-                    TimePeriod? tp = dateRanges
+                    TimePeriod? tp = defaultDateRanges
                         .firstWhereOrNull((e) => e.displayText == val);
                     if (tp != null &&
                         tp.startDateFunc != null &&
@@ -74,7 +74,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
               ),
             );
           },
-          itemCount: dateRanges.length,
+          itemCount: defaultDateRanges.length,
         ),
       ),
     );
