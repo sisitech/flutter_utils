@@ -183,7 +183,7 @@ class SisitechCard extends StatelessWidget {
               children: [
                 Text(
                   '___,___,___',
-                  style: theme.textTheme.titleLarge
+                  style: theme.textTheme.titleMedium
                       ?.copyWith(color: descriptionColor),
                 ),
                 SizedBox(height: Get.height * 0.008),
@@ -192,8 +192,8 @@ class SisitechCard extends StatelessWidget {
             child: Text(
               description ?? '',
               textAlign: TextAlign.center,
-              style:
-                  theme.textTheme.titleLarge?.copyWith(color: descriptionColor),
+              style: theme.textTheme.titleMedium
+                  ?.copyWith(color: descriptionColor),
             ),
           ),
         ),
@@ -201,7 +201,7 @@ class SisitechCard extends StatelessWidget {
         Text(
           description ?? '',
           textAlign: TextAlign.center,
-          style: theme.textTheme.titleLarge?.copyWith(color: descriptionColor),
+          style: theme.textTheme.titleMedium?.copyWith(color: descriptionColor),
         ),
       if (enableTextVisibilityToggle && controller != null)
         Padding(
