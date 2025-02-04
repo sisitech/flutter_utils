@@ -406,6 +406,17 @@ class MyApp extends StatelessWidget {
                       topRightWidget: const SizedBox(height: 20),
                       controller: SisitechCardController(),
                     ),
+                    SisitechCard(
+                      iconData: Icons.wallet,
+                      description: 'Kes. 10,000',
+                      color: Theme.of(context).colorScheme.primary,
+                      cardAxisAlignment: CrossAxisAlignment.center,
+                      title: 'Mpesa Balance',
+                      enableTextVisibilityToggle: true,
+                      topRightWidget: const SizedBox(height: 20),
+                      controller: SisitechCardController(),
+                      isLinear: true,
+                    ),
                     // Row(
                     //   children: [
                     //     SisitechCard(
