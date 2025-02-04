@@ -37,6 +37,7 @@ class SisitechCard extends StatelessWidget {
   final double borderRadius;
   final bool enableMixpanel;
   final bool isLinear;
+  final bool isDense;
 
   const SisitechCard({
     super.key,
@@ -62,6 +63,7 @@ class SisitechCard extends StatelessWidget {
     this.cardWidth,
     this.borderRadius = 12.0,
     this.isLinear = false,
+    this.isDense = false,
   });
 
   @override
@@ -78,7 +80,7 @@ class SisitechCard extends StatelessWidget {
             width: cardWidth,
             child: Container(
               margin: const EdgeInsets.all(5.0),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: color,
                 borderRadius: BorderRadius.circular(borderRadius),
@@ -102,27 +104,44 @@ class SisitechCard extends StatelessWidget {
                         ),
                       ],
                     )
-                  : Column(
-                      crossAxisAlignment:
-                          cardAxisAlignment ?? CrossAxisAlignment.center,
-                      mainAxisAlignment:
-                          cardMainAxisAlignment ?? MainAxisAlignment.center,
-                      children: [
-                        if (topRightWidget != null)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [topRightWidget!],
-                          ),
-                        buildTopImg(),
-                        SizedBox(height: Get.height * 0.006),
-                        buildLabelTxt(theme),
-                        SizedBox(height: Get.height * 0.01),
-                        Column(
-                          children: buildVisibilityWidget(theme),
+                  : isDense
+                      ? Column(
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                buildTopImg(),
+                                SizedBox(width: Get.width * 0.006),
+                                buildLabelTxt(theme),
+                              ],
+                            ),
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: buildVisibilityWidget(theme),
+                            ),
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment:
+                              cardAxisAlignment ?? CrossAxisAlignment.center,
+                          mainAxisAlignment:
+                              cardMainAxisAlignment ?? MainAxisAlignment.center,
+                          children: [
+                            if (topRightWidget != null)
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [topRightWidget!],
+                              ),
+                            buildTopImg(),
+                            SizedBox(height: Get.height * 0.006),
+                            buildLabelTxt(theme),
+                            SizedBox(height: Get.height * 0.01),
+                            Column(
+                              children: buildVisibilityWidget(theme),
+                            ),
+                            SizedBox(height: Get.height * 0.01),
+                          ],
                         ),
-                        SizedBox(height: Get.height * 0.01),
-                      ],
-                    ),
             ),
           ),
         ),

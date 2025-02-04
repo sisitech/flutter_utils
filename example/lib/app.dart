@@ -442,12 +442,13 @@ class MyApp extends StatelessWidget {
                     //     ),
                     //   ],
                     // ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SisitechCard(
+                    Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SisitechCard(
                             borderRadius: 5,
-                            cardWidth: Get.width * 0.5,
+                            // cardWidth: Get.width * 0.5,
                             iconData: Icons.arrow_downward,
                             description: 'KES. @income#'
                                 .ctr
@@ -464,12 +465,11 @@ class MyApp extends StatelessWidget {
                             lockedIcon: Icons.visibility_off,
                             unlockedIcon: Icons.visibility,
                             controller: SisitechCardController(),
+                            isDense: true,
                           ),
-                        ),
-                        Expanded(
-                          child: SisitechCard(
+                          SisitechCard(
                             borderRadius: 5,
-                            cardWidth: Get.width * 0.5,
+                            // cardWidth: Get.width * 0.5,
                             iconData: Icons.arrow_upward,
                             description: 'KES. @expenses#'
                                 .ctr
@@ -486,9 +486,10 @@ class MyApp extends StatelessWidget {
                             lockedIcon: Icons.visibility_off,
                             unlockedIcon: Icons.visibility,
                             controller: SisitechCardController(),
+                            isDense: true,
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                     SizedBox(
                       width: 1000,
