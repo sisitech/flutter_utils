@@ -185,6 +185,7 @@ class MyApp extends StatelessWidget {
   }
 
   Widget mainApp(BuildContext context) {
+    final theme = Theme.of(context);
     var writerTag = "writer";
     final ExtendedFABController fabController =
         Get.put(ExtendedFABController());
@@ -405,29 +406,90 @@ class MyApp extends StatelessWidget {
                       topRightWidget: const SizedBox(height: 20),
                       controller: SisitechCardController(),
                     ),
-                    Row(
-                      children: [
-                        SisitechCard(
-                          cardWidth: Get.width * 0.43,
-                          iconData: Icons.call_received,
-                          description: 'Kes. 140,000',
-                          color: Theme.of(context).colorScheme.primary,
-                          cardAxisAlignment: CrossAxisAlignment.center,
-                          title: 'In',
-                          enableTextVisibilityToggle: true,
-                          controller: SisitechCardController(),
-                        ),
-                        SisitechCard(
-                          cardWidth: Get.width * 0.43,
-                          iconData: Icons.call_made,
-                          description: 'Kes. 160,000',
-                          color: Theme.of(context).colorScheme.primary,
-                          cardAxisAlignment: CrossAxisAlignment.center,
-                          title: 'Out',
-                          enableTextVisibilityToggle: true,
-                          controller: SisitechCardController(),
-                        ),
-                      ],
+                    SisitechCard(
+                      iconData: Icons.wallet,
+                      description: 'Kes. 10,000',
+                      color: Theme.of(context).colorScheme.primary,
+                      cardAxisAlignment: CrossAxisAlignment.center,
+                      title: 'Mpesa Balance',
+                      enableTextVisibilityToggle: true,
+                      topRightWidget: const SizedBox(height: 20),
+                      controller: SisitechCardController(),
+                      isLinear: true,
+                    ),
+                    // Row(
+                    //   children: [
+                    //     SisitechCard(
+                    //       cardWidth: Get.width * 0.43,
+                    //       iconData: Icons.call_received,
+                    //       description: 'Kes. 140,000',
+                    //       color: Theme.of(context).colorScheme.primary,
+                    //       cardAxisAlignment: CrossAxisAlignment.center,
+                    //       title: 'In',
+                    //       enableTextVisibilityToggle: true,
+                    //       controller: SisitechCardController(),
+                    //       borderRadius: 0,
+                    //     ),
+                    //     SisitechCard(
+                    //       cardWidth: Get.width * 0.43,
+                    //       iconData: Icons.call_made,
+                    //       description: 'Kes. 160,000',
+                    //       color: Theme.of(context).colorScheme.primary,
+                    //       cardAxisAlignment: CrossAxisAlignment.center,
+                    //       title: 'Out',
+                    //       enableTextVisibilityToggle: true,
+                    //       controller: SisitechCardController(),
+                    //     ),
+                    //   ],
+                    // ),
+                    Center(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SisitechCard(
+                            borderRadius: 5,
+                            // cardWidth: Get.width * 0.5,
+                            iconData: Icons.arrow_downward,
+                            description: 'KES. @income#'
+                                .ctr
+                                .interpolate({"income": 2500}),
+                            title: "In",
+                            slug: "home_in_total_amount",
+                            imageScale: 50,
+                            iconColor: theme.colorScheme.tertiaryContainer,
+                            titleColor: theme.colorScheme.tertiaryContainer,
+                            descriptionColor:
+                                theme.colorScheme.tertiaryContainer,
+                            color: theme.colorScheme.tertiary,
+                            enableTextVisibilityToggle: true,
+                            lockedIcon: Icons.visibility_off,
+                            unlockedIcon: Icons.visibility,
+                            controller: SisitechCardController(),
+                            isDense: true,
+                          ),
+                          SisitechCard(
+                            borderRadius: 5,
+                            // cardWidth: Get.width * 0.5,
+                            iconData: Icons.arrow_upward,
+                            description: 'KES. @expenses#'
+                                .ctr
+                                .interpolate({"expenses": 2400}),
+                            title: "Out",
+                            slug: "home_out_total_amount",
+                            imageScale: 50,
+                            iconColor: theme.colorScheme.secondaryContainer,
+                            descriptionColor:
+                                theme.colorScheme.secondaryContainer,
+                            titleColor: theme.colorScheme.secondaryContainer,
+                            color: theme.colorScheme.secondary,
+                            enableTextVisibilityToggle: true,
+                            lockedIcon: Icons.visibility_off,
+                            unlockedIcon: Icons.visibility,
+                            controller: SisitechCardController(),
+                            isDense: true,
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(
                       width: 1000,

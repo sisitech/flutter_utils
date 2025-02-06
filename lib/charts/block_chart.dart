@@ -106,10 +106,7 @@ class SistchDuoBlockChart extends StatelessWidget {
     required bool isBiggerValue,
     bool hideSmaller = false,
   }) {
-    final smallColor =
-        hideSmaller ? Get.theme.colorScheme.onSurfaceVariant : textColor;
     final blockKey = ValueKey(value);
-    final textTheme = Get.textTheme;
 
     return Column(
       children: [
@@ -124,7 +121,7 @@ class SistchDuoBlockChart extends StatelessWidget {
             barRadius: const Radius.circular(5),
             lineHeight: height * (isBiggerValue ? 0.9 : 0.7),
             progressColor: hideSmaller ? Colors.transparent : bgColor,
-            backgroundColor: Get.theme.colorScheme.surfaceVariant,
+            backgroundColor: Get.theme.colorScheme.surfaceContainerHighest,
             center: SizedBox(
               width: (width ?? Get.width * 0.65) * 0.7,
               child: Column(
@@ -169,7 +166,7 @@ class SistchDuoBlockChart extends StatelessWidget {
         Container(
           width: 2,
           height: Get.size.height * 0.03,
-          color: Get.theme.colorScheme.onBackground,
+          color: Get.theme.colorScheme.onSurface,
         ),
         Text(
           percentage,
