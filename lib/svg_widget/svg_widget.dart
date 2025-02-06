@@ -4,7 +4,9 @@ import 'package:flutter_utils/svg_widget/utils.dart';
 
 class SistchSvgWidget extends StatefulWidget {
   final String svgPath;
-  const SistchSvgWidget({super.key, required this.svgPath});
+  final bool useThemeColors;
+  const SistchSvgWidget(
+      {super.key, required this.svgPath, this.useThemeColors = true});
 
   @override
   State<SistchSvgWidget> createState() => _SistchSvgWidgetState();
@@ -15,10 +17,12 @@ class _SistchSvgWidgetState extends State<SistchSvgWidget> {
   Widget build(BuildContext context) {
     return isValidSvgPath(widget.svgPath)
         ? FutureBuilder<String>(
-            future: getHexSvgString(
-                widget.svgPath,
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.primaryContainer),
+            future: !widget.useThemeColors
+                ? extractSVGString(widget.svgPath)
+                : getHexSvgString(
+                    widget.svgPath,
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.primaryContainer),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const CircularProgressIndicator();

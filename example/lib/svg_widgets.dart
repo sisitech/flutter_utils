@@ -42,6 +42,7 @@ class _SvgWidgetDemoState extends State<SvgWidgetDemo> {
                   width: 300,
                   height: 300,
                   child: SistchSvgWidget(
+                    // useThemeColors: false,
                     svgPath: svgPaths[index],
                   ),
                 ),
