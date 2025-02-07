@@ -42,21 +42,68 @@ String generateMd5(String input) {
   return md5.convert(utf8.encode(input)).toString();
 }
 
-void showSnackbar(
-    {required String title,
-    required String subtitle,
-    required IconData iconPath,
-    required ColorScheme colorScheme,
-    SnackPosition? snackPosition = SnackPosition.BOTTOM}) {
-  Get.snackbar(title, subtitle,
-      backgroundColor: colorScheme.primary,
-      colorText: colorScheme.onPrimary,
-      icon: Icon(
-        iconPath,
-        size: 28,
-        color: colorScheme.onPrimary,
+void showSnackbar({
+  required String title,
+  required String subtitle,
+  required ThemeData theme,
+  Function? onAction,
+  IconData iconPath = Icons.info,
+  String? btnTxt,
+  SnackPosition snackPosition = SnackPosition.BOTTOM,
+}) {
+  final textTheme = theme.textTheme;
+  final colorScheme = theme.colorScheme;
+
+  Get.showSnackbar(
+    GetSnackBar(
+      titleText: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Icon(iconPath, color: colorScheme.primary),
+                  const SizedBox(width: 5),
+                  Text(
+                    title,
+                    style: textTheme.bodyMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+              GestureDetector(
+                onTap: () => Get.back(),
+                child: const Icon(Icons.close),
+              ),
+            ],
+          ),
+          const Divider(),
+        ],
       ),
-      snackPosition: snackPosition);
+      messageText: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(subtitle),
+          const SizedBox(height: 5),
+          if (onAction != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: ElevatedButton(
+                onPressed: () {
+                  onAction();
+                },
+                child: Text(btnTxt ?? "--"),
+              ),
+            ),
+        ],
+      ),
+      snackPosition: snackPosition,
+    ),
+  );
 }
 
 var formatter = NumberFormat('###,###');
