@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 Widget getIconBtn(
     {Color? bgColor,
@@ -298,5 +299,62 @@ Widget getSummaryCard({
         ),
       ),
     ),
+  );
+}
+
+Widget buildSmallBtn({
+  required void Function() onPressed,
+  required ThemeData theme,
+  required String title,
+  IconData? iconPath,
+}) {
+  return Padding(
+    padding: const EdgeInsets.only(top: 5),
+    child: Center(
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        style: ButtonStyle(
+          backgroundColor: WidgetStatePropertyAll(
+            theme.scaffoldBackgroundColor,
+          ),
+        ),
+        icon: Icon(iconPath ?? Icons.refresh),
+        label: Text(title),
+      ),
+    ),
+  );
+}
+
+Widget buildHalfArcPercentChart({
+  required ThemeData theme,
+  required Color progressColor,
+  required double percent,
+  Widget? center,
+}) {
+  double chartRadius = Get.height * 0.15;
+  return Stack(
+    children: [
+      ClipRect(
+        child: Align(
+          alignment: Alignment.topCenter,
+          heightFactor: 0.5,
+          child: CircularPercentIndicator(
+            radius: chartRadius,
+            lineWidth: 40,
+            percent: percent,
+            animation: true,
+            progressColor: progressColor,
+            startAngle: 270,
+          ),
+        ),
+      ),
+      if (center != null)
+        Positioned(
+          bottom: chartRadius * 0.1,
+          left: 0,
+          right: 0,
+          child: center,
+        ),
+    ],
   );
 }

@@ -20,8 +20,9 @@ class _SetLockScreenState extends State<SetLockScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    final colorScheme = theme.colorScheme;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -144,7 +145,7 @@ class _SetLockScreenState extends State<SetLockScreen> {
                 width: MediaQuery.sizeOf(context).width,
                 child: ElevatedButton(
                   onPressed: () async {
-                    bool isValid = await lockCtrl.onSavePassCode(colorScheme);
+                    bool isValid = await lockCtrl.onSavePassCode(theme);
                     if (isValid && mounted) Navigator.of(context).pop();
                   },
                   child: const Text("Save Pass Code"),
