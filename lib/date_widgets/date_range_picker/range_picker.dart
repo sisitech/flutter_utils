@@ -30,7 +30,7 @@ class YearDatePicker extends StatelessWidget {
 
     RxBool isNowAddingLastDate = RxBool(false);
     RxList<DateTime> selectedDates = RxList([]);
-    double calendarHeight = Get.height * 0.43;
+    double calendarHeight = Get.height * 0.45;
 
     onCustomDateChosen(DateTime dt) {
       // first date
@@ -109,6 +109,10 @@ class YearDatePicker extends StatelessWidget {
         Obx(
           () => Row(
             children: [
+              Text(
+                "Selected:",
+                style: theme.textTheme.bodySmall,
+              ),
               if (selectedDates.isNotEmpty)
                 buildActionChip(
                   theme: theme,

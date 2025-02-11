@@ -25,7 +25,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
     final scrollCtrl = ScrollController();
 
     return SizedBox(
-      height: Get.height * 0.55,
+      height: Get.height * 0.62,
       child: Scrollbar(
         controller: scrollCtrl,
         thumbVisibility: true,

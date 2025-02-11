@@ -341,7 +341,7 @@ Widget buildHalfArcPercentChart({
           child: CircularPercentIndicator(
             radius: chartRadius,
             lineWidth: 40,
-            percent: percent,
+            percent: (percent / 2) * 0.01,
             animation: true,
             progressColor: progressColor,
             startAngle: 270,

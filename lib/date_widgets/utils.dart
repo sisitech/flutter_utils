@@ -57,25 +57,42 @@ const List<String> monthNames = [
   "December"
 ];
 
+const List<String> monthShortNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "June",
+  "July",
+  "Aug",
+  "Sept",
+  "Oct",
+  "Nov",
+  "Dec"
+];
+
 Widget getMonthBtns({
   required ThemeData theme,
   required Function(int month) action,
 }) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 5),
+  return SingleChildScrollView(
+    scrollDirection: Axis.horizontal,
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: monthNames
+      children: monthShortNames
           .asMap()
           .entries
           .map(
             (e) => GestureDetector(
               onTap: () => action(e.key),
-              child: CircleAvatar(
-                radius: 10,
-                child: Text(
-                  e.value[0],
-                  style: theme.textTheme.bodySmall,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 5),
+                child: Chip(
+                  label: Text(
+                    e.value,
+                    style: theme.textTheme.bodySmall,
+                  ),
                 ),
               ),
             ),

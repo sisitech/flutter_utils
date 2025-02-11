@@ -3,6 +3,7 @@ import 'package:flutter_utils/date_widgets/date_dropdown/models.dart';
 import 'package:flutter_utils/date_widgets/date_range_picker/options_picker.dart';
 import 'package:flutter_utils/date_widgets/date_range_picker/range_picker.dart';
 import 'package:flutter_utils/date_widgets/utils.dart';
+import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/utils/functions.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
@@ -43,7 +44,7 @@ class SistchDateRangePicker extends StatelessWidget {
     onOpenDatePickerBottomSheet() async {
       SelectedDateRange? val = await getBottomSheet(
         theme: theme,
-        heightFactor: 0.8,
+        heightFactor: 0.85,
         children: [
           DatePickerScaffold(
             chosenFormat: chosenFormat,
@@ -56,6 +57,8 @@ class SistchDateRangePicker extends StatelessWidget {
         ],
       );
       if (val != null) {
+        dprint(val.startDate);
+        dprint(val.endDate);
         if (onTimePeriodChange != null) {
           onTimePeriodChange!(TimePeriod(
               startDate: () => val.startDate!, endDate: () => val.endDate!));
