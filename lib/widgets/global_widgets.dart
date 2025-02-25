@@ -133,9 +133,11 @@ Widget getDropDownFormField({
   );
 }
 
-Future<dynamic> getBottomSheet({
+Future<dynamic> getBottomSheetScaffold({
   required List<Widget> children,
   required ThemeData theme,
+  String? preTitle,
+  String? title,
   double heightFactor = 0.9,
 }) async {
   return Get.bottomSheet(
@@ -166,6 +168,19 @@ Future<dynamic> getBottomSheet({
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
+            if (preTitle != null)
+              Text(
+                preTitle,
+                style: theme.textTheme.bodySmall!.copyWith(
+                  color: theme.primaryColor,
+                ),
+              ),
+            if (title != null)
+              Text(
+                title,
+                style: theme.textTheme.titleMedium,
+              ),
+            if (preTitle != null || title != null) const Divider(),
             ...children
           ],
         ),
@@ -302,29 +317,6 @@ Widget getSummaryCard({
   );
 }
 
-Widget buildSmallBtn({
-  required void Function() onPressed,
-  required ThemeData theme,
-  required String title,
-  IconData? iconPath,
-}) {
-  return Padding(
-    padding: const EdgeInsets.only(top: 5),
-    child: Center(
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        style: ButtonStyle(
-          backgroundColor: WidgetStatePropertyAll(
-            theme.scaffoldBackgroundColor,
-          ),
-        ),
-        icon: Icon(iconPath ?? Icons.refresh),
-        label: Text(title),
-      ),
-    ),
-  );
-}
-
 Widget buildHalfArcPercentChart({
   required ThemeData theme,
   required Color progressColor,
@@ -344,6 +336,7 @@ Widget buildHalfArcPercentChart({
             percent: (percent / 2) * 0.01,
             animation: true,
             progressColor: progressColor,
+            animationDuration: 800,
             startAngle: 270,
           ),
         ),

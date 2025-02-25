@@ -228,7 +228,11 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: Column(
                   children: [
-                    SistchAnimatedCounter(valueToAnimate: 4150),
+                    SistchAnimatedCounter(
+                      preTexts: [TextSpan(text: "Pre ")],
+                      valueToAnimate: 4150,
+                      postTexts: [TextSpan(text: " Post")],
+                    ),
                     SistchAnimatedCounter(valueToAnimate: 41500),
                     SistchAnimatedCounter(valueToAnimate: 415000),
                     SistchAnimatedCounter(valueToAnimate: 4150000),

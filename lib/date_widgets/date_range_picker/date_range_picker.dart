@@ -42,7 +42,7 @@ class SistchDateRangePicker extends StatelessWidget {
     DateFormat chosenFormat = dateFormat ?? DateFormat("dd/MM/yy");
 
     onOpenDatePickerBottomSheet() async {
-      SelectedDateRange? val = await getBottomSheet(
+      SelectedDateRange? val = await getBottomSheetScaffold(
         theme: theme,
         heightFactor: 0.85,
         children: [
