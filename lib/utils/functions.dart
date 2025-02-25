@@ -50,6 +50,8 @@ void showSnackbar({
   IconData iconPath = Icons.info,
   String? btnTxt,
   SnackPosition snackPosition = SnackPosition.BOTTOM,
+  bool isDismissible = true,
+  int showDuration = 4,
 }) {
   final textTheme = theme.textTheme;
   final colorScheme = theme.colorScheme;
@@ -102,6 +104,8 @@ void showSnackbar({
         ],
       ),
       snackPosition: snackPosition,
+      duration: isDismissible ? Duration(seconds: showDuration) : null,
+      isDismissible: isDismissible,
     ),
   );
 }
