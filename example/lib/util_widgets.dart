@@ -201,6 +201,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                     // onShowCustomPicker: () {
                     //   debugPrint("show custom picker ad!!");
                     // },
+                    optionsToRemoveByValue: const [10, 11, 12, 13],
                   ),
                 ),
               ),

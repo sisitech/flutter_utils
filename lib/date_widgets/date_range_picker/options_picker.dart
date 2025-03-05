@@ -10,6 +10,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
   final Function() onSwitchPickers;
   final bool enableMixpanel;
   final Function? onShowCustomPicker;
+  final List<int>? optionsToRemoveByValue;
 
   const DateOptionsPickerWidget({
     super.key,
@@ -17,12 +18,17 @@ class DateOptionsPickerWidget extends StatelessWidget {
     required this.onSwitchPickers,
     required this.enableMixpanel,
     required this.onShowCustomPicker,
+    this.optionsToRemoveByValue,
   });
 
   @override
   Widget build(BuildContext context) {
     RxString selectedOption = ''.obs;
     final scrollCtrl = ScrollController();
+    List<TimePeriod> dateRanges = [...defaultDateRanges];
+    if (optionsToRemoveByValue != null && optionsToRemoveByValue!.isNotEmpty) {
+      dateRanges.removeWhere((e) => optionsToRemoveByValue!.contains(e.value));
+    }
 
     return SizedBox(
       height: Get.height * 0.62,
@@ -33,7 +39,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
           shrinkWrap: true,
           controller: scrollCtrl,
           itemBuilder: (context, index) {
-            String dateTxt = defaultDateRanges[index].displayText;
+            String dateTxt = dateRanges[index].displayText;
             return Obx(
               () => RadioListTile(
                 activeColor: Get.theme.primaryColor,
@@ -50,7 +56,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
                       return;
                     }
 
-                    TimePeriod? tp = defaultDateRanges
+                    TimePeriod? tp = dateRanges
                         .firstWhereOrNull((e) => e.displayText == val);
                     if (tp != null &&
                         tp.startDateFunc != null &&
@@ -74,7 +80,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
               ),
             );
           },
-          itemCount: defaultDateRanges.length,
+          itemCount: dateRanges.length,
         ),
       ),
     );

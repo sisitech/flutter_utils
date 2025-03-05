@@ -20,6 +20,7 @@ class SistchDateRangePicker extends StatelessWidget {
   final String btnLabel;
   final bool enableMixpanel;
   final Function? onShowCustomPicker;
+  final List<int>? optionsToRemoveByValue;
 
   const SistchDateRangePicker({
     super.key,
@@ -33,6 +34,7 @@ class SistchDateRangePicker extends StatelessWidget {
     this.btnLabel = "Show Me The Data",
     this.enableMixpanel = false,
     this.onShowCustomPicker,
+    this.optionsToRemoveByValue,
   });
 
   @override
@@ -53,6 +55,7 @@ class SistchDateRangePicker extends StatelessWidget {
             btnLabel: btnLabel,
             enableMixpanel: enableMixpanel,
             onShowCustomPicker: onShowCustomPicker,
+            optionsToRemoveByValue: optionsToRemoveByValue,
           ),
         ],
       );
@@ -107,6 +110,7 @@ class DatePickerScaffold extends StatelessWidget {
   final String btnLabel;
   final bool enableMixpanel;
   final Function? onShowCustomPicker;
+  final List<int>? optionsToRemoveByValue;
   const DatePickerScaffold({
     super.key,
     required this.chosenFormat,
@@ -115,6 +119,7 @@ class DatePickerScaffold extends StatelessWidget {
     required this.btnLabel,
     required this.enableMixpanel,
     required this.onShowCustomPicker,
+    this.optionsToRemoveByValue,
   });
 
   @override
@@ -173,6 +178,7 @@ class DatePickerScaffold extends StatelessWidget {
                   onSwitchPickers: onSwitchPickers,
                   enableMixpanel: enableMixpanel,
                   onShowCustomPicker: onShowCustomPicker,
+                  optionsToRemoveByValue: optionsToRemoveByValue,
                 ),
         ),
         const SizedBox(height: 10),
