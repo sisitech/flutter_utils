@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 Widget getIconBtn(
     {Color? bgColor,
@@ -132,9 +133,11 @@ Widget getDropDownFormField({
   );
 }
 
-Future<dynamic> getBottomSheet({
+Future<dynamic> getBottomSheetScaffold({
   required List<Widget> children,
   required ThemeData theme,
+  String? preTitle,
+  String? title,
   double heightFactor = 0.9,
 }) async {
   return Get.bottomSheet(
@@ -165,6 +168,19 @@ Future<dynamic> getBottomSheet({
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
+            if (preTitle != null)
+              Text(
+                preTitle,
+                style: theme.textTheme.bodySmall!.copyWith(
+                  color: theme.primaryColor,
+                ),
+              ),
+            if (title != null)
+              Text(
+                title,
+                style: theme.textTheme.titleMedium,
+              ),
+            if (preTitle != null || title != null) const Divider(),
             ...children
           ],
         ),
@@ -298,5 +314,40 @@ Widget getSummaryCard({
         ),
       ),
     ),
+  );
+}
+
+Widget buildHalfArcPercentChart({
+  required ThemeData theme,
+  required Color progressColor,
+  required double percent,
+  Widget? center,
+}) {
+  double chartRadius = Get.height * 0.15;
+  return Stack(
+    children: [
+      ClipRect(
+        child: Align(
+          alignment: Alignment.topCenter,
+          heightFactor: 0.5,
+          child: CircularPercentIndicator(
+            radius: chartRadius,
+            lineWidth: 40,
+            percent: (percent / 2) * 0.01,
+            animation: true,
+            progressColor: progressColor,
+            animationDuration: 800,
+            startAngle: 270,
+          ),
+        ),
+      ),
+      if (center != null)
+        Positioned(
+          bottom: chartRadius * 0.1,
+          left: 0,
+          right: 0,
+          child: center,
+        ),
+    ],
   );
 }

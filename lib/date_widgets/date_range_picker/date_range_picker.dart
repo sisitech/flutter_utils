@@ -3,6 +3,7 @@ import 'package:flutter_utils/date_widgets/date_dropdown/models.dart';
 import 'package:flutter_utils/date_widgets/date_range_picker/options_picker.dart';
 import 'package:flutter_utils/date_widgets/date_range_picker/range_picker.dart';
 import 'package:flutter_utils/date_widgets/utils.dart';
+import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/utils/functions.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,7 @@ class SistchDateRangePicker extends StatelessWidget {
   final String btnLabel;
   final bool enableMixpanel;
   final Function? onShowCustomPicker;
+  final List<int>? optionsToRemoveByValue;
 
   const SistchDateRangePicker({
     super.key,
@@ -32,6 +34,7 @@ class SistchDateRangePicker extends StatelessWidget {
     this.btnLabel = "Show Me The Data",
     this.enableMixpanel = false,
     this.onShowCustomPicker,
+    this.optionsToRemoveByValue,
   });
 
   @override
@@ -41,9 +44,9 @@ class SistchDateRangePicker extends StatelessWidget {
     DateFormat chosenFormat = dateFormat ?? DateFormat("dd/MM/yy");
 
     onOpenDatePickerBottomSheet() async {
-      SelectedDateRange? val = await getBottomSheet(
+      SelectedDateRange? val = await getBottomSheetScaffold(
         theme: theme,
-        heightFactor: 0.8,
+        heightFactor: 0.85,
         children: [
           DatePickerScaffold(
             chosenFormat: chosenFormat,
@@ -52,10 +55,13 @@ class SistchDateRangePicker extends StatelessWidget {
             btnLabel: btnLabel,
             enableMixpanel: enableMixpanel,
             onShowCustomPicker: onShowCustomPicker,
+            optionsToRemoveByValue: optionsToRemoveByValue,
           ),
         ],
       );
       if (val != null) {
+        dprint(val.startDate);
+        dprint(val.endDate);
         if (onTimePeriodChange != null) {
           onTimePeriodChange!(TimePeriod(
               startDate: () => val.startDate!, endDate: () => val.endDate!));
@@ -104,6 +110,7 @@ class DatePickerScaffold extends StatelessWidget {
   final String btnLabel;
   final bool enableMixpanel;
   final Function? onShowCustomPicker;
+  final List<int>? optionsToRemoveByValue;
   const DatePickerScaffold({
     super.key,
     required this.chosenFormat,
@@ -112,6 +119,7 @@ class DatePickerScaffold extends StatelessWidget {
     required this.btnLabel,
     required this.enableMixpanel,
     required this.onShowCustomPicker,
+    this.optionsToRemoveByValue,
   });
 
   @override
@@ -170,6 +178,7 @@ class DatePickerScaffold extends StatelessWidget {
                   onSwitchPickers: onSwitchPickers,
                   enableMixpanel: enableMixpanel,
                   onShowCustomPicker: onShowCustomPicker,
+                  optionsToRemoveByValue: optionsToRemoveByValue,
                 ),
         ),
         const SizedBox(height: 10),

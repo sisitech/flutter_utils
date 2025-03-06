@@ -12,12 +12,12 @@ class LocalAuthController extends GetxController {
 
   /* ------ secret passCode ------- */
 
-  Future<void> storePassCode(int passCode, ColorScheme colorScheme) async {
+  Future<void> storePassCode(int passCode, ThemeData theme) async {
     box.write("passCode", passCode);
     showSnackbar(
         iconPath: Icons.check_rounded,
         title: "New pass code saved!",
-        colorScheme: colorScheme,
+        theme: theme,
         subtitle: "Your data is now more secure");
     await Future.delayed(const Duration(seconds: 2));
   }
@@ -90,7 +90,7 @@ class LocalAuthController extends GetxController {
   ///
   final GlobalKey<FormState> codeFormKey = GlobalKey<FormState>();
 
-  Future<bool> onSavePassCode(ColorScheme colorScheme) async {
+  Future<bool> onSavePassCode(ThemeData theme) async {
     final isValid = codeFormKey.currentState!.validate();
     if (!isValid) {
       return false;
@@ -101,7 +101,7 @@ class LocalAuthController extends GetxController {
     confirmPass = int.parse(
         fieldFive.text + fieldSix.text + fieldSeven.text + fieldEight.text);
     if (password == confirmPass) {
-      await storePassCode(password!, colorScheme);
+      await storePassCode(password!, theme);
       return true;
     } else {
       showValidator.value = true;

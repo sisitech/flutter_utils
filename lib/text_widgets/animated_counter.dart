@@ -70,7 +70,7 @@ class _SistchAnimatedCounterState extends State<SistchAnimatedCounter>
                     fontWeight: FontWeight.bold,
                   ),
             ),
-            if (widget.postTexts != null) ...widget.preTexts!,
+            if (widget.postTexts != null) ...widget.postTexts!,
           ],
         ),
       ),
