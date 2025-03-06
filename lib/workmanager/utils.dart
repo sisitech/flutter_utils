@@ -107,8 +107,10 @@ void getCallbackDispathcer(
       }
       var res = await task.executeFunction(task, inputData);
       return Future.value(res);
-    } catch (e) {
-      return Future.value(false);
+    } catch (e, stackTrace) {
+      print(e);
+      print(stackTrace);
+      return Future.value(true);
     }
   });
 }
