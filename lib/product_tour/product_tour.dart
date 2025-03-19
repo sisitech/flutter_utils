@@ -8,11 +8,13 @@ class ProductTourOptions {
   final List<TourStepModel> steps;
   final String controllerTag;
   final VoidCallback? onFinish;
+  final bool canSkip;
 
   ProductTourOptions({
     required this.steps,
     required this.controllerTag,
     this.onFinish,
+    this.canSkip = true,
   });
 }
 
@@ -52,12 +54,10 @@ class SistchProductTour extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double overlayOffset = 0.28;
-
-    return Scaffold(
-      appBar: AppBar(automaticallyImplyLeading: false, toolbarHeight: 20.0),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
+    return Material(
+      child: Padding(
+        padding: EdgeInsets.only(
+            top: Get.height * 0.1, bottom: 10, left: 10, right: 10),
         child: Obx(
           () {
             double contentWidth = Get.width * 0.82;
@@ -66,7 +66,7 @@ class SistchProductTour extends StatelessWidget {
             Color bgColor = Theme.of(context)
                 .colorScheme
                 .primaryContainer; //.withOpacity(0.5);
-            var size = MediaQuery.of(context).size;
+
             return Stack(
               alignment: Alignment.topCenter,
               children: [
@@ -99,7 +99,10 @@ class SistchProductTour extends StatelessWidget {
                         isLastStep: controller.showFinish.value,
                         onFinish: options.onFinish ?? () => Get.back(),
                         onNext: controller.goToNext,
+                        onBack: controller.goToPrev,
                         allowNext: controller.allowNext.value,
+                        canSkip: options.canSkip,
+                        isFirstStep: controller.currentIdx == 0,
                         stepNoTxt:
                             "Step @step_no# of @total_steps#".interpolate({
                           "step_no": controller.currentIdx + 1,
@@ -124,7 +127,10 @@ class _TourOverlay extends StatelessWidget {
   final bool isLastStep;
   final VoidCallback onFinish;
   final VoidCallback? onNext;
+  final VoidCallback? onBack;
   final bool allowNext;
+  final bool canSkip;
+  final bool isFirstStep;
 
   const _TourOverlay({
     Key? key,
@@ -132,42 +138,25 @@ class _TourOverlay extends StatelessWidget {
     required this.isLastStep,
     required this.stepNoTxt,
     required this.onFinish,
+    required this.onBack,
     this.onNext,
     required this.allowNext,
+    required this.canSkip,
+    required this.isFirstStep,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final theme = Get.theme;
     final colorScheme = theme.colorScheme;
-    double contentPadding = Get.height * 0.24;
     double contentWidth = Get.width * 0.82;
-    double bgRadius = Get.height * 0.52;
-    Color bgColor = colorScheme.primaryContainer; //.withOpacity(0.5);
-    TextStyle stepStyle = const TextStyle(fontSize: 11);
-    var width = contentWidth;
-    var height = contentWidth;
+
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Positioned(
-        //   bottom: -width / 4,
-        //   height: height,
-        //   right: -width * 1.1,
-        //   width: width * 2.1,
-        //   child: Container(
-        //     width: width,
-        //     height: height * 2,
-        //     decoration: BoxDecoration(
-        //       shape: BoxShape.rectangle,
-        //       // color: bgColor,
-        //       borderRadius: BorderRadius.all(Radius.circular(height * 2)),
-        //     ),
-        //   ),
-        // ),
         Container(
           width: contentWidth,
-          padding: EdgeInsets.all(4),
+          padding: const EdgeInsets.all(4),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -186,29 +175,51 @@ class _TourOverlay extends StatelessWidget {
                   color: colorScheme.tertiary,
                 ),
               ),
-              const SizedBox(height: 7),
-              Text(
-                step.description,
-                style: stepStyle,
-                maxLines: 4,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                child: Text(
+                  step.description,
+                  style: theme.textTheme.bodySmall,
+                  maxLines: 4,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                ),
               ),
-              const Divider(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TextButton(onPressed: onFinish, child: const Text("Skip")),
-                  ElevatedButton.icon(
-                    onPressed: allowNext
-                        ? isLastStep
+              Divider(color: theme.colorScheme.onPrimaryContainer),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: ElevatedButton.icon(
+                        onPressed: canSkip
                             ? onFinish
-                            : onNext
-                        : null,
-                    label: Text(isLastStep ? "Finish" : "Next"),
-                    icon: const Icon(Icons.arrow_forward_rounded),
-                  ),
-                ],
+                            : isFirstStep
+                                ? () => Get.back()
+                                : onBack,
+                        label: Text(canSkip ? "Skip" : "Back"),
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: allowNext
+                          ? isLastStep
+                              ? onFinish
+                              : onNext
+                          : null,
+                      label: Text(isLastStep ? "Finish" : "Next"),
+                      icon: const Icon(Icons.arrow_forward_rounded),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            WidgetStatePropertyAll(theme.primaryColor),
+                        foregroundColor:
+                            WidgetStatePropertyAll(theme.colorScheme.onPrimary),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -251,6 +262,12 @@ class ProductTourController extends GetxController {
   void goToNext() {
     if (currentIdx < stepsLength - 1) {
       changeStep(currentIdx + 1);
+    }
+  }
+
+  void goToPrev() {
+    if (currentIdx != 0) {
+      changeStep(currentIdx - 1);
     }
   }
 }
