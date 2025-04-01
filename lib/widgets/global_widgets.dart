@@ -171,14 +171,15 @@ Future<dynamic> getBottomSheetScaffold({
             if (preTitle != null)
               Text(
                 preTitle,
-                style: theme.textTheme.bodySmall!.copyWith(
-                  color: theme.primaryColor,
-                ),
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: theme.primaryColor),
+                textAlign: TextAlign.center,
               ),
             if (title != null)
               Text(
                 title,
                 style: theme.textTheme.titleMedium,
+                textAlign: TextAlign.center,
               ),
             if (preTitle != null || title != null) const Divider(),
             ...children
