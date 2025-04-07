@@ -397,13 +397,16 @@ Widget buildGlassWidget({
   required Widget child,
   required ThemeData theme,
   Color? mainColor,
+  EdgeInsets? margin,
+  EdgeInsets? padding,
+  BorderRadius? borderRadius,
 }) {
   return Container(
-    margin: const EdgeInsets.all(16.0),
-    padding: const EdgeInsets.all(24.0),
+    margin: margin ?? const EdgeInsets.all(16.0),
+    padding: padding ?? const EdgeInsets.all(24.0),
     decoration: BoxDecoration(
       color: theme.colorScheme.surface,
-      borderRadius: BorderRadius.circular(16.0),
+      borderRadius: borderRadius ?? BorderRadius.circular(16.0),
       boxShadow: [
         BoxShadow(
           color: theme.shadowColor.withOpacity(0.05),
@@ -425,10 +428,13 @@ buildGradientWidget({
   required Widget child,
   List<Color>? gradientColors,
   Color? mainColor,
+  BorderRadius? borderRadius,
+  EdgeInsets? margin,
+  EdgeInsets? padding,
 }) {
   return Container(
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(12.0),
+      borderRadius: borderRadius ?? BorderRadius.circular(12.0),
       gradient: LinearGradient(
         colors: gradientColors ??
             [
@@ -446,6 +452,8 @@ buildGradientWidget({
         ),
       ],
     ),
+    margin: margin,
+    padding: padding,
     child: child,
   );
 }
@@ -454,6 +462,8 @@ buildCardWidget({
   required ThemeData theme,
   required Widget child,
   Color? mainColor,
+  EdgeInsets? margin,
+  EdgeInsets? padding,
 }) {
   return Container(
     decoration: BoxDecoration(
@@ -470,6 +480,8 @@ buildCardWidget({
         width: 1.5,
       ),
     ),
+    margin: margin,
+    padding: padding,
     child: child,
   );
 }
