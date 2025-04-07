@@ -138,7 +138,7 @@ Future<dynamic> getBottomSheetScaffold({
   required ThemeData theme,
   String? preTitle,
   String? title,
-  double heightFactor = 0.9,
+  double heightFactor = 0.8,
 }) async {
   return Get.bottomSheet(
     backgroundColor: theme.colorScheme.tertiary,
@@ -149,11 +149,13 @@ Future<dynamic> getBottomSheetScaffold({
       ),
     ),
     Container(
-      width: Get.width,
-      height: Get.height * heightFactor,
+      height: Get.size.height * heightFactor,
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         color: theme.canvasColor,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(20.0),
+        ),
       ),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(15),
@@ -350,5 +352,124 @@ Widget buildHalfArcPercentChart({
           child: center,
         ),
     ],
+  );
+}
+
+Widget buildScaleAnimateWidget({
+  required Widget child,
+  int durationInMs = 800,
+  Curve curve = Curves.easeOutBack,
+}) {
+  return TweenAnimationBuilder<double>(
+    tween: Tween<double>(begin: 0.95, end: 1.0),
+    duration: Duration(milliseconds: durationInMs),
+    curve: curve,
+    builder: (context, value, child) {
+      return Transform.scale(
+        scale: value,
+        child: child,
+      );
+    },
+    child: child,
+  );
+}
+
+Widget buildFadeAnimateWidget({
+  required Widget child,
+  int durationInMs = 800,
+  Curve curve = Curves.easeOut,
+}) {
+  return TweenAnimationBuilder<double>(
+    tween: Tween<double>(begin: 0, end: 1),
+    duration: Duration(milliseconds: durationInMs),
+    curve: Curves.easeOut,
+    builder: (context, value, child) {
+      return Opacity(
+        opacity: value,
+        child: child,
+      );
+    },
+    child: child,
+  );
+}
+
+Widget buildGlassWidget({
+  required Widget child,
+  required ThemeData theme,
+  Color? mainColor,
+}) {
+  return Container(
+    margin: const EdgeInsets.all(16.0),
+    padding: const EdgeInsets.all(24.0),
+    decoration: BoxDecoration(
+      color: theme.colorScheme.surface,
+      borderRadius: BorderRadius.circular(16.0),
+      boxShadow: [
+        BoxShadow(
+          color: theme.shadowColor.withOpacity(0.05),
+          blurRadius: 8,
+          offset: const Offset(0, 2),
+        ),
+      ],
+      border: Border.all(
+        color: (mainColor ?? theme.colorScheme.primary).withOpacity(0.1),
+        width: 1,
+      ),
+    ),
+    child: child,
+  );
+}
+
+buildGradientWidget({
+  required ThemeData theme,
+  required Widget child,
+  List<Color>? gradientColors,
+  Color? mainColor,
+}) {
+  return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(12.0),
+      gradient: LinearGradient(
+        colors: gradientColors ??
+            [
+              theme.colorScheme.primary,
+              theme.colorScheme.secondary,
+            ],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+      boxShadow: [
+        BoxShadow(
+          color: (mainColor ?? theme.colorScheme.primary).withOpacity(0.3),
+          blurRadius: 8,
+          offset: const Offset(0, 4),
+        ),
+      ],
+    ),
+    child: child,
+  );
+}
+
+buildCardWidget({
+  required ThemeData theme,
+  required Widget child,
+  Color? mainColor,
+}) {
+  return Container(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(16.0),
+      boxShadow: [
+        BoxShadow(
+          color: theme.shadowColor.withOpacity(0.05),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        ),
+      ],
+      border: Border.all(
+        color: (mainColor ?? theme.colorScheme.primary).withOpacity(0.2),
+        width: 1.5,
+      ),
+    ),
+    child: child,
   );
 }

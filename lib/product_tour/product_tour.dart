@@ -49,7 +49,6 @@ class SistchProductTour extends StatelessWidget {
     controller = Get.put(
       ProductTourController(options: options),
       tag: options.controllerTag,
-      permanent: false,
     );
   }
 
