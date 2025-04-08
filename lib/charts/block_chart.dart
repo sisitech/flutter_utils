@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
 import 'package:flutter_utils/utils/functions.dart';
+import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
@@ -110,55 +111,63 @@ class SistchDuoBlockChart extends StatelessWidget {
 
     return Column(
       children: [
-        SizedBox(
-          width: width,
-          child: LinearPercentIndicator(
-            key: blockKey,
-            percent: 1.0,
-            animation: true,
-            animationDuration: 1000,
+        buildFadeAnimateWidget(
+          child: buildGlassWidget(
+            theme: Get.theme,
+            width: width,
+            margin: EdgeInsets.zero,
             padding: EdgeInsets.zero,
-            barRadius: const Radius.circular(5),
-            lineHeight: height * (isBiggerValue ? 0.9 : 0.7),
-            progressColor: hideSmaller ? Colors.transparent : bgColor,
-            backgroundColor: Get.theme.colorScheme.surfaceContainerHighest,
-            center: SizedBox(
-              width: (width ?? Get.width * 0.65) * 0.7,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: valuePrefix,
-                          style: TextStyle(
-                            color: textColor,
-                            fontSize: 10,
+            borderRadius: BorderRadius.circular(5),
+            mainColor: textColor.withOpacity(0.5),
+            child: LinearPercentIndicator(
+              key: blockKey,
+              percent: 1.0,
+              animation: true,
+              animationDuration: 1000,
+              padding: EdgeInsets.zero,
+              barRadius: const Radius.circular(5),
+              lineHeight: height * (isBiggerValue ? 0.9 : 0.7),
+              progressColor:
+                  (hideSmaller ? Colors.transparent : bgColor).withOpacity(0.6),
+              backgroundColor: Get.theme.colorScheme.surfaceContainerHighest,
+              center: SizedBox(
+                width: (width ?? Get.width * 0.65) * 0.7,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: valuePrefix,
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 10,
+                            ),
                           ),
-                        ),
-                        TextSpan(
-                          text: value,
-                          style: TextStyle(
-                            color: textColor,
-                            fontSize: isBiggerValue ? 14 : 12,
-                            fontWeight: FontWeight.bold,
+                          TextSpan(
+                            text: value,
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: isBiggerValue ? 14 : 12,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    label,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: textColor,
-                      fontSize: isBiggerValue ? 12 : 10,
-                      fontWeight: FontWeight.bold,
+                    const SizedBox(height: 2),
+                    Text(
+                      label,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: textColor,
+                        fontSize: isBiggerValue ? 12 : 10,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -168,11 +177,15 @@ class SistchDuoBlockChart extends StatelessWidget {
           height: Get.size.height * 0.03,
           color: Get.theme.colorScheme.onSurface,
         ),
-        Text(
-          percentage,
-          style: TextStyle(
-            fontSize: height * 0.35,
-            fontWeight: FontWeight.w500,
+        buildCardWidget(
+          theme: Get.theme,
+          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          child: Text(
+            percentage,
+            style: TextStyle(
+              fontSize: height * 0.35,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
       ],

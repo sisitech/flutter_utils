@@ -400,8 +400,12 @@ Widget buildGlassWidget({
   EdgeInsets? margin,
   EdgeInsets? padding,
   BorderRadius? borderRadius,
+  double? width,
+  double? height,
 }) {
   return Container(
+    width: width,
+    height: height,
     margin: margin ?? const EdgeInsets.all(16.0),
     padding: padding ?? const EdgeInsets.all(24.0),
     decoration: BoxDecoration(
@@ -415,7 +419,7 @@ Widget buildGlassWidget({
         ),
       ],
       border: Border.all(
-        color: (mainColor ?? theme.colorScheme.primary).withOpacity(0.1),
+        color: mainColor ?? theme.colorScheme.primary.withOpacity(0.15),
         width: 1,
       ),
     ),
@@ -431,8 +435,12 @@ buildGradientWidget({
   BorderRadius? borderRadius,
   EdgeInsets? margin,
   EdgeInsets? padding,
+  double? width,
+  double? height,
 }) {
   return Container(
+    width: width,
+    height: height,
     decoration: BoxDecoration(
       borderRadius: borderRadius ?? BorderRadius.circular(12.0),
       gradient: LinearGradient(
@@ -464,8 +472,12 @@ buildCardWidget({
   Color? mainColor,
   EdgeInsets? margin,
   EdgeInsets? padding,
+  double? width,
+  double? height,
 }) {
   return Container(
+    width: width,
+    height: height,
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(16.0),
       boxShadow: [
@@ -483,5 +495,60 @@ buildCardWidget({
     margin: margin,
     padding: padding,
     child: child,
+  );
+}
+
+buildGlassContainer({
+  EdgeInsets? margin,
+  EdgeInsets? padding,
+  double? width,
+  double? height,
+  Color? mainColor,
+  required Widget child,
+}) {
+  return Container(
+    width: width,
+    height: height,
+    margin: margin,
+    padding: padding ?? const EdgeInsets.all(6),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      color: (mainColor ?? Colors.white).withOpacity(0.2),
+      border: Border.all(
+        color: (mainColor ?? Colors.white).withOpacity(0.1),
+        width: 1,
+      ),
+    ),
+    child: child,
+  );
+}
+
+buildGlassIcon({
+  required IconData iconPath,
+  double? size,
+  Color? color,
+  EdgeInsets? margin,
+  EdgeInsets? padding,
+  double? width,
+  double? height,
+}) {
+  return Container(
+    width: width,
+    height: height,
+    margin: margin,
+    padding: padding ?? const EdgeInsets.all(6),
+    decoration: BoxDecoration(
+      color: (color ?? Colors.white).withOpacity(0.2),
+      shape: BoxShape.circle,
+      border: Border.all(
+        color: (color ?? Colors.white).withOpacity(0.1),
+        width: 1.5,
+      ),
+    ),
+    child: Icon(
+      iconPath,
+      size: size,
+      color: color,
+    ),
   );
 }

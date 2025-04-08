@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
 import 'package:flutter_utils/utils/functions.dart';
+import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 
 class SistchCardGridView extends StatelessWidget {
@@ -57,7 +58,7 @@ class SistchCardGridView extends StatelessWidget {
           ),
         GridView.count(
           crossAxisCount: crossCount,
-          childAspectRatio: cardAspectRatio ?? (crossCount == 1 ? 3 : 1.4),
+          childAspectRatio: cardAspectRatio ?? (crossCount == 1 ? 3 : 1.3),
           mainAxisSpacing: spacing,
           crossAxisSpacing: spacing,
           shrinkWrap: true,
@@ -87,95 +88,99 @@ class SistchCardGridView extends StatelessWidget {
     IconData? iconPath,
   }) {
     final textTheme = Get.theme.textTheme;
-    final colorScheme = Get.theme.colorScheme;
     return GestureDetector(
       onTap: () {
         if (onCardTap != null) {
           onCardTap!(label);
         }
       },
-      child: Container(
-        color: bgColor,
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: iconPath != null
-                  ? MainAxisAlignment.spaceBetween
-                  : MainAxisAlignment.end,
-              children: [
-                if (iconPath != null)
-                  Icon(
-                    iconPath,
-                    size: 20,
-                    color: fgColor,
-                  ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: valuePrefix,
-                            style:
-                                textTheme.labelSmall!.copyWith(color: fgColor),
-                          ),
-                          TextSpan(
-                            text: getThousandsNumber(value),
-                            style: textTheme.titleLarge!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: fgColor,
-                            ),
-                          ),
-                        ],
+      child: buildScaleAnimateWidget(
+        child: buildGradientWidget(
+          theme: Get.theme,
+          borderRadius: BorderRadius.circular(0),
+          gradientColors: [
+            bgColor.withOpacity(0.9),
+            bgColor.withOpacity(0.6),
+          ],
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: iconPath != null
+                    ? MainAxisAlignment.spaceBetween
+                    : MainAxisAlignment.end,
+                children: [
+                  if (iconPath != null)
+                    buildGlassContainer(
+                      mainColor: fgColor,
+                      child: Icon(
+                        iconPath,
+                        size: 20,
+                        color: fgColor,
                       ),
                     ),
-                    if (percentage != null)
-                      Text(
-                        '${percentage.toStringAsFixed(1)}%',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.primaryContainer,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: valuePrefix,
+                              style: textTheme.labelSmall!
+                                  .copyWith(color: fgColor),
+                            ),
+                            TextSpan(
+                              text: getThousandsNumber(value),
+                              style: textTheme.titleLarge!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: fgColor,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                      if (percentage != null)
+                        Text(
+                          '${percentage.toStringAsFixed(1)}%',
+                          style: textTheme.labelSmall!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: fgColor,
+                          ),
+                        ),
+                    ],
+                  )
+                ],
+              ),
+              const Spacer(),
+              buildGlassContainer(
+                mainColor: fgColor,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        label,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: textTheme.labelSmall!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: fgColor,
+                        ),
+                      ),
+                    ),
+                    if (onCardTap != null)
+                      buildGlassIcon(
+                        margin: const EdgeInsets.only(left: 10),
+                        iconPath: Icons.keyboard_arrow_right_rounded,
+                        color: fgColor,
+                        size: 16,
+                      ),
                   ],
-                )
-              ],
-            ),
-            const Spacer(),
-            Row(
-              mainAxisAlignment: onCardTap != null
-                  ? MainAxisAlignment.spaceBetween
-                  : MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: Get.width * (crossCount == 1 ? 0.6 : 0.3),
-                  child: Text(
-                    label,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: textTheme.titleSmall!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: fgColor,
-                    ),
-                  ),
                 ),
-                if (onCardTap != null)
-                  CircleAvatar(
-                    backgroundColor: colorScheme.primaryContainer,
-                    radius: 12,
-                    child: Icon(
-                      actionIconPath,
-                      color: colorScheme.onPrimaryContainer,
-                      size: 12,
-                    ),
-                  ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
