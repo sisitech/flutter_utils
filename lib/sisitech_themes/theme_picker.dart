@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_utils/internalization/extensions.dart';
 import 'package:flutter_utils/sisitech_themes/format_theme_name.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
+import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 
 class SistchThemePicker extends StatelessWidget {
@@ -21,6 +22,7 @@ class SistchThemePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     Widget content = SingleChildScrollView(
       padding: const EdgeInsets.only(top: 45, right: 25, bottom: 25, left: 25),
       child: Center(
@@ -30,8 +32,10 @@ class SistchThemePicker extends StatelessWidget {
               'Choose A Theme',
               style: Get.textTheme.headlineSmall,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30),
+            buildCardWidget(
+              theme: theme,
+              padding: const EdgeInsets.all(15),
+              margin: const EdgeInsets.symmetric(vertical: 30),
               child: Wrap(
                 spacing: 20.0,
                 runSpacing: 20.0,
@@ -40,26 +44,21 @@ class SistchThemePicker extends StatelessWidget {
                     .toList(),
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              width: 300,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (onThemeChange != null) {
-                    onThemeChange!();
-                  }
-                  // Handle navigation based on flags
-                  if (!isPartOfAPage && !isOnBoarding) {
-                    Get.back();
-                    Get.back();
-                  }
-                },
-                child: const Text(
-                  'Apply Theme',
-                ),
-              ),
+            buildGradientButton(
+              theme: theme,
+              width: double.infinity,
+              onPressed: () {
+                if (onThemeChange != null) {
+                  onThemeChange!();
+                }
+                // Handle navigation based on flags
+                if (!isPartOfAPage && !isOnBoarding) {
+                  Get.back();
+                  Get.back();
+                }
+              },
+              label: 'Apply Theme',
+              iconPath: Icons.color_lens,
             )
           ],
         ),
@@ -106,7 +105,7 @@ class SistchThemePicker extends StatelessWidget {
               style: TextStyle(
                 color: themeController.currentScheme.value == m3Theme.flexScheme
                     ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.onBackground,
+                    : Theme.of(context).colorScheme.onSurface,
                 fontWeight:
                     themeController.currentScheme.value == m3Theme.flexScheme
                         ? FontWeight.bold
@@ -123,14 +122,17 @@ class SistchThemePicker extends StatelessWidget {
     double mainBoxSize = 85.0;
 
     ColorScheme m3Colors = m3Theme.colorScheme;
-    return Container(
+    return buildGlassWidget(
+      theme: Get.theme,
+      borderRadius: BorderRadius.circular(20),
       width: mainBoxSize,
       height: mainBoxSize,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+      margin: EdgeInsets.zero,
+      padding: EdgeInsets.zero,
       child: Center(
         child: Stack(
           children: <Widget>[
-            palletteBox(m3Colors),
+            paletteBox(m3Colors),
             Obx(
               () => themeController.currentScheme.value == m3Theme.flexScheme
                   ? Container(
@@ -154,7 +156,7 @@ class SistchThemePicker extends StatelessWidget {
     );
   }
 
-  Widget palletteBox(ColorScheme m3Colors) {
+  Widget paletteBox(ColorScheme m3Colors) {
     double colorBoxSize = 38.0;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

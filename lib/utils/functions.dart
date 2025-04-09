@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -66,7 +67,8 @@ void showSnackbar({
             children: [
               Row(
                 children: [
-                  Icon(iconPath, color: colorScheme.primary),
+                  buildGlassIcon(
+                      iconPath: iconPath, color: colorScheme.primary),
                   const SizedBox(width: 5),
                   Text(
                     title,
@@ -92,14 +94,12 @@ void showSnackbar({
           Text(subtitle),
           const SizedBox(height: 5),
           if (onAction != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 5),
-              child: ElevatedButton(
-                onPressed: () {
-                  onAction();
-                },
-                child: Text(btnTxt ?? "--"),
-              ),
+            buildGradientButton(
+              theme: theme,
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(vertical: 5),
+              onPressed: () => onAction(),
+              label: btnTxt ?? "--",
             ),
         ],
       ),

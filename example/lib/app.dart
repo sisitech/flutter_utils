@@ -228,7 +228,7 @@ class MyApp extends StatelessWidget {
               onTap: () {
                 Get.to(() => SistchThemePicker());
               },
-              leadingIcon: Icons.settings,
+              leadingIcon: Icons.color_lens,
               trailingIcon: Icons.arrow_forward,
             ),
             SisitechDrawerItem(

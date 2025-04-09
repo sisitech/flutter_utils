@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/activity_streak/activity_streak.dart';
 import 'package:flutter_utils/date_widgets/date_dropdown/constants.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_utils/text_widgets/carousel.dart';
 import 'package:flutter_utils/text_widgets/animated_counter.dart';
 import 'package:flutter_utils/layout_widgets/custom_tab_bar.dart';
 import 'package:flutter_utils/layout_widgets/collapsible_scaffold.dart';
+import 'package:flutter_utils/utils/functions.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:flutter_utils/product_tour/product_tour.dart';
 import 'package:get/get.dart';
@@ -206,6 +209,33 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                     // },
                     optionsToRemoveByValue: const [10, 11, 12, 13],
                   ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+
+              ///
+              getHeaderWidget(title: "Snackbar"),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    showSnackbar(
+                      title: "Ola!",
+                      subtitle: " I'm a snackbar",
+                      theme: theme,
+                      iconPath: Icons.waving_hand_rounded,
+                      onAction: () {
+                        log("closing snackbar");
+                        Get.back();
+                      },
+                      btnTxt: "Close",
+                      // showDuration: 5,
+                      // isDismissible: false,
+                      // snackPosition: SnackPosition.TOP,
+                    );
+                  },
+                  label: const Text("Show SnackBar"),
+                  icon: const Icon(Icons.chat_bubble),
                 ),
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),

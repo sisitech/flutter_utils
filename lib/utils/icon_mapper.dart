@@ -4,9 +4,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 const Map<String, IconData> defaultIconMapper = {
   // ---------
   'Untagged': Icons.category,
-  'Household': Icons.house,
+  'Finance': Icons.account_balance,
+  'Household': Icons.home,
+  'Food & Dining': Icons.restaurant,
+  'Transport': Icons.directions_car,
+  'Food': Icons.fastfood,
+  'Business': Icons.business,
+  'Entertainment': Icons.movie,
+  'Tech': Icons.devices,
+  'Shopping': Icons.shopping_bag,
+  'Personal': Icons.person,
   // ---------
-  'Shopping': Icons.shopping_basket,
   'Wifi': Icons.wifi,
   'Rent': Icons.home,
   'Housekeeping': FontAwesomeIcons.houseChimneyCrack,
@@ -14,7 +22,6 @@ const Map<String, IconData> defaultIconMapper = {
   'Construction': Icons.plumbing,
   'Water': Icons.water_drop,
   // ---------
-  'Entertainment': Icons.tv,
   // ---------
   'Cable': Icons.tv,
   'Streaming': Icons.tablet,
@@ -43,7 +50,6 @@ const Map<String, IconData> defaultIconMapper = {
   'Attire': FontAwesomeIcons.shirt,
   'Books': FontAwesomeIcons.book,
   // ---------
-  'Transport': FontAwesomeIcons.car,
   // ---------
   'Fuel': Icons.gas_meter,
   'Total Energies': Icons.gas_meter,
@@ -61,11 +67,10 @@ const Map<String, IconData> defaultIconMapper = {
   'Kenya Airways': Icons.airplanemode_active,
   'Jambojet': Icons.airplanemode_active,
   'Fly540': Icons.airplanemode_active,
-  'Delivery': Icons.delivery_dining,
+  'Delivery': Icons.local_shipping,
   'Vehicle': Icons.car_repair,
   // ---------
   'Food & Drinks': FontAwesomeIcons.bowlFood,
-  'Food & Dining': FontAwesomeIcons.bowlFood,
   // ---------
   'Restaurant': Icons.restaurant_rounded,
   'Meal': Icons.restaurant_menu,
@@ -73,7 +78,6 @@ const Map<String, IconData> defaultIconMapper = {
   'Drinks': FontAwesomeIcons.wineBottle,
   'Fast Food': Icons.fastfood,
   // ---------
-  'Personal': Icons.person,
   // ---------
   'Self-care': FontAwesomeIcons.spa,
   'Goodwill': Icons.handshake,
@@ -87,7 +91,6 @@ const Map<String, IconData> defaultIconMapper = {
   'Bae': FontAwesomeIcons.heart,
   'Acquaintance': Icons.person,
   // ---------
-  'Finance': Icons.payments,
   // ---------
   'Loan': FontAwesomeIcons.creditCard,
   'Tala': FontAwesomeIcons.creditCard,
@@ -114,7 +117,6 @@ const Map<String, IconData> defaultIconMapper = {
   'Official': Icons.work,
   // ---------
   'IT': Icons.computer,
-  'Business': Icons.business,
   'Government': Icons.flag,
   'Legal': FontAwesomeIcons.scaleUnbalanced,
   // ---------
@@ -232,7 +234,6 @@ const Map<String, IconData> defaultIconMapper = {
   'Gift': Icons.card_giftcard,
   'Rennovation': FontAwesomeIcons.house,
   'Materials': FontAwesomeIcons.hammer,
-  'Tech': FontAwesomeIcons.microchip,
   'Work': FontAwesomeIcons.briefcase,
   'Salary': FontAwesomeIcons.moneyBillWave,
   'Allowance': FontAwesomeIcons.moneyBill1Wave,
