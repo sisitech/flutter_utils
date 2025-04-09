@@ -552,3 +552,58 @@ buildGlassIcon({
     ),
   );
 }
+
+PreferredSizeWidget buildAppBar({
+  required ThemeData theme,
+  required String title,
+  String? subtitle,
+  List<Widget>? actions,
+}) {
+  return AppBar(
+    title: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(title, style: theme.textTheme.titleMedium),
+        if (subtitle != null) Text(subtitle, style: theme.textTheme.labelSmall),
+      ],
+    ),
+    actions: actions,
+  );
+}
+
+buildGradientButton({
+  required ThemeData theme,
+  required Function() onPressed,
+  required String label,
+  IconData? iconPath,
+  List<Color>? gradientColors,
+  Color? mainColor,
+  BorderRadius? borderRadius,
+  EdgeInsets? margin,
+  EdgeInsets? padding,
+  double? width,
+  Color? btnTxtColor,
+}) {
+  return buildGradientWidget(
+    theme: theme,
+    gradientColors: gradientColors,
+    mainColor: mainColor,
+    borderRadius: borderRadius,
+    width: width,
+    margin: margin ?? const EdgeInsets.all(5),
+    padding: padding ??
+        (width == null ? const EdgeInsets.symmetric(horizontal: 15) : null),
+    child: ElevatedButton.icon(
+      onPressed: onPressed,
+      label: Text(label),
+      icon: iconPath != null ? Icon(iconPath) : null,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        foregroundColor: btnTxtColor ?? theme.colorScheme.onPrimary,
+        shadowColor: Colors.transparent,
+        padding: const EdgeInsets.symmetric(vertical: 12.0),
+      ),
+    ),
+  );
+}

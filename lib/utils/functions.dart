@@ -208,6 +208,15 @@ double getListOfDoublesMin(List<double>? values) {
   return values.reduce((a, b) => a < b ? a : b);
 }
 
+double getRoundedOffDouble(double val) {
+  int roundOffFactor = (val < 100)
+      ? 10
+      : val < 1000
+          ? 100
+          : 1000;
+  return (val / roundOffFactor).roundToDouble() * roundOffFactor;
+}
+
 List<List<dynamic>> shuffleTwoLists(
     List<dynamic> listOne, List<dynamic> listTwo) {
   if (listOne.length != listTwo.length) {
