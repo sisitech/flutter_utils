@@ -29,7 +29,7 @@ const Map<String, IconData> defaultIconMapper = {
   'Music': Icons.headphones,
   'Social': Icons.group,
   'Sports': Icons.sports_soccer,
-  'Vacation': Icons.hotel,
+  'Vacation': Icons.beach_access,
   // ---------
   // 'Shopping': Icons.shopping_basket,
   // ---------
