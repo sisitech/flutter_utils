@@ -557,15 +557,27 @@ PreferredSizeWidget buildAppBar({
   required ThemeData theme,
   required String title,
   String? subtitle,
+  IconData? iconPath,
   List<Widget>? actions,
 }) {
   return AppBar(
-    title: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    title: Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(title, style: theme.textTheme.titleMedium),
-        if (subtitle != null) Text(subtitle, style: theme.textTheme.labelSmall),
+        if (iconPath != null)
+          Padding(
+            padding: const EdgeInsets.only(right: 5),
+            child: Icon(iconPath),
+          ),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title, style: theme.textTheme.titleMedium),
+            if (subtitle != null)
+              Text(subtitle, style: theme.textTheme.labelSmall),
+          ],
+        ),
       ],
     ),
     actions: actions,
