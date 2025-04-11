@@ -396,7 +396,9 @@ Widget buildFadeAnimateWidget({
 Widget buildGlassWidget({
   required Widget child,
   required ThemeData theme,
+  BoxShadow? shadow,
   Color? mainColor,
+  Color? bgColor,
   EdgeInsets? margin,
   EdgeInsets? padding,
   BorderRadius? borderRadius,
@@ -409,14 +411,15 @@ Widget buildGlassWidget({
     margin: margin ?? const EdgeInsets.all(16.0),
     padding: padding ?? const EdgeInsets.all(24.0),
     decoration: BoxDecoration(
-      color: theme.colorScheme.surface,
+      color: bgColor ?? theme.colorScheme.surface,
       borderRadius: borderRadius ?? BorderRadius.circular(16.0),
       boxShadow: [
-        BoxShadow(
-          color: theme.shadowColor.withOpacity(0.05),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
+        shadow ??
+            BoxShadow(
+              color: theme.shadowColor.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
       ],
       border: Border.all(
         color: mainColor ?? theme.colorScheme.primary.withOpacity(0.15),
@@ -431,6 +434,7 @@ buildGradientWidget({
   required ThemeData theme,
   required Widget child,
   List<Color>? gradientColors,
+  BoxShadow? shadow,
   Color? mainColor,
   BorderRadius? borderRadius,
   EdgeInsets? margin,
@@ -453,11 +457,12 @@ buildGradientWidget({
         end: Alignment.bottomRight,
       ),
       boxShadow: [
-        BoxShadow(
-          color: (mainColor ?? theme.colorScheme.primary).withOpacity(0.3),
-          blurRadius: 8,
-          offset: const Offset(0, 4),
-        ),
+        shadow ??
+            BoxShadow(
+              color: (mainColor ?? theme.colorScheme.primary).withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
       ],
     ),
     margin: margin,
@@ -469,6 +474,7 @@ buildGradientWidget({
 buildCardWidget({
   required ThemeData theme,
   required Widget child,
+  BoxShadow? shadow,
   Color? mainColor,
   EdgeInsets? margin,
   EdgeInsets? padding,
@@ -481,11 +487,12 @@ buildCardWidget({
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(16.0),
       boxShadow: [
-        BoxShadow(
-          color: theme.shadowColor.withOpacity(0.05),
-          blurRadius: 10,
-          offset: const Offset(0, 4),
-        ),
+        shadow ??
+            BoxShadow(
+              color: theme.shadowColor.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
       ],
       border: Border.all(
         color: (mainColor ?? theme.colorScheme.primary).withOpacity(0.2),
