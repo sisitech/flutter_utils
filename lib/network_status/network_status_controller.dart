@@ -14,6 +14,7 @@ class NetworkStatusController extends SuperController {
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
   var isDeviceConnected = false.obs;
+  var isCheckingConnection = false.obs;
 
   var connectionSource = "".obs;
 
@@ -44,8 +45,18 @@ class NetworkStatusController extends SuperController {
     return customInstance;
   }
 
-  Future<bool> checkIntenetConnection() {
-    return internetCheckerInstance.hasConnection;
+  Future<bool> checkIntenetConnection() async {
+    isCheckingConnection.value = true;
+    var result = await internetCheckerInstance.hasConnection;
+    isCheckingConnection.value = false;
+    return result;
+  }
+
+  checkUpdateNetworkStatus() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    connectionSource.value = getConnectivityName(connectivityResult);
+    isDeviceConnected.value = await checkIntenetConnection();
+    dprint("Connection1 ${connectivityResult}");
   }
 
   setupCheckInterntet() async {
