@@ -91,7 +91,7 @@ class MixPanelController extends GetxController {
 
     _mixpanel?.identify(profile["username"]);
     _mixpanel?.getPeople().set('username', profile["username"]);
-
+    _mixpanel?.getPeople().set('email', profile["email"]);
     _mixpanel?.getPeople().set('last_login', DateTime.now().toWeekDayDate);
     // dprint("Mixpanel Set Profile");
     dprint(profile);
