@@ -59,6 +59,7 @@ void showSnackbar({
 
   Get.showSnackbar(
     GetSnackBar(
+      backgroundColor: theme.colorScheme.surface,
       titleText: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -68,7 +69,9 @@ void showSnackbar({
               Row(
                 children: [
                   buildGlassIcon(
-                      iconPath: iconPath, color: colorScheme.primary),
+                    iconPath: iconPath,
+                    color: colorScheme.primary,
+                  ),
                   const SizedBox(width: 5),
                   Text(
                     title,

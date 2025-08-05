@@ -118,7 +118,7 @@ class SistchDuoBlockChart extends StatelessWidget {
             margin: EdgeInsets.zero,
             padding: EdgeInsets.zero,
             borderRadius: BorderRadius.circular(5),
-            mainColor: textColor.withOpacity(0.5),
+            mainColor: textColor.withValues(alpha: 0.5),
             child: LinearPercentIndicator(
               key: blockKey,
               percent: 1.0,
@@ -127,8 +127,8 @@ class SistchDuoBlockChart extends StatelessWidget {
               padding: EdgeInsets.zero,
               barRadius: const Radius.circular(5),
               lineHeight: height * (isBiggerValue ? 0.9 : 0.7),
-              progressColor:
-                  (hideSmaller ? Colors.transparent : bgColor).withOpacity(0.6),
+              progressColor: (hideSmaller ? Colors.transparent : bgColor)
+                  .withValues(alpha: 0.6),
               backgroundColor: Get.theme.colorScheme.surfaceContainerHighest,
               center: SizedBox(
                 width: (width ?? Get.width * 0.65) * 0.7,

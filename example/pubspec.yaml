@@ -20,7 +20,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.5.0 <3.6.6"
+  sdk: ">=3.0.3 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -85,6 +85,12 @@ dependency_overrides:
     git:
       url: git@github.com:sisitech/flutter_auth.git
       ref: "03579b9"
+      
+  workmanager:
+    git:
+      url: https://github.com/fluttercommunity/flutter_workmanager.git
+      path: workmanager
+      ref: 0705ce24cb6deb58940b9b98f11d343c70975fc6
 
 dev_dependencies:
   flutter_test:

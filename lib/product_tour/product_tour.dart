@@ -65,7 +65,7 @@ class SistchProductTour extends StatelessWidget {
             var height = contentWidth;
             Color bgColor = Theme.of(context)
                 .colorScheme
-                .primaryContainer; //.withOpacity(0.5);
+                .primaryContainer; //.withValues(alpha: 0.5);
 
             return Stack(
               alignment: Alignment.topCenter,

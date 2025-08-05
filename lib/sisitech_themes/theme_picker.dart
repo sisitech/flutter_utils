@@ -137,7 +137,8 @@ class SistchThemePicker extends StatelessWidget {
               () => themeController.currentScheme.value == m3Theme.flexScheme
                   ? Container(
                       decoration: BoxDecoration(
-                        color: m3Colors.secondaryContainer.withOpacity(0.6),
+                        color:
+                            m3Colors.secondaryContainer.withValues(alpha: 0.6),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Center(
