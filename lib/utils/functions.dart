@@ -49,10 +49,12 @@ void showSnackbar({
   required ThemeData theme,
   Function? onAction,
   IconData iconPath = Icons.info,
+  IconData? actionIconPath,
   String? btnTxt,
   SnackPosition snackPosition = SnackPosition.BOTTOM,
   bool isDismissible = true,
   int showDuration = 4,
+  Widget? extraWidget,
 }) {
   final textTheme = theme.textTheme;
   final colorScheme = theme.colorScheme;
@@ -94,7 +96,11 @@ void showSnackbar({
       messageText: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(subtitle),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall,
+          ),
           const SizedBox(height: 5),
           if (onAction != null)
             buildGradientButton(
@@ -103,7 +109,9 @@ void showSnackbar({
               margin: const EdgeInsets.symmetric(vertical: 5),
               onPressed: () => onAction(),
               label: btnTxt ?? "--",
+              iconPath: actionIconPath,
             ),
+          if (extraWidget != null) extraWidget,
         ],
       ),
       snackPosition: snackPosition,
@@ -118,7 +126,7 @@ var formatter = NumberFormat('###,###');
 formatNumber(dynamic value) {
   if (value == null) return "0";
   var formattedValue = formatter.format(value);
-  return "$formattedValue";
+  return formattedValue;
 }
 
 Widget loadingWidget(String loadingTxt) {

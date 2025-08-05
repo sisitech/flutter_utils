@@ -221,16 +221,19 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                   onPressed: () {
                     showSnackbar(
                       title: "Ola!",
-                      subtitle: " I'm a snackbar",
+                      subtitle:
+                          "We’ll send a quick “slow down, legend” when you’re about to max out.",
                       theme: theme,
                       iconPath: Icons.waving_hand_rounded,
                       onAction: () {
                         log("closing snackbar");
                         Get.back();
                       },
+                      actionIconPath: Icons.close,
                       btnTxt: "Close",
                       // showDuration: 5,
-                      // isDismissible: false,
+                      isDismissible: false,
+                      extraWidget: const Text("ssuupp"),
                       // snackPosition: SnackPosition.TOP,
                     );
                   },
