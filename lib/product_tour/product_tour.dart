@@ -75,7 +75,7 @@ class SistchProductTour extends StatelessWidget {
                 Stack(
                   children: [
                     Positioned(
-                      bottom: -width / 4,
+                      bottom: -width / 3.4,
                       height: height,
                       right: -width * 1.1,
                       width: width * 2.1,
@@ -103,8 +103,7 @@ class SistchProductTour extends StatelessWidget {
                         allowNext: controller.allowNext.value,
                         canSkip: options.canSkip,
                         isFirstStep: controller.currentIdx == 0,
-                        stepNoTxt:
-                            "Step @step_no# of @total_steps#".interpolate({
+                        stepNoTxt: "@step_no# of @total_steps#".interpolate({
                           "step_no": controller.currentIdx + 1,
                           "total_steps": controller.stepsLength,
                         }),
@@ -192,17 +191,15 @@ class _TourOverlay extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: ElevatedButton.icon(
-                        onPressed: canSkip
-                            ? onFinish
-                            : isFirstStep
-                                ? () => Get.back()
-                                : onBack,
-                        label: Text(canSkip ? "Skip" : "Back"),
-                      ),
-                    ),
+                    isFirstStep
+                        ? const SizedBox.shrink()
+                        : Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: ElevatedButton.icon(
+                              onPressed: canSkip ? onFinish : onBack,
+                              label: Text(canSkip ? "Skip" : "Back"),
+                            ),
+                          ),
                     ElevatedButton.icon(
                       onPressed: allowNext
                           ? isLastStep
@@ -212,8 +209,11 @@ class _TourOverlay extends StatelessWidget {
                       label: Text(isLastStep ? "Finish" : "Next"),
                       icon: const Icon(Icons.arrow_forward_rounded),
                       style: ButtonStyle(
-                        backgroundColor:
-                            WidgetStatePropertyAll(theme.primaryColor),
+                        backgroundColor: WidgetStatePropertyAll(
+                          allowNext
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.outline,
+                        ),
                         foregroundColor:
                             WidgetStatePropertyAll(theme.colorScheme.onPrimary),
                       ),
