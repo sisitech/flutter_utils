@@ -253,7 +253,7 @@ Widget getSummaryCard({
               children: [
                 CircleAvatar(
                   radius: 12,
-                  backgroundColor: mainColor.withOpacity(0.3),
+                  backgroundColor: mainColor.withValues(alpha: 0.3),
                   child: Icon(iconPath, color: mainColor, size: 18),
                 ),
                 const SizedBox(width: 5),
@@ -304,7 +304,7 @@ Widget getSummaryCard({
                 ),
                 CircleAvatar(
                   radius: 14,
-                  backgroundColor: mainColor.withOpacity(0.3),
+                  backgroundColor: mainColor.withValues(alpha: 0.3),
                   child: Icon(
                     Icons.call_made,
                     size: 16,
@@ -416,13 +416,13 @@ Widget buildGlassWidget({
       boxShadow: [
         shadow ??
             BoxShadow(
-              color: theme.shadowColor.withOpacity(0.05),
+              color: theme.shadowColor.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
       ],
       border: Border.all(
-        color: mainColor ?? theme.colorScheme.primary.withOpacity(0.15),
+        color: mainColor ?? theme.colorScheme.primary.withValues(alpha: 0.15),
         width: 1,
       ),
     ),
@@ -459,7 +459,8 @@ buildGradientWidget({
       boxShadow: [
         shadow ??
             BoxShadow(
-              color: (mainColor ?? theme.colorScheme.primary).withOpacity(0.3),
+              color: (mainColor ?? theme.colorScheme.primary)
+                  .withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -489,13 +490,13 @@ buildCardWidget({
       boxShadow: [
         shadow ??
             BoxShadow(
-              color: theme.shadowColor.withOpacity(0.05),
+              color: theme.shadowColor.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
       ],
       border: Border.all(
-        color: (mainColor ?? theme.colorScheme.primary).withOpacity(0.2),
+        color: (mainColor ?? theme.colorScheme.primary).withValues(alpha: 0.2),
         width: 1.5,
       ),
     ),
@@ -520,9 +521,9 @@ buildGlassContainer({
     padding: padding ?? const EdgeInsets.all(6),
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(10),
-      color: (mainColor ?? Colors.white).withOpacity(0.2),
+      color: (mainColor ?? Colors.white).withValues(alpha: 0.2),
       border: Border.all(
-        color: (mainColor ?? Colors.white).withOpacity(0.1),
+        color: (mainColor ?? Colors.white).withValues(alpha: 0.1),
         width: 1,
       ),
     ),
@@ -545,10 +546,10 @@ buildGlassIcon({
     margin: margin,
     padding: padding ?? const EdgeInsets.all(6),
     decoration: BoxDecoration(
-      color: (color ?? Colors.white).withOpacity(0.2),
+      color: (color ?? Colors.white).withValues(alpha: 0.2),
       shape: BoxShape.circle,
       border: Border.all(
-        color: (color ?? Colors.white).withOpacity(0.1),
+        color: (color ?? Colors.white).withValues(alpha: 0.1),
         width: 1.5,
       ),
     ),

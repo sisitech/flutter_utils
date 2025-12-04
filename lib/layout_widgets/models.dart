@@ -17,6 +17,7 @@ class TabViewOptions {
   TextStyle? unselectedLabelStyle;
   double indicatorWeight;
   Color? dividerColor;
+  int? initialIdx;
 
   TabViewOptions({
     required this.tabs,
@@ -33,6 +34,7 @@ class TabViewOptions {
     this.unselectedLabelStyle,
     this.enableMixpanel = false,
     this.sectionsGapSize = 16.0,
+    this.initialIdx,
   });
 }
 
@@ -90,13 +92,16 @@ class TabViewController extends GetxController {
   RxBool isCurrentExpanded = false.obs;
 
   TabViewController(this.options, this.tabType) {
+    if (options.initialIdx != null) {
+      currentTabIdx.value = options.initialIdx!;
+      isCurrentExpanded.value = true;
+    }
+
     viewedTabs = RxList<bool>(List.generate(options.tabs.length, (i) {
       return options.showUnViewedIndicator
-          ? tabType == TabViewTypes.collapsible
-              ? false
-              : i == 0
-                  ? true
-                  : false
+          ? i == currentTabIdx.value
+              ? true
+              : false
           : true;
     }));
   }

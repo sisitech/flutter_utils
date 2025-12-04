@@ -220,11 +220,11 @@ class _SistchLineChartState extends State<SistchLineChart> {
                   tooltipBgColor: Theme.of(context)
                       .colorScheme
                       .surfaceVariant
-                      .withOpacity(0.4),
+                      .withValues(alpha: 0.4),
                   // getTooltipColor: (data) => Theme.of(context)
                   //     .colorScheme
                   //     .surfaceVariant
-                  //     .withOpacity(0.4),
+                  //     .withValues(alpha: 0.4),
                   getTooltipItems: (touchedSpots) {
                     return touchedSpots
                         .map((e) => LineTooltipItem(

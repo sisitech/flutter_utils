@@ -99,8 +99,8 @@ class SistchCardGridView extends StatelessWidget {
           theme: Get.theme,
           borderRadius: BorderRadius.circular(0),
           gradientColors: [
-            bgColor.withOpacity(0.9),
-            bgColor.withOpacity(0.6),
+            bgColor.withValues(alpha: 0.9),
+            bgColor.withValues(alpha: 0.6),
           ],
           padding: const EdgeInsets.all(10),
           child: Column(

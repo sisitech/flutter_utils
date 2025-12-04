@@ -10,6 +10,7 @@ import 'package:flutter_utils/date_widgets/utils.dart';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/layout_widgets/models.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
+import 'package:flutter_utils/text_widgets/growing_widget.dart';
 import 'package:flutter_utils/text_widgets/text_carousel.dart';
 import 'package:flutter_utils/text_widgets/carousel.dart';
 import 'package:flutter_utils/text_widgets/animated_counter.dart';
@@ -181,6 +182,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                           options: ProductTourOptions(
                             steps: tourSteps,
                             controllerTag: tourTag,
+                            // canSkip: false,
                             onFinish: () {
                               debugPrint("done with tour");
                               Get.back();
@@ -192,6 +194,17 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                 ),
               ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
+
+              ///
+              getHeaderWidget(title: "Growing Widget"),
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: SistchGrowingWidget(
+                  bgColor: Colors.transparent,
+                  icon: Icons.celebration,
+                  // customWidget: SistchAnimatedCounter(valueToAnimate: 129870),
+                ),
+              ),
 
               ///
               getHeaderWidget(title: "Range Picker"),
@@ -221,16 +234,19 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                   onPressed: () {
                     showSnackbar(
                       title: "Ola!",
-                      subtitle: " I'm a snackbar",
+                      subtitle:
+                          "We’ll send a quick “slow down, legend” when you’re about to max out.",
                       theme: theme,
                       iconPath: Icons.waving_hand_rounded,
                       onAction: () {
                         log("closing snackbar");
                         Get.back();
                       },
+                      actionIconPath: Icons.close,
                       btnTxt: "Close",
                       // showDuration: 5,
-                      // isDismissible: false,
+                      isDismissible: false,
+                      extraWidget: const Text("ssuupp"),
                       // snackPosition: SnackPosition.TOP,
                     );
                   },
@@ -247,6 +263,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20),
                 child: SistchTextCarousel(
+                  // customWidgets: sampleWidgets,
                   texts: [
                     "Your highest earnings were in 2024-09-12, with a total of Kes.57,400. A notable 6.5 increase from the beginning of This Month",
                     "2024-09-12 was your biggest spending day, with Kes.51,820 spent! Your biggest spend surged by 31.9 from the start of This Month",
@@ -322,6 +339,7 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
                   controllerTag: "collapsibleExpCtrl",
                   // enableMixpanel: true,
                   // showUnViewedIndicator: false,
+                  // initialIdx: 1,
                   tabs: sampleWidgets.asMap().entries.map((e) {
                     int index = e.key;
                     return TabViewItem(
@@ -338,10 +356,11 @@ class _UtilWidgetsScreenState extends State<UtilWidgetsScreen> {
               getHeaderWidget(title: "Mini Cards"),
               const SizedBox(height: 10),
               SistchCarousel(
-                  // autoPlay: false,
-                  // waitTime: 5,
-                  // isScrollable: false,
-                  children: sampleWidgets),
+                // autoPlay: false,
+                // waitTime: 5,
+                // isScrollable: false,
+                children: sampleWidgets,
+              ),
               SizedBox(height: MediaQuery.sizeOf(context).height * 0.05),
 
               ////

@@ -5,13 +5,15 @@ import 'package:get/get.dart';
 // View
 //
 class SistchTextCarousel extends StatefulWidget {
-  final List<String> texts;
+  final List<String>? texts;
+  final List<Widget>? customWidgets;
   final int? viewDuration;
   final Color? bgColor;
   final Color? textColor;
   final IconData? icon;
   final double? height;
   final TextStyle? textStyle;
+  final bool hideIcon;
 
   ///[SistchTextCarousel] renders an animated text carousel widget
   ///Required Fields:
@@ -20,13 +22,15 @@ class SistchTextCarousel extends StatefulWidget {
   ///- int viewDuration: time to display each text, default 5s.
   const SistchTextCarousel({
     super.key,
-    required this.texts,
+    this.texts,
+    this.customWidgets,
     this.viewDuration,
     this.bgColor,
     this.textColor,
     this.icon,
     this.height,
     this.textStyle,
+    this.hideIcon = false,
   });
 
   @override
@@ -45,7 +49,7 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
   }
 
   void startCarousel() {
-    if (widget.texts.isNotEmpty) {
+    if ((widget.texts ?? widget.customWidgets)!.isNotEmpty) {
       ever(currentIndex, (_) {
         progressValue.value = 0.0;
       });
@@ -53,7 +57,8 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
       timer =
           Timer.periodic(Duration(seconds: widget.viewDuration ?? 5), (timer) {
         progressValue.value = 0.0;
-        currentIndex.value = (currentIndex.value + 1) % widget.texts.length;
+        currentIndex.value = (currentIndex.value + 1) %
+            (widget.texts ?? widget.customWidgets)!.length;
       });
     }
   }
@@ -71,7 +76,7 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return widget.texts.isNotEmpty
+    return (widget.texts ?? widget.customWidgets)!.isNotEmpty
         ? Container(
             decoration: BoxDecoration(
               color: widget.bgColor ?? theme.colorScheme.primaryContainer,
@@ -83,17 +88,21 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  widget.icon ?? Icons.lightbulb_circle_rounded,
-                  color:
-                      widget.textColor ?? theme.colorScheme.onPrimaryContainer,
-                  size: 32,
-                ),
-                const SizedBox(width: 10),
+                if (!widget.hideIcon)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Icon(
+                      widget.icon ?? Icons.lightbulb_circle_rounded,
+                      color: widget.textColor ??
+                          theme.colorScheme.onPrimaryContainer,
+                      size: 32,
+                    ),
+                  ),
                 Expanded(
                   child: Obx(
                     () => FadeInDownText(
-                      currentText: widget.texts[currentIndex.value],
+                      currentText: widget.texts?[currentIndex.value],
+                      currentWidget: widget.customWidgets?[currentIndex.value],
                       textColor: widget.textColor ??
                           theme.colorScheme.onPrimaryContainer,
                       textStyle: widget.textStyle,
@@ -108,13 +117,15 @@ class _SistchTextCarouselState extends State<SistchTextCarousel> {
 }
 
 class FadeInDownText extends StatefulWidget {
-  final String currentText;
-  final Color textColor;
+  final String? currentText;
+  final Widget? currentWidget;
+  final Color? textColor;
   final TextStyle? textStyle;
 
   const FadeInDownText({
-    required this.currentText,
-    required this.textColor,
+    this.currentText,
+    this.currentWidget,
+    this.textColor,
     this.textStyle,
     super.key,
   });
@@ -190,16 +201,17 @@ class _FadeInDownTextState extends State<FadeInDownText>
           ),
         );
       },
-      child: Text(
-        widget.currentText,
-        maxLines: 5,
-        overflow: TextOverflow.ellipsis,
-        style: widget.textStyle ??
-            theme.textTheme.bodySmall!.copyWith(
-              fontWeight: FontWeight.w700,
-              color: widget.textColor,
-            ),
-      ),
+      child: widget.currentWidget ??
+          Text(
+            widget.currentText!,
+            maxLines: 5,
+            overflow: TextOverflow.ellipsis,
+            style: widget.textStyle ??
+                theme.textTheme.bodySmall!.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: widget.textColor,
+                ),
+          ),
     );
   }
 }
