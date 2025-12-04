@@ -114,6 +114,7 @@ class MixPanelController extends GetxController {
     try {
       _mixpanel = await initMixpanel(mixpanelToken);
     } catch (e) {
+      dprint("Initi failed.");
       dprint(e);
     }
     setLoggedInUser();

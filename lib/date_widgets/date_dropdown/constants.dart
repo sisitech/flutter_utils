@@ -205,10 +205,10 @@ var defaultDateRanges = [
     type: DateRangeTypes.yearRange,
     value: 13,
     startDate: () {
-      return DateTime(2015, 1, 1);
+      return DateTime(2007, 1, 1);
     },
     endDate: () {
-      return today;
+      return tomorrow;
     },
   ),
   TimePeriod(

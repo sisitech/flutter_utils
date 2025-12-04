@@ -20,7 +20,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.5.0 <3.6.6"
+  sdk: ">=3.5.0 <=3.7.2"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -72,6 +72,7 @@ dependency_overrides:
   # win32: ^5.5.4
   fl_chart: ^0.63.0
   intl: ^0.19.0
+  mixpanel_flutter: ^2.4.4
 
   flutter_utils:
     path: ../
@@ -85,6 +86,11 @@ dependency_overrides:
     git:
       url: git@github.com:sisitech/flutter_auth.git
       ref: "03579b9"
+  workmanager:
+    git:
+      url: https://github.com/fluttercommunity/flutter_workmanager.git
+      path: workmanager
+      ref: 0705ce24cb6deb58940b9b98f11d343c70975fc6
 
 dev_dependencies:
   flutter_test:

@@ -4,7 +4,7 @@ version: 0.0.2
 homepage: sisitech.com
 
 environment:
-  sdk: ">=3.5.0 <3.6.6"
+  sdk: ">=3.5.0 <=3.7.2"
 
 dependencies:
   get: ^4.6.5
@@ -23,7 +23,7 @@ dependencies:
   # package_info_plus: ^5.0.1
   package_info_plus: ^8.0.0
   flutter_local_notifications: ^18.0.1
-  mixpanel_flutter: ^2.2.0
+  mixpanel_flutter: ^2.4.4
   nfc_manager: ^3.4.0
   flex_color_scheme: ^7.3.1
   reactive_forms: ^17.0.1
