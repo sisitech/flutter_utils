@@ -4,11 +4,7 @@ version: 0.0.2
 homepage: sisitech.com
 
 environment:
-<<<<<<< HEAD
   sdk: ">=3.5.0 <=3.7.2"
-=======
-  sdk: ">=3.0.3 <4.0.0"
->>>>>>> 1379a6028772464695509531b070b74ab28212c7
 
 dependencies:
   get: ^4.6.5
