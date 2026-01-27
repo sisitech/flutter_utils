@@ -8,6 +8,31 @@ import 'package:get_storage/get_storage.dart';
 
 const backgroundConter = "BACKGROUND_COUNTER";
 
+// Helper to show notification in background isolate
+Future<void> showTaskNotification(int count) async {
+  final plugin = FlutterLocalNotificationsPlugin();
+
+  const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+  const iosSettings = DarwinInitializationSettings();
+  final initSettings = InitializationSettings(android: androidSettings, iOS: iosSettings);
+
+  await plugin.initialize(initSettings);
+
+  await plugin.show(
+    0,
+    'Periodic Task Executed',
+    'Count: $count',
+    const NotificationDetails(
+      android: AndroidNotificationDetails(
+        'periodic_task_channel',
+        'Periodic Tasks',
+        importance: Importance.high,
+      ),
+      iOS: DarwinNotificationDetails(),
+    ),
+  );
+}
+
 List<BackgroundWorkManagerTask> tasks = [
   BackgroundWorkManagerTask(
     uniqueName: 'main_task',
@@ -47,8 +72,12 @@ List<BackgroundWorkManagerTask> tasks = [
       print(
           "Native called Bkaco background COUNT: $count TASK: $task"); //simpleTask will be emitted here.
       await storage.write(backgroundConter, count + 1);
+
+      // Show notification with updated count
+      await showTaskNotification(count + 1);
+
       print(DateTime.now());
-      await Future.delayed(Duration(seconds: 7));
+      await Future.delayed(Duration(minutes: 1));
       return Future.value(true);
     },
   ),
@@ -93,8 +122,11 @@ Future<void> initalizeNotifications() async {
 
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
+  const DarwinInitializationSettings initializationSettingsIOS =
+      DarwinInitializationSettings();
   final InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
+    iOS: initializationSettingsIOS,
   );
 
   await flutterLocalNotificationsPlugin.initialize(

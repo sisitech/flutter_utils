@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/extensions/date_extensions.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -272,12 +273,12 @@ class BackgroundTaskItemWidget extends StatelessWidget {
     final parts = <String>[];
 
     if (status.lastExecutedAt != null) {
-      parts.add('Last: ${_formatDateTime(status.lastExecutedAt!)}');
+      parts.add('Last: ${status.lastExecutedAt!.toRelativeTime}');
     }
 
     if (status.type == BackgroundWorkManagerTaskType.periodic &&
         status.nextScheduledRun != null) {
-      parts.add('Next: ${_formatDateTime(status.nextScheduledRun!)}');
+      parts.add('Next: ${status.nextScheduledRun!.toRelativeTime}');
     }
 
     if (parts.isEmpty) {
@@ -352,7 +353,7 @@ class BackgroundTaskItemWidget extends StatelessWidget {
       details.add(_buildDetailItem(
         context,
         'Registered',
-        _formatDateTime(status.registeredAt!),
+        status.registeredAt!.toRelativeTime,
       ));
     }
 
@@ -446,38 +447,6 @@ class BackgroundTaskItemWidget extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  String _formatDateTime(DateTime dateTime) {
-    final now = DateTime.now();
-    final diff = now.difference(dateTime);
-
-    // Future date (nextScheduledRun)
-    if (diff.isNegative) {
-      final futureDiff = dateTime.difference(now);
-      if (futureDiff.inMinutes < 1) {
-        return 'Soon';
-      } else if (futureDiff.inHours < 1) {
-        return 'in ${futureDiff.inMinutes}m';
-      } else if (futureDiff.inDays < 1) {
-        return 'in ${futureDiff.inHours}h';
-      } else {
-        return DateFormat('MMM d, HH:mm').format(dateTime);
-      }
-    }
-
-    // Past date (lastExecutedAt)
-    if (diff.inMinutes < 1) {
-      return 'Just now';
-    } else if (diff.inHours < 1) {
-      return '${diff.inMinutes}m ago';
-    } else if (diff.inDays < 1) {
-      return '${diff.inHours}h ago';
-    } else if (diff.inDays < 7) {
-      return '${diff.inDays}d ago';
-    } else {
-      return DateFormat('MMM d, HH:mm').format(dateTime);
-    }
   }
 
   String _formatDuration(Duration duration) {
