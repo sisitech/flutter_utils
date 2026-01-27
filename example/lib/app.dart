@@ -38,6 +38,7 @@ import 'package:flutter_utils/screen_lock/controller.dart';
 import 'package:flutter_utils/screen_lock/widgets/screenlock.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:flutter_utils/sisitech_themes/theme_picker.dart';
+import 'package:flutter_utils/sisitech_workmanager/task_manager_widget.dart';
 import 'package:flutter_utils/sistch_progress_indicator/sistch_progress_controller.dart';
 import 'package:flutter_utils/sistch_progress_indicator/sistch_progress_indicator.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
@@ -274,7 +275,14 @@ class MyApp extends StatelessWidget {
               leadingIcon: Icons.lock,
               trailingIcon: Icons.arrow_forward,
             ),
-            // Add more items as needed
+            SisitechDrawerItem(
+              title: 'Work Manager',
+              onTap: () {
+                Get.to(() => const BackgroundTaskManagerPage());
+              },
+              leadingIcon: Icons.work_history,
+              trailingIcon: Icons.arrow_forward,
+            ),
           ],
         ),
         appBar: AppBar(

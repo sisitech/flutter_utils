@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_utils/workmanager/controller.dart';
-import 'package:flutter_utils/workmanager/utils.dart';
+import 'package:flutter_utils/sisitech_workmanager/controller.dart';
+import 'package:flutter_utils/sisitech_workmanager/task_manager_widget.dart';
+import 'package:flutter_utils/sisitech_workmanager/utils.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:workmanager/workmanager.dart';
 
 const backgroundConter = "BACKGROUND_COUNTER";
 
@@ -15,7 +15,7 @@ List<BackgroundWorkManagerTask> tasks = [
     type: BackgroundWorkManagerTaskType.oneOff,
     frequency: Duration(minutes: 15),
     initialDelay: Duration(seconds: 2),
-    removeAndCleanupTasks: true,
+    removeAndCleanupTasks: false,
     executeFunction: (
       BackgroundWorkManagerTask task,
       Map<String, dynamic>? inputData,
@@ -80,7 +80,9 @@ void callbackDispatcher() async {
   return getCallbackDispathcer(
     tasks,
     commonTasksInitalizations: () async {
-      await GetStorage.init();
+      // SharedPreferences doesn't need explicit init
+      await GetStorage
+          .init(); // Only if your task uses GetStorage for other data
     },
   );
 }
@@ -102,15 +104,19 @@ Future<void> initalizeNotifications() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init(); // For task's own data storage (backgroundConter)
   await initalizeNotifications();
-  var workManSerializer = Get.put(BackgroundWorkManagerController(
+
+  var workManController = Get.put(BackgroundWorkManagerController(
     callbackDispatcher: callbackDispatcher,
     tasks: tasks,
     isInDebugMode: true,
   ));
 
-  await workManSerializer.cancelAll();
-  await workManSerializer.registerTasks();
+  await workManController.initializeBackgroundWorkManager();
+  await workManController.registerTasks();
+  await workManController.loadTaskStatuses();
+
   runApp(const MyAppBackground());
 }
 
@@ -138,19 +144,64 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverSafeArea(
-            sliver: SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  Text("Hello Adae"),
-                ],
+    final controller = Get.find<BackgroundWorkManagerController>();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => controller.refreshStatuses(),
+            tooltip: 'Refresh task statuses',
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          // Counter display
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Background Counter:',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                    Obx(() {
+                      final storage = GetStorage();
+                      int count = storage.read<int>(backgroundConter) ?? 0;
+                      return Text(
+                        '$count',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      );
+                    }),
+                  ],
+                ),
               ),
             ),
-          )
+          ),
+          // Task Manager Widget
+          const Expanded(
+            child: BackgroundTaskManagerWidget(),
+          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await controller.cancelAll();
+          await controller.registerTasks();
+          Get.snackbar('Tasks', 'Re-registered all tasks');
+        },
+        tooltip: 'Re-register all tasks',
+        child: const Icon(Icons.restart_alt),
       ),
     );
   }

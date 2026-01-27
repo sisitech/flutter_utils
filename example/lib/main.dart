@@ -13,14 +13,14 @@ import 'package:flutter_utils/network_status/network_status_controller.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
 import 'package:flutter_utils/screen_lock/controller.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
-import 'package:flutter_utils/workmanager/controller.dart';
+import 'package:flutter_utils/sisitech_workmanager/controller.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'app_controller.dart';
 import 'internalization/translate.dart';
 import 'lockscreen.dart';
-import 'workManager/main.dart';
+import 'sisitech_workManager/main.dart';
 
 const default_local_name = "Kiswahili";
 // import 'package:flutter_utils/';
@@ -46,7 +46,7 @@ initializeBackgroundWork() async {
     isInDebugMode: true,
   ));
 
-  // await workManSerializer.cancelAll();
+  await workManSerializer.initializeBackgroundWorkManager();
   await workManSerializer.registerTasks();
 }
 
@@ -136,7 +136,7 @@ void main() async {
 
   Get.put(LocalAuthController());
   Get.put(AppStateController());
-  initializeBackgroundWork();
+  await initializeBackgroundWork();
   runApp(MyApp());
 }
 
