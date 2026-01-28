@@ -46,7 +46,7 @@ class SistchDateRangePicker extends StatelessWidget {
     onOpenDatePickerBottomSheet() async {
       SelectedDateRange? val = await getBottomSheetScaffold(
         theme: theme,
-        heightFactor: 0.85,
+        heightFactor: 0.92,
         children: [
           DatePickerScaffold(
             chosenFormat: chosenFormat,
@@ -129,9 +129,15 @@ class DatePickerScaffold extends StatelessWidget {
     Rx<SelectedDateRange?> selectedDateRange = Rx(null);
     RxBool showCustomPicker = RxBool(false);
 
-    onRangeSelected(SelectedDateRange? val) => selectedDateRange.value = val;
-
     onDatePickerClose() => Get.back(result: selectedDateRange.value);
+
+    onRangeSelected(SelectedDateRange? val) {
+      selectedDateRange.value = val;
+      // Auto-close and return when selecting from preset options (non-custom)
+      if (!showCustomPicker.value && val != null) {
+        onDatePickerClose();
+      }
+    }
 
     onSwitchPickers() {
       if (enableMixpanel) {
@@ -182,25 +188,34 @@ class DatePickerScaffold extends StatelessWidget {
                 ),
         ),
         const SizedBox(height: 10),
-        Padding(
-          padding: const EdgeInsets.all(5),
-          child: ElevatedButton(
-            onPressed: onDatePickerClose,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: colorScheme.primary,
-              foregroundColor: colorScheme.onPrimary,
-            ),
-            child: Center(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.filter_alt),
-                  const SizedBox(width: 5),
-                  Text(btnLabel),
-                ],
+        Obx(
+          () {
+            final val = selectedDateRange.value;
+            final isCustom = showCustomPicker.value;
+            final canApply =
+                isCustom && val?.startDate != null && val?.endDate != null;
+            if (!canApply) return const SizedBox.shrink();
+            return Padding(
+              padding: const EdgeInsets.all(5),
+              child: ElevatedButton(
+                onPressed: onDatePickerClose,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
+                ),
+                child: Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.filter_alt),
+                      const SizedBox(width: 5),
+                      Text(btnLabel),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ],
     );
