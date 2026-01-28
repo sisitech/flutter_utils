@@ -71,33 +71,36 @@ class SistchDateRangePicker extends StatelessWidget {
       }
     }
 
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(
-            color: theme.colorScheme.outline,
-            width: 1.0,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: getSelectedDatesWidget(
-              theme: theme,
-              dateFormat: chosenFormat,
-              dateRange: selectedRange,
+    return GestureDetector(
+      onTap: onOpenDatePickerBottomSheet,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: theme.colorScheme.outline,
+              width: 1.0,
             ),
           ),
-          const SizedBox(width: 10),
-          getIconBtn(
-            bgColor: colorScheme.primary,
-            fgColor: colorScheme.onPrimary,
-            action: onOpenDatePickerBottomSheet,
-            iconPath: Icons.calendar_month,
-          ),
-        ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: getSelectedDatesWidget(
+                theme: theme,
+                dateFormat: chosenFormat,
+                dateRange: selectedRange,
+              ),
+            ),
+            const SizedBox(width: 10),
+            getIconBtn(
+              bgColor: colorScheme.primary,
+              fgColor: colorScheme.onPrimary,
+              action: onOpenDatePickerBottomSheet,
+              iconPath: Icons.calendar_month,
+            ),
+          ],
+        ),
       ),
     );
   }
