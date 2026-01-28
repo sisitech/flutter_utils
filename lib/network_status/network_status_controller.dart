@@ -19,30 +19,85 @@ class NetworkStatusController extends SuperController {
   var connectionSource = "".obs;
 
   int checkTimeoutSeconds;
-  int checkIntervalSeconds;
+  int connectedCheckIntervalSeconds;
+  int disconnectedCheckIntervalSeconds;
+  String? checkUrl;
+  int disconnectionThreshold;
+  int _disconnectionCount = 0;
+  int _currentCheckIntervalSeconds;
+
   NetworkStatusController({
-    this.checkIntervalSeconds = 6,
     this.checkTimeoutSeconds = 6,
-  });
+    this.connectedCheckIntervalSeconds = 6,
+    this.disconnectedCheckIntervalSeconds = 2,
+    this.checkUrl,
+    this.disconnectionThreshold = 2,
+  }) : _currentCheckIntervalSeconds = 6;
   late InternetConnectionChecker internetCheckerInstance;
   late StreamSubscription<InternetConnectionStatus> listener;
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
+    _currentCheckIntervalSeconds = connectedCheckIntervalSeconds;
     internetCheckerInstance = createCustomInternetChecker();
     setupCheckInterntet();
   }
 
-  createCustomInternetChecker() {
-    final InternetConnectionChecker customInstance =
-        InternetConnectionChecker.createInstance(
-      checkTimeout: const Duration(seconds: 6),
-      checkInterval: const Duration(seconds: 6),
-    );
+  InternetConnectionChecker createCustomInternetChecker({int? intervalSeconds}) {
+    final int checkInterval = intervalSeconds ?? _currentCheckIntervalSeconds;
 
-    return customInstance;
+    if (checkUrl != null) {
+      final uri = Uri.parse(checkUrl!);
+      return InternetConnectionChecker.createInstance(
+        checkTimeout: Duration(seconds: checkTimeoutSeconds),
+        checkInterval: Duration(seconds: checkInterval),
+        addresses: [AddressCheckOption(uri: uri)],
+      );
+    }
+
+    return InternetConnectionChecker.createInstance(
+      checkTimeout: Duration(seconds: checkTimeoutSeconds),
+      checkInterval: Duration(seconds: checkInterval),
+    );
+  }
+
+  void _updateCheckInterval(int seconds) {
+    if (_currentCheckIntervalSeconds == seconds) return;
+    _currentCheckIntervalSeconds = seconds;
+    listener.cancel();
+    internetCheckerInstance = createCustomInternetChecker(intervalSeconds: seconds);
+    _setupStatusListener();
+  }
+
+  void _setupStatusListener() {
+    listener = internetCheckerInstance.onStatusChange.listen(
+      (InternetConnectionStatus status) {
+        switch (status) {
+          case InternetConnectionStatus.connected:
+            dprint('Data connection is available.');
+            _disconnectionCount = 0;
+            isDeviceConnected.value = true;
+            _updateCheckInterval(connectedCheckIntervalSeconds);
+            break;
+          case InternetConnectionStatus.slow:
+            dprint('Slow connection detected.');
+            _disconnectionCount = 0;
+            isDeviceConnected.value = true;
+            _updateCheckInterval(connectedCheckIntervalSeconds);
+            break;
+          case InternetConnectionStatus.disconnected:
+            _disconnectionCount++;
+            dprint('Disconnection count: $_disconnectionCount / $disconnectionThreshold');
+            _updateCheckInterval(disconnectedCheckIntervalSeconds);
+            if (_disconnectionCount >= disconnectionThreshold) {
+              isDeviceConnected.value = false;
+              dprint('You are disconnected from the internet.');
+            }
+            break;
+        }
+      },
+    );
   }
 
   Future<bool> checkIntenetConnection() async {
@@ -67,20 +122,8 @@ class NetworkStatusController extends SuperController {
       connectionSource.value = getConnectivityName(result);
     });
 
-    listener = internetCheckerInstance.onStatusChange.listen(
-      (InternetConnectionStatus status) {
-        switch (status) {
-          case InternetConnectionStatus.connected:
-            dprint('Data connection is available.');
-            isDeviceConnected.value = true;
-            break;
-          case InternetConnectionStatus.disconnected:
-            isDeviceConnected.value = false;
-            dprint('You are disconnected from the internet.');
-            break;
-        }
-      },
-    );
+    _setupStatusListener();
+
     final connectivityResult = await Connectivity().checkConnectivity();
     connectionSource.value = getConnectivityName(connectivityResult);
     isDeviceConnected.value = await checkIntenetConnection();

@@ -51,7 +51,7 @@ initializeBackgroundWork() async {
 }
 
 void main() async {
-  Get.put<APIConfig>(APIConfig(
+  APIConfig config = Get.put<APIConfig>(APIConfig(
       apiEndpoint: "https://somapi.request.africa",
       version: "api/v1",
       clientId: "lrPkKtmh14glEbCaeMdLL4yLO1oFkac1yTq2ctdm",
@@ -77,7 +77,7 @@ void main() async {
           disableInDebug: false,
         )),
   );
-  Get.put(NetworkStatusController());
+  Get.put(NetworkStatusController(checkUrl: config.apiEndpoint));
   var controller = Get.put(
     ScreenLockController(options: screenLockOptions),
   );
