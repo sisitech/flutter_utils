@@ -1,6 +1,6 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:nfc_manager/ndef_record.dart';
+import 'package:nfc_manager_ndef/nfc_manager_ndef.dart';
 
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/internalization/extensions.dart';
@@ -21,14 +21,13 @@ class NFCController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     checkNfcEnabled();
   }
 
   checkNfcEnabled() async {
-    isAvailable.value = await NfcManager.instance.isAvailable();
-    // dprint(await NfcManager.instance.isAvailable());
+    final availability = await NfcManager.instance.checkAvailability();
+    isAvailable.value = availability == NfcAvailability.enabled;
   }
 
   @override
@@ -47,6 +46,7 @@ class NFCController extends GetxController {
     scannedTags.value = [];
     isScanning.value = true;
     NfcManager.instance.startSession(
+      pollingOptions: {NfcPollingOption.iso14443, NfcPollingOption.iso15693},
       onDiscovered: (NfcTag tag) async {
         if (onNfcTagDiscovered != null) {
           var parsedTag = await NfcTagInfo.fromTag(tag);
@@ -60,18 +60,14 @@ class NFCController extends GetxController {
   }
 
   Future<void> defaultOnNfcTagDiscovered(NfcTag tag) async {
-    if (scannedTags.value
-        .where((element) => element.nfcTag.handle == tag.handle)
+    var parsedTag = await NfcTagInfo.fromTag(tag);
+    if (scannedTags
+        .where((t) => t.serial_number == parsedTag.serial_number)
         .isEmpty) {
-      var parsedTag = await NfcTagInfo.fromTag(tag);
-      if (scannedTags
-          .where((tag) => tag.serial_number == parsedTag.serial_number)
-          .isEmpty) {
-        if (options.infiniteScan) {
-          scannedTags.add(parsedTag);
-        } else {
-          scannedTags.value = [parsedTag];
-        }
+      if (options.infiniteScan) {
+        scannedTags.add(parsedTag);
+      } else {
+        scannedTags.value = [parsedTag];
       }
     }
     dprint((await tag.ndefRecordInfos()).map((e) => e.subtitle));
@@ -85,10 +81,8 @@ class NFCController extends GetxController {
     isScanning.value = true;
     scannerStatus.value = "NFC writer started. Waiting for card...".ctr;
     NfcManager.instance.startSession(
+      pollingOptions: {NfcPollingOption.iso14443, NfcPollingOption.iso15693},
       onDiscovered: (NfcTag tag) async {
-        // if (!options.infiniteScan) {
-        //   stopReader();
-        // }
         scannerStatus.value = "NFC found.".ctr;
         var parsedTag = await NfcTagInfo.fromTag(tag);
         if (parsedTag.serial_number == "") {
@@ -102,11 +96,10 @@ class NFCController extends GetxController {
           return;
         } else {
           scannerStatus.value = "Writing in progress.".ctr;
-          String inputString = "michameiu";
 
           if (parsedTag.ndef != null) {
-            NdefMessage message = NdefMessage(options.records);
-            await parsedTag.ndef?.write(message);
+            NdefMessage ndefMessage = NdefMessage(records: options.records);
+            await parsedTag.ndef?.write(message: ndefMessage);
           }
           scannerStatus.value = "Writing Done. Please scan another card.".ctr;
 

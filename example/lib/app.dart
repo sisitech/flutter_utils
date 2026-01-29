@@ -49,7 +49,7 @@ import 'package:flutter_utils/extensions/date_extensions.dart';
 import 'package:flutter_utils/switch/switch.dart';
 import 'package:flutter_utils/sisitech_card/sisitech_card.dart';
 import 'package:flutter_utils/nfc/nfc.dart';
-import 'package:nfc_manager/nfc_manager.dart';
+import 'package:nfc_manager/ndef_record.dart';
 
 import 'constatns.dart';
 import 'nfc_found_widget.dart';
@@ -201,13 +201,21 @@ class MyApp extends StatelessWidget {
       tag: defaultControllerTagName,
     );
     String inputString = "michameiu";
-    NdefRecord uriRecord = NdefRecord.createUri(
-        Uri.parse("https://sisitech.com/#/case-studies/wavvy"));
-    NdefRecord externalRecord2 = NdefRecord.createExternal(
-        'com.sisitech', // domain
-        'username', // type
-        Uint8List.fromList(utf8.encode(inputString)) // payload as byte array
-        );
+    NdefRecord uriRecord = NdefRecord(
+      typeNameFormat: TypeNameFormat.wellKnown,
+      type: Uint8List.fromList([0x55]), // 'U' for URI
+      identifier: Uint8List(0),
+      payload: Uint8List.fromList([
+        0x04, // https:// prefix
+        ...utf8.encode("sisitech.com/#/case-studies/wavvy"),
+      ]),
+    );
+    NdefRecord externalRecord2 = NdefRecord(
+      typeNameFormat: TypeNameFormat.external,
+      type: Uint8List.fromList(utf8.encode('com.sisitech:username')),
+      identifier: Uint8List(0),
+      payload: Uint8List.fromList(utf8.encode(inputString)),
+    );
 
     var rednfcController = Get.put(
         NFCController(

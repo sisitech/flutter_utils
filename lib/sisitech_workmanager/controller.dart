@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
+import 'ios_notification_scheduler.dart';
 import 'models.dart';
 import 'utils.dart';
 
@@ -39,8 +41,13 @@ class BackgroundWorkManagerController extends GetxController {
 
   /// Cancel all tasks and clear storage
   Future<void> cancelAll() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(tasksStorageName);
+    // Cancel iOS notifications for all tasks
+    if (Platform.isIOS) {
+      final scheduler = IOSNotificationScheduler();
+      for (var status in taskStatuses) {
+        await scheduler.cancelAllNotificationsForTask(status.uniqueName);
+      }
+    }
 
     // Mark all tasks as unregistered
     for (var status in taskStatuses) {
@@ -93,10 +100,17 @@ class BackgroundWorkManagerController extends GetxController {
 
   /// Cancel a specific task by uniqueName
   Future<void> cancelTask(String uniqueName) async {
+    // Cancel iOS notifications regardless of task definition (handles orphaned tasks)
+    if (Platform.isIOS) {
+      final scheduler = IOSNotificationScheduler();
+      await scheduler.cancelAllNotificationsForTask(uniqueName);
+    }
+
     await Workmanager().cancelByUniqueName(uniqueName);
 
     // Update status
     final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
     String? jsonStr = prefs.getString(taskStatusStorageName);
     Map<String, dynamic> allStatuses =
         jsonStr != null ? jsonDecode(jsonStr) as Map<String, dynamic> : {};
@@ -105,19 +119,13 @@ class BackgroundWorkManagerController extends GetxController {
       var status = BackgroundTaskStatus.fromJson(
           allStatuses[uniqueName] as Map<String, dynamic>);
       status = status.markUnregistered();
+      // Clear notification IDs on cancel
+      status = status.copyWith(
+        scheduledNotificationIds: [],
+        remainingNotifications: 0,
+      );
       allStatuses[uniqueName] = status.toJson();
       await prefs.setString(taskStatusStorageName, jsonEncode(allStatuses));
-    }
-
-    // Also remove from legacy storage
-    String? tasksJson = prefs.getString(tasksStorageName);
-    Map<String, dynamic> readAllTasks =
-        tasksJson != null ? jsonDecode(tasksJson) as Map<String, dynamic> : {};
-    // Find and remove matching task
-    var task = tasks.where((t) => t.uniqueName == uniqueName).firstOrNull;
-    if (task != null) {
-      readAllTasks.remove(task.getUniqueIdHash());
-      await prefs.setString(tasksStorageName, jsonEncode(readAllTasks));
     }
 
     await refreshStatuses();
@@ -125,6 +133,12 @@ class BackgroundWorkManagerController extends GetxController {
 
   /// Pause a periodic task (cancels it and marks as paused)
   Future<void> pauseTask(String uniqueName) async {
+    // Cancel iOS notifications regardless of task definition (handles orphaned tasks)
+    if (Platform.isIOS) {
+      final scheduler = IOSNotificationScheduler();
+      await scheduler.cancelAllNotificationsForTask(uniqueName);
+    }
+
     await Workmanager().cancelByUniqueName(uniqueName);
     await markTaskPaused(uniqueName);
     await refreshStatuses();
@@ -134,30 +148,36 @@ class BackgroundWorkManagerController extends GetxController {
   Future<void> resumeTask(String uniqueName) async {
     var task = tasks.where((t) => t.uniqueName == uniqueName).firstOrNull;
     if (task != null) {
-      // Force re-registration by setting cancelPrevious
-      var originalCancelPrevious = task.cancelPrevious;
-      task.cancelPrevious = true;
-      await task.register();
-      task.cancelPrevious = originalCancelPrevious;
+      if ((task.type == BackgroundWorkManagerTaskType.periodic ||
+              task.type == BackgroundWorkManagerTaskType.notificationTriggered) &&
+          Platform.isIOS) {
+        // iOS: reschedule notifications
+        final config = task.iosScheduleConfig ??
+            IOSNotificationScheduleConfig.fromFrequency(
+                task.frequency ?? const Duration(hours: 1));
+        final scheduler = IOSNotificationScheduler();
+        await scheduler.scheduleInitialNotifications(task, config,
+            remindersCount: task.iosRemindersNumber);
+        await markTaskRegistered(uniqueName);
+      } else {
+        // Android: standard re-registration using copyWith to avoid mutation
+        final taskWithCancel = task.copyWith(cancelPrevious: true);
+        await taskWithCancel.register();
+      }
     }
     await refreshStatuses();
   }
 
   /// Remove a task completely (cancels and clears all history)
   Future<void> removeTask(String uniqueName) async {
+    // Cancel iOS notifications regardless of task definition (handles orphaned tasks)
+    if (Platform.isIOS) {
+      final scheduler = IOSNotificationScheduler();
+      await scheduler.cancelAllNotificationsForTask(uniqueName);
+    }
+
     await Workmanager().cancelByUniqueName(uniqueName);
     await removeTaskStatus(uniqueName);
-
-    // Also remove from legacy storage
-    final prefs = await SharedPreferences.getInstance();
-    String? tasksJson = prefs.getString(tasksStorageName);
-    Map<String, dynamic> readAllTasks =
-        tasksJson != null ? jsonDecode(tasksJson) as Map<String, dynamic> : {};
-    var task = tasks.where((t) => t.uniqueName == uniqueName).firstOrNull;
-    if (task != null) {
-      readAllTasks.remove(task.getUniqueIdHash());
-      await prefs.setString(tasksStorageName, jsonEncode(readAllTasks));
-    }
 
     await refreshStatuses();
   }

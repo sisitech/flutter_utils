@@ -15,6 +15,13 @@ import workmanager_apple
         GeneratedPluginRegistrant.register(with: registry)
     }
 
+    // Set notification center delegate for tap handling
+    // This enables flutter_local_notifications to receive notification taps
+    // when the app is launched from terminated state
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
+    }
+
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

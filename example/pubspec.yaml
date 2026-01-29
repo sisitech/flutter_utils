@@ -58,7 +58,8 @@ dependencies:
   flutter_local_notifications: ^18.0.1
   internet_connection_checker: ^3.0.1
   flutter_expandable_fab: ^2.0.0
-  nfc_manager: ^3.4.0
+  nfc_manager: ^4.1.1
+  ndef_record: ^1.3.3
   flex_color_scheme: ^7.3.1
   fl_chart: ^0.61.0
   google_fonts: 6.1.0
@@ -67,6 +68,7 @@ dependencies:
   percent_indicator: ^4.2.3
   font_awesome_flutter: ^10.7.0
   flutter_secure_storage: ^9.2.2
+  path_provider: ^2.1.0
 
 dependency_overrides:
   flex_color_scheme: ^8.3.1

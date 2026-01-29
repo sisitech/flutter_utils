@@ -2,25 +2,70 @@ import 'dart:convert' show ascii, utf8;
 import 'dart:typed_data';
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:nfc_manager/ndef_record.dart';
+import 'package:nfc_manager_ndef/nfc_manager_ndef.dart';
 
 const defaultControllerTagName = "default";
+
+/// URI prefix list (moved from NdefRecord in v4.x)
+const List<String> uriPrefixList = [
+  '',
+  'http://www.',
+  'https://www.',
+  'http://',
+  'https://',
+  'tel:',
+  'mailto:',
+  'ftp://anonymous:anonymous@',
+  'ftp://ftp.',
+  'ftps://',
+  'sftp://',
+  'smb://',
+  'nfs://',
+  'ftp://',
+  'dav://',
+  'news:',
+  'telnet://',
+  'imap:',
+  'rtsp://',
+  'urn:',
+  'pop:',
+  'sip:',
+  'sips:',
+  'tftp:',
+  'btspp://',
+  'btl2cap://',
+  'btgoep://',
+  'tcpobex://',
+  'irdaobex://',
+  'file://',
+  'urn:epc:id:',
+  'urn:epc:tag:',
+  'urn:epc:pat:',
+  'urn:epc:raw:',
+  'urn:epc:',
+  'urn:nfc:',
+];
 
 abstract class Record {
   NdefRecord toNdef();
 
   static Record fromNdef(NdefRecord record) {
-    if (record.typeNameFormat == NdefTypeNameFormat.nfcWellknown &&
+    if (record.typeNameFormat == TypeNameFormat.wellKnown &&
         record.type.length == 1 &&
         record.type.first == 0x54) return WellknownTextRecord.fromNdef(record);
-    if (record.typeNameFormat == NdefTypeNameFormat.nfcWellknown &&
+    if (record.typeNameFormat == TypeNameFormat.wellKnown &&
         record.type.length == 1 &&
         record.type.first == 0x55) return WellknownUriRecord.fromNdef(record);
-    if (record.typeNameFormat == NdefTypeNameFormat.media)
+    if (record.typeNameFormat == TypeNameFormat.media) {
       return MimeRecord.fromNdef(record);
-    if (record.typeNameFormat == NdefTypeNameFormat.absoluteUri)
+    }
+    if (record.typeNameFormat == TypeNameFormat.absoluteUri) {
       return AbsoluteUriRecord.fromNdef(record);
-    if (record.typeNameFormat == NdefTypeNameFormat.nfcExternal)
+    }
+    if (record.typeNameFormat == TypeNameFormat.external) {
       return ExternalRecord.fromNdef(record);
+    }
     return UnsupportedRecord(record);
   }
 }
@@ -49,7 +94,7 @@ class WellknownTextRecord implements Record {
   @override
   NdefRecord toNdef() {
     return NdefRecord(
-      typeNameFormat: NdefTypeNameFormat.nfcWellknown,
+      typeNameFormat: TypeNameFormat.wellKnown,
       type: Uint8List.fromList([0x54]),
       identifier: identifier ?? Uint8List(0),
       payload: Uint8List.fromList([
@@ -69,7 +114,7 @@ class WellknownUriRecord implements Record {
   final Uri uri;
 
   static WellknownUriRecord fromNdef(NdefRecord record) {
-    final prefix = NdefRecord.URI_PREFIX_LIST[record.payload.first];
+    final prefix = uriPrefixList[record.payload.first];
     final bodyBytes = record.payload.sublist(1);
     return WellknownUriRecord(
       identifier: record.identifier,
@@ -79,12 +124,12 @@ class WellknownUriRecord implements Record {
 
   @override
   NdefRecord toNdef() {
-    var prefixIndex = NdefRecord.URI_PREFIX_LIST
+    var prefixIndex = uriPrefixList
         .indexWhere((e) => uri.toString().startsWith(e), 1);
     if (prefixIndex < 0) prefixIndex = 0;
-    final prefix = NdefRecord.URI_PREFIX_LIST[prefixIndex];
+    final prefix = uriPrefixList[prefixIndex];
     return NdefRecord(
-      typeNameFormat: NdefTypeNameFormat.nfcWellknown,
+      typeNameFormat: TypeNameFormat.wellKnown,
       type: Uint8List.fromList([0x55]),
       identifier: Uint8List(0),
       payload: Uint8List.fromList([
@@ -117,7 +162,7 @@ class MimeRecord implements Record {
   @override
   NdefRecord toNdef() {
     return NdefRecord(
-      typeNameFormat: NdefTypeNameFormat.media,
+      typeNameFormat: TypeNameFormat.media,
       type: Uint8List.fromList(ascii.encode(type)),
       identifier: identifier ?? Uint8List(0),
       payload: data,
@@ -148,7 +193,7 @@ class AbsoluteUriRecord implements Record {
   @override
   NdefRecord toNdef() {
     return NdefRecord(
-      typeNameFormat: NdefTypeNameFormat.absoluteUri,
+      typeNameFormat: TypeNameFormat.absoluteUri,
       type: Uint8List.fromList(utf8.encode(uriType.toString())),
       identifier: identifier ?? Uint8List(0),
       payload: payload,
@@ -189,7 +234,7 @@ class ExternalRecord implements Record {
   @override
   NdefRecord toNdef() {
     return NdefRecord(
-      typeNameFormat: NdefTypeNameFormat.nfcExternal,
+      typeNameFormat: TypeNameFormat.external,
       type: Uint8List.fromList(ascii.encode(domainType)),
       identifier: identifier ?? Uint8List(0),
       payload: data,
@@ -212,14 +257,22 @@ class UnsupportedRecord implements Record {
 
 extension IntExtension on int {
   String toHexString() {
-    return '0x' + toRadixString(16).padLeft(2, '0').toUpperCase();
+    return '0x${toRadixString(16).padLeft(2, '0').toUpperCase()}';
   }
 }
 
 String? getSerialNumber(NfcTag tag) {
-  Uint8List identifier =
-      Uint8List.fromList(tag.data["mifareultralight"]['identifier']);
-  return identifier.map((e) => e.toRadixString(16).padLeft(2, '0')).join('');
+  try {
+    final tagData = tag.data as Map<String, dynamic>;
+    if (tagData.containsKey("mifareultralight")) {
+      Uint8List identifier =
+          Uint8List.fromList(tagData["mifareultralight"]['identifier']);
+      return identifier.map((e) => e.toRadixString(16).padLeft(2, '0')).join('');
+    }
+  } catch (e) {
+    dprint("Error getting serial number: $e");
+  }
+  return null;
 }
 
 class NfcTagInfo {
@@ -241,7 +294,6 @@ class NfcTagInfo {
   static Future<NfcTagInfo> fromTag(NfcTag tag) async {
     var ndef = Ndef.from(tag);
     var chipId = "";
-    // dprint(ndef?.additionalData);
     if (ndef != null) {
       try {
         chipId = ndef.additionalData['identifier']
@@ -249,15 +301,13 @@ class NfcTagInfo {
             .join('');
       } catch (er) {}
     }
-    // dprint(chipId);
-    // dprint(tag.data);
     var records = await tag.ndefRecordInfos();
     return NfcTagInfo(
       records: records,
       nfcTag: tag,
       ndef: ndef,
       isWritable: ndef?.isWritable ?? false,
-      serial_number: chipId ?? getSerialNumber(tag),
+      serial_number: chipId.isNotEmpty ? chipId : getSerialNumber(tag),
     );
   }
 }
@@ -265,7 +315,8 @@ class NfcTagInfo {
 extension NfcTagExt on NfcTag {
   Future<List<NdefRecordInfo>> ndefRecordInfos() async {
     try {
-      var cachedMessage = data["ndef"]["cachedMessage"];
+      final tagData = data as Map<String, dynamic>;
+      var cachedMessage = tagData["ndef"]?["cachedMessage"];
       if (cachedMessage != null) {
         NdefMessage? message = await Ndef.from(this)?.read();
         if (message?.records.isNotEmpty ?? false) {
@@ -298,71 +349,76 @@ class NdefRecordInfo {
   final String subtitle;
 
   static NdefRecordInfo fromNdef(NdefRecord record) {
-    final _record = Record.fromNdef(record);
-    if (_record is WellknownTextRecord)
+    final parsedRecord = Record.fromNdef(record);
+    if (parsedRecord is WellknownTextRecord) {
       return NdefRecordInfo(
-        record: _record,
+        record: parsedRecord,
         title: 'Wellknown Text',
-        subtitle: '(${_record.languageCode}) ${_record.text}',
+        subtitle: '(${parsedRecord.languageCode}) ${parsedRecord.text}',
       );
-    if (_record is WellknownUriRecord)
+    }
+    if (parsedRecord is WellknownUriRecord) {
       return NdefRecordInfo(
-        record: _record,
+        record: parsedRecord,
         title: 'Wellknown Uri',
-        subtitle: '${_record.uri}',
+        subtitle: '${parsedRecord.uri}',
       );
-    if (_record is MimeRecord)
+    }
+    if (parsedRecord is MimeRecord) {
       return NdefRecordInfo(
-        record: _record,
+        record: parsedRecord,
         title: 'Mime',
-        subtitle: '(${_record.type}) ${_record.dataString}',
+        subtitle: '(${parsedRecord.type}) ${parsedRecord.dataString}',
       );
-    if (_record is AbsoluteUriRecord)
+    }
+    if (parsedRecord is AbsoluteUriRecord) {
       return NdefRecordInfo(
-        record: _record,
+        record: parsedRecord,
         title: 'Absolute Uri',
-        subtitle: '(${_record.uriType}) ${_record.payloadString}',
+        subtitle: '(${parsedRecord.uriType}) ${parsedRecord.payloadString}',
       );
-    if (_record is ExternalRecord)
+    }
+    if (parsedRecord is ExternalRecord) {
       return NdefRecordInfo(
-        record: _record,
+        record: parsedRecord,
         title: 'External',
-        subtitle: '(${_record.domainType}) ${_record.dataString}',
+        subtitle: '(${parsedRecord.domainType}) ${parsedRecord.dataString}',
       );
-    if (_record is UnsupportedRecord) {
-      // more custom info from NdefRecord.
-      if (record.typeNameFormat == NdefTypeNameFormat.empty)
+    }
+    if (parsedRecord is UnsupportedRecord) {
+      if (record.typeNameFormat == TypeNameFormat.empty) {
         return NdefRecordInfo(
-          record: _record,
-          title: _typeNameFormatToString(_record.record.typeNameFormat),
+          record: parsedRecord,
+          title: _typeNameFormatToString(parsedRecord.record.typeNameFormat),
           subtitle: '-',
         );
+      }
       return NdefRecordInfo(
-        record: _record,
-        title: _typeNameFormatToString(_record.record.typeNameFormat),
+        record: parsedRecord,
+        title: _typeNameFormatToString(parsedRecord.record.typeNameFormat),
         subtitle:
-            '(${_record.record.type.toHexString()}) ${_record.record.payload.toHexString()}',
+            '(${parsedRecord.record.type.toHexString()}) ${parsedRecord.record.payload.toHexString()}',
       );
     }
     throw UnimplementedError();
   }
 }
 
-String _typeNameFormatToString(NdefTypeNameFormat format) {
+String _typeNameFormatToString(TypeNameFormat format) {
   switch (format) {
-    case NdefTypeNameFormat.empty:
+    case TypeNameFormat.empty:
       return 'Empty';
-    case NdefTypeNameFormat.nfcWellknown:
+    case TypeNameFormat.wellKnown:
       return 'NFC Wellknown';
-    case NdefTypeNameFormat.media:
+    case TypeNameFormat.media:
       return 'Media';
-    case NdefTypeNameFormat.absoluteUri:
+    case TypeNameFormat.absoluteUri:
       return 'Absolute Uri';
-    case NdefTypeNameFormat.nfcExternal:
+    case TypeNameFormat.external:
       return 'NFC External';
-    case NdefTypeNameFormat.unknown:
+    case TypeNameFormat.unknown:
       return 'Unknown';
-    case NdefTypeNameFormat.unchanged:
+    case TypeNameFormat.unchanged:
       return 'Unchanged';
   }
 }

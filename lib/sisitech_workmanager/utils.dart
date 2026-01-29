@@ -1,15 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_utils/flutter_utils.dart';
 import 'package:flutter_utils/text_view/text_view_extensions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 
+import 'ios_notification_scheduler.dart';
 import 'models.dart';
 
-enum BackgroundWorkManagerTaskType { oneOff, periodic }
-
-const tasksStorageName = "BackgroundTasks";
+enum BackgroundWorkManagerTaskType { oneOff, periodic, notificationTriggered }
 
 /// Represents a single background task and implements / copies all the fields
 /// required when starting a `oneOff` or `periodic` task.
@@ -24,18 +24,30 @@ class BackgroundWorkManagerTask {
   /// Useful only for `periodic` type and must be greater than
   /// 15 minutes as required on android
   final Duration? frequency;
-  Duration initialDelay;
+  final Duration initialDelay;
   final BackgroundWorkManagerTaskType type;
   final String? tag;
-  Map<String, dynamic>? inputData;
-  bool removeAndCleanupTasks;
-  ExistingWorkPolicy? existingWorkPolicy;
-  ExistingPeriodicWorkPolicy? existingPeriodicWorkPolicy;
-  Constraints? constraints;
-  BackoffPolicy? backoffPolicy;
-  Duration backoffPolicyDelay;
-  OutOfQuotaPolicy? outOfQuotaPolicy;
-  bool cancelPrevious;
+  final Map<String, dynamic>? inputData;
+  final bool removeAndCleanupTasks;
+  final ExistingWorkPolicy? existingWorkPolicy;
+  final ExistingPeriodicWorkPolicy? existingPeriodicWorkPolicy;
+  final Constraints? constraints;
+  final BackoffPolicy? backoffPolicy;
+  final Duration backoffPolicyDelay;
+  final OutOfQuotaPolicy? outOfQuotaPolicy;
+  final bool cancelPrevious;
+
+  /// iOS-specific: Schedule configuration for notification-triggered tasks
+  final IOSNotificationScheduleConfig? iosScheduleConfig;
+
+  /// iOS-specific: Custom notification title (defaults to task name)
+  final String? iosNotificationTitle;
+
+  /// iOS-specific: Custom notification body
+  final String? iosNotificationBody;
+
+  /// iOS-specific: Number of notification reminders to schedule (default: 5)
+  final int? iosRemindersNumber;
 
   /// Function executed by the callback dispatcher
   /// Make sure all the required plugins are loaded in
@@ -45,7 +57,7 @@ class BackgroundWorkManagerTask {
     Map<String, dynamic>? inputData,
   ) executeFunction;
 
-  BackgroundWorkManagerTask({
+  const BackgroundWorkManagerTask({
     required this.uniqueName,
     required this.name,
     required this.type,
@@ -62,7 +74,61 @@ class BackgroundWorkManagerTask {
     this.tag,
     required this.executeFunction,
     this.frequency,
+    this.iosScheduleConfig,
+    this.iosNotificationTitle,
+    this.iosNotificationBody,
+    this.iosRemindersNumber,
   });
+
+  /// Create a copy of this task with some fields replaced
+  BackgroundWorkManagerTask copyWith({
+    String? uniqueName,
+    String? name,
+    Duration? frequency,
+    Duration? initialDelay,
+    BackgroundWorkManagerTaskType? type,
+    String? tag,
+    Map<String, dynamic>? inputData,
+    bool? removeAndCleanupTasks,
+    ExistingWorkPolicy? existingWorkPolicy,
+    ExistingPeriodicWorkPolicy? existingPeriodicWorkPolicy,
+    Constraints? constraints,
+    BackoffPolicy? backoffPolicy,
+    Duration? backoffPolicyDelay,
+    OutOfQuotaPolicy? outOfQuotaPolicy,
+    bool? cancelPrevious,
+    IOSNotificationScheduleConfig? iosScheduleConfig,
+    String? iosNotificationTitle,
+    String? iosNotificationBody,
+    int? iosRemindersNumber,
+    Future<bool> Function(BackgroundWorkManagerTask, Map<String, dynamic>?)?
+        executeFunction,
+  }) {
+    return BackgroundWorkManagerTask(
+      uniqueName: uniqueName ?? this.uniqueName,
+      name: name ?? this.name,
+      frequency: frequency ?? this.frequency,
+      initialDelay: initialDelay ?? this.initialDelay,
+      type: type ?? this.type,
+      tag: tag ?? this.tag,
+      inputData: inputData ?? this.inputData,
+      removeAndCleanupTasks:
+          removeAndCleanupTasks ?? this.removeAndCleanupTasks,
+      existingWorkPolicy: existingWorkPolicy ?? this.existingWorkPolicy,
+      existingPeriodicWorkPolicy:
+          existingPeriodicWorkPolicy ?? this.existingPeriodicWorkPolicy,
+      constraints: constraints ?? this.constraints,
+      backoffPolicy: backoffPolicy ?? this.backoffPolicy,
+      backoffPolicyDelay: backoffPolicyDelay ?? this.backoffPolicyDelay,
+      outOfQuotaPolicy: outOfQuotaPolicy ?? this.outOfQuotaPolicy,
+      cancelPrevious: cancelPrevious ?? this.cancelPrevious,
+      iosScheduleConfig: iosScheduleConfig ?? this.iosScheduleConfig,
+      iosNotificationTitle: iosNotificationTitle ?? this.iosNotificationTitle,
+      iosNotificationBody: iosNotificationBody ?? this.iosNotificationBody,
+      iosRemindersNumber: iosRemindersNumber ?? this.iosRemindersNumber,
+      executeFunction: executeFunction ?? this.executeFunction,
+    );
+  }
 
   String getUniqueIdHash() {
     return "${name}${uniqueName}${type}${existingWorkPolicy}${cancelPrevious}${constraints}${inputData}"
@@ -70,6 +136,13 @@ class BackgroundWorkManagerTask {
   }
 
   Future<void> cancel() async {
+    // Cancel iOS notifications if this is a periodic or notification-triggered task on iOS
+    if ((type == BackgroundWorkManagerTaskType.periodic ||
+            type == BackgroundWorkManagerTaskType.notificationTriggered) &&
+        Platform.isIOS) {
+      final scheduler = IOSNotificationScheduler();
+      await scheduler.cancelAllNotificationsForTask(uniqueName);
+    }
     return Workmanager().cancelByUniqueName(uniqueName);
   }
 
@@ -173,6 +246,7 @@ void getCallbackDispathcer(
 Future<void> _markTaskRunning(String uniqueName, bool isRunning) async {
   try {
     final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
     String? jsonStr = prefs.getString(taskStatusStorageName);
     Map<String, dynamic> allStatuses =
         jsonStr != null ? jsonDecode(jsonStr) as Map<String, dynamic> : {};
@@ -202,6 +276,7 @@ Future<void> _trackTaskExecution(
   print("_trackTaskExecution called for task: $name (uniqueName: $uniqueName)");
   try {
     final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
     print("[$name] SharedPreferences obtained");
     final endTime = DateTime.now();
     final duration = endTime.difference(startTime);
@@ -246,32 +321,99 @@ Future<void> _trackTaskExecution(
   }
 }
 
+/// Execute a one-off task immediately on iOS (fire-and-forget)
+/// This runs the task without using WorkManager since iOS WorkManager is unreliable
+Future<void> _executeOneOffTaskIOS(BackgroundWorkManagerTask task) async {
+  final startTime = DateTime.now();
+  bool success = false;
+  String? errorMessage;
+
+  try {
+    // Mark task as running
+    await _markTaskRunning(task.uniqueName, true);
+
+    // Execute the task
+    success = await task.executeFunction(task, task.inputData);
+
+    // Mark task as finished
+    await _markTaskRunning(task.uniqueName, false);
+
+    // Track execution
+    await _trackTaskExecution(
+      task.uniqueName,
+      task.name,
+      task.type,
+      task.frequency,
+      startTime,
+      success,
+      null,
+    );
+
+    dprint("iOS one-off task ${task.name} executed, success: $success");
+  } catch (e, stackTrace) {
+    dprint("iOS one-off task execution error: $e");
+    dprint(stackTrace.toString());
+    errorMessage = e.toString();
+
+    // Mark task as finished
+    await _markTaskRunning(task.uniqueName, false);
+
+    // Track failed execution
+    await _trackTaskExecution(
+      task.uniqueName,
+      task.name,
+      task.type,
+      task.frequency,
+      startTime,
+      false,
+      errorMessage,
+    );
+  }
+}
+
 Future<void> registerTask(BackgroundWorkManagerTask task) async {
   final prefs = await SharedPreferences.getInstance();
 
   if (task.removeAndCleanupTasks) {
     await task.cancel();
-    String? jsonStr = prefs.getString(tasksStorageName);
-    Map<String, dynamic> readAllTasks =
-        jsonStr != null ? jsonDecode(jsonStr) as Map<String, dynamic> : {};
-    bool isAlreadyRegistered = readAllTasks.containsKey(task.getUniqueIdHash());
-    if (isAlreadyRegistered) {
-      readAllTasks.remove(task.getUniqueIdHash());
-      await prefs.setString(tasksStorageName, jsonEncode(readAllTasks));
+
+    // Cancel iOS notifications if applicable (task.cancel() already handles this,
+    // but keep for explicit cleanup)
+    if ((task.type == BackgroundWorkManagerTaskType.periodic ||
+            task.type == BackgroundWorkManagerTaskType.notificationTriggered) &&
+        Platform.isIOS) {
+      final scheduler = IOSNotificationScheduler();
+      await scheduler.cancelAllNotificationsForTask(task.uniqueName);
     }
+
     // Update task status as unregistered
     await _updateTaskRegistrationStatus(task, isRegistered: false);
     return;
   }
 
-  // Check if task already registered
+  // Check if task already registered using taskStatusStorageName
   if (task.cancelPrevious) {
     await task.cancel();
+    // Cancel iOS notifications if applicable (task.cancel() already handles this,
+    // but keep for explicit cleanup)
+    if ((task.type == BackgroundWorkManagerTaskType.periodic ||
+            task.type == BackgroundWorkManagerTaskType.notificationTriggered) &&
+        Platform.isIOS) {
+      final scheduler = IOSNotificationScheduler();
+      await scheduler.cancelAllNotificationsForTask(task.uniqueName);
+    }
   }
-  String? jsonStr = prefs.getString(tasksStorageName);
-  Map<String, dynamic> readAllTasks =
-      jsonStr != null ? jsonDecode(jsonStr) as Map<String, dynamic> : {};
-  bool isAlreadyRegistered = readAllTasks.containsKey(task.getUniqueIdHash());
+
+  // Check registration status from taskStatusStorageName
+  String? statusJson = prefs.getString(taskStatusStorageName);
+  Map<String, dynamic> allStatuses =
+      statusJson != null ? jsonDecode(statusJson) as Map<String, dynamic> : {};
+  bool isAlreadyRegistered = false;
+  if (allStatuses.containsKey(task.uniqueName)) {
+    var status = BackgroundTaskStatus.fromJson(
+        allStatuses[task.uniqueName] as Map<String, dynamic>);
+    isAlreadyRegistered = status.isRegistered;
+  }
 
   if (isAlreadyRegistered && !task.cancelPrevious) {
     dprint("Already registered");
@@ -280,39 +422,78 @@ Future<void> registerTask(BackgroundWorkManagerTask task) async {
 
   dprint("REGISTERING NEW");
   if (task.type == BackgroundWorkManagerTaskType.oneOff) {
-    Workmanager().registerOneOffTask(
-      task.uniqueName,
-      task.name,
-      initialDelay: task.initialDelay,
-      inputData: task.inputData,
-      existingWorkPolicy: task.existingWorkPolicy,
-      constraints: task.constraints,
-      backoffPolicy: task.backoffPolicy,
-      tag: task.tag,
-      backoffPolicyDelay: task.backoffPolicyDelay,
-      outOfQuotaPolicy: task.outOfQuotaPolicy,
-    );
+    if (Platform.isIOS) {
+      // iOS: Execute immediately (fire-and-forget) - don't use WorkManager
+      // ignore: unawaited_futures
+      _executeOneOffTaskIOS(task);
+    } else {
+      // Android: Use WorkManager
+      Workmanager().registerOneOffTask(
+        task.uniqueName,
+        task.name,
+        initialDelay: task.initialDelay,
+        inputData: task.inputData,
+        existingWorkPolicy: task.existingWorkPolicy,
+        constraints: task.constraints,
+        backoffPolicy: task.backoffPolicy,
+        tag: task.tag,
+        backoffPolicyDelay: task.backoffPolicyDelay,
+        outOfQuotaPolicy: task.outOfQuotaPolicy,
+      );
+    }
   } else if (task.type == BackgroundWorkManagerTaskType.periodic) {
-    Workmanager().registerPeriodicTask(
-      task.uniqueName,
-      task.name,
-      frequency: task.frequency,
-      initialDelay: task.initialDelay,
-      inputData: task.inputData,
-      existingWorkPolicy: task.existingPeriodicWorkPolicy,
-      constraints: task.constraints,
-      backoffPolicy: task.backoffPolicy,
-      tag: task.tag,
-      backoffPolicyDelay: task.backoffPolicyDelay,
-    );
+    if (Platform.isIOS) {
+      // iOS: use notification-triggered approach with auto-generated config from frequency
+      final config = task.iosScheduleConfig ??
+          IOSNotificationScheduleConfig.fromFrequency(
+              task.frequency ?? const Duration(hours: 1));
+      final scheduler = IOSNotificationScheduler();
+      await scheduler.scheduleInitialNotifications(task, config,
+          remindersCount: task.iosRemindersNumber);
+    } else {
+      // Android: use standard workmanager
+      Workmanager().registerPeriodicTask(
+        task.uniqueName,
+        task.name,
+        frequency: task.frequency,
+        initialDelay: task.initialDelay,
+        inputData: task.inputData,
+        existingWorkPolicy: task.existingPeriodicWorkPolicy,
+        constraints: task.constraints,
+        backoffPolicy: task.backoffPolicy,
+        tag: task.tag,
+        backoffPolicyDelay: task.backoffPolicyDelay,
+      );
+    }
+  } else if (task.type == BackgroundWorkManagerTaskType.notificationTriggered) {
+    // iOS notification-triggered tasks
+    if (Platform.isIOS) {
+      if (task.iosScheduleConfig == null) {
+        dprint(
+            "Error: notificationTriggered task requires iosScheduleConfig on iOS");
+        return;
+      }
+      final scheduler = IOSNotificationScheduler();
+      await scheduler.scheduleInitialNotifications(task, task.iosScheduleConfig!,
+          remindersCount: task.iosRemindersNumber);
+    } else {
+      // On Android, fall back to periodic task behavior
+      dprint(
+          "notificationTriggered task registered as periodic on Android");
+      Workmanager().registerPeriodicTask(
+        task.uniqueName,
+        task.name,
+        frequency: task.frequency ?? const Duration(hours: 24),
+        initialDelay: task.initialDelay,
+        inputData: task.inputData,
+        existingWorkPolicy: task.existingPeriodicWorkPolicy,
+        constraints: task.constraints,
+        backoffPolicy: task.backoffPolicy,
+        tag: task.tag,
+        backoffPolicyDelay: task.backoffPolicyDelay,
+      );
+    }
   }
-
-  // Track legacy registration
-  String? tasksJson = prefs.getString(tasksStorageName);
-  Map<String, dynamic> allTasks =
-      tasksJson != null ? jsonDecode(tasksJson) as Map<String, dynamic> : {};
-  allTasks[task.getUniqueIdHash()] = "true";
-  await prefs.setString(tasksStorageName, jsonEncode(allTasks));
 
   // Track task status
   await _updateTaskRegistrationStatus(task, isRegistered: true);
@@ -325,6 +506,7 @@ Future<void> _updateTaskRegistrationStatus(
 }) async {
   try {
     final prefs = await SharedPreferences.getInstance();
+    await prefs.reload();
     String? jsonStr = prefs.getString(taskStatusStorageName);
     Map<String, dynamic> allStatuses =
         jsonStr != null ? jsonDecode(jsonStr) as Map<String, dynamic> : {};
@@ -357,6 +539,7 @@ Future<void> _updateTaskRegistrationStatus(
 /// Get status for a specific task
 Future<BackgroundTaskStatus?> getTaskStatus(String uniqueName) async {
   final prefs = await SharedPreferences.getInstance();
+  await prefs.reload();
   String? jsonStr = prefs.getString(taskStatusStorageName);
   Map<String, dynamic> allStatuses =
       jsonStr != null ? jsonDecode(jsonStr) as Map<String, dynamic> : {};
@@ -385,6 +568,7 @@ Future<List<BackgroundTaskStatus>> getAllTaskStatuses() async {
 /// Clear execution history for a task
 Future<void> clearTaskHistory(String uniqueName) async {
   final prefs = await SharedPreferences.getInstance();
+  await prefs.reload();
   String? jsonStr = prefs.getString(taskStatusStorageName);
   Map<String, dynamic> allStatuses =
       jsonStr != null ? jsonDecode(jsonStr) as Map<String, dynamic> : {};
@@ -406,6 +590,7 @@ Future<void> clearTaskHistory(String uniqueName) async {
 /// Remove a task status completely
 Future<void> removeTaskStatus(String uniqueName) async {
   final prefs = await SharedPreferences.getInstance();
+  await prefs.reload();
   String? jsonStr = prefs.getString(taskStatusStorageName);
   Map<String, dynamic> allStatuses =
       jsonStr != null ? jsonDecode(jsonStr) as Map<String, dynamic> : {};
@@ -419,6 +604,7 @@ Future<void> removeTaskStatus(String uniqueName) async {
 /// Mark a task as paused in storage
 Future<void> markTaskPaused(String uniqueName) async {
   final prefs = await SharedPreferences.getInstance();
+  await prefs.reload();
   String? jsonStr = prefs.getString(taskStatusStorageName);
   Map<String, dynamic> allStatuses =
       jsonStr != null ? jsonDecode(jsonStr) as Map<String, dynamic> : {};
@@ -427,6 +613,23 @@ Future<void> markTaskPaused(String uniqueName) async {
     var status = BackgroundTaskStatus.fromJson(
         allStatuses[uniqueName] as Map<String, dynamic>);
     status = status.markPaused();
+    allStatuses[uniqueName] = status.toJson();
+    await prefs.setString(taskStatusStorageName, jsonEncode(allStatuses));
+  }
+}
+
+/// Mark a task as registered (resumed) in storage
+Future<void> markTaskRegistered(String uniqueName) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.reload();
+  String? jsonStr = prefs.getString(taskStatusStorageName);
+  Map<String, dynamic> allStatuses =
+      jsonStr != null ? jsonDecode(jsonStr) as Map<String, dynamic> : {};
+
+  if (allStatuses.containsKey(uniqueName)) {
+    var status = BackgroundTaskStatus.fromJson(
+        allStatuses[uniqueName] as Map<String, dynamic>);
+    status = status.markRegistered();
     allStatuses[uniqueName] = status.toJson();
     await prefs.setString(taskStatusStorageName, jsonEncode(allStatuses));
   }

@@ -14,6 +14,7 @@ import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
 import 'package:flutter_utils/screen_lock/controller.dart';
 import 'package:flutter_utils/sisitech_themes/theme_controller.dart';
 import 'package:flutter_utils/sisitech_workmanager/controller.dart';
+import 'package:flutter_utils/sisitech_workmanager/ios_notification_scheduler.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -77,12 +78,25 @@ void main() async {
           disableInDebug: false,
         )),
   );
-  Get.put(NetworkStatusController(checkUrl: config.apiEndpoint));
+  Get.put(NetworkStatusController(checkUrl: "https://google.com"));
   var controller = Get.put(
     ScreenLockController(options: screenLockOptions),
   );
   var notificationCont = Get.put(LocalNotificationController(
-      notificationTapBackground: notificationTapBackground));
+    notificationTapBackground: notificationTapBackground,
+    onNotificationResponse: (response) async {
+      final handled = await WorkManagerNotificationHandler.handleIfWorkManager(
+        response,
+        tasks,
+        commonTasksInitalizations: () async {
+          await GetStorage.init();
+        },
+      );
+      if (!handled) {
+        print('App notification: ${response.payload}');
+      }
+    },
+  ));
 
   await notificationCont.initializeLocalNotifications();
 

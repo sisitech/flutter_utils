@@ -3,6 +3,82 @@ import 'utils.dart';
 /// Storage key for task status persistence (used with SharedPreferences)
 const taskStatusStorageName = "BackgroundTaskStatus";
 
+/// iOS notification schedule configuration for notification-triggered tasks
+class IOSNotificationScheduleConfig {
+  /// Hour of the day (0-23) - required for daily/weekly scheduling
+  final int? hour;
+
+  /// Minute of the hour (0-59) - required for daily/weekly scheduling
+  final int? minute;
+
+  /// Optional weekday for weekly scheduling (1=Monday, 7=Sunday)
+  /// If null, schedules daily
+  final int? weekday;
+
+  /// Whether the notification repeats
+  final bool repeats;
+
+  /// Interval in minutes for interval-based scheduling
+  /// If set, hour/minute are ignored and notifications are scheduled
+  /// at now + (intervalMinutes * index) intervals
+  final int? intervalMinutes;
+
+  IOSNotificationScheduleConfig({
+    this.hour,
+    this.minute,
+    this.weekday,
+    this.repeats = true,
+    this.intervalMinutes,
+  }) : assert(
+          intervalMinutes != null || (hour != null && minute != null),
+          'Either intervalMinutes or both hour and minute must be provided',
+        );
+
+  Map<String, dynamic> toJson() => {
+        'hour': hour,
+        'minute': minute,
+        'weekday': weekday,
+        'repeats': repeats,
+        'intervalMinutes': intervalMinutes,
+      };
+
+  factory IOSNotificationScheduleConfig.fromJson(Map<String, dynamic> json) {
+    return IOSNotificationScheduleConfig(
+      hour: json['hour'] as int?,
+      minute: json['minute'] as int?,
+      weekday: json['weekday'] as int?,
+      repeats: json['repeats'] as bool? ?? true,
+      intervalMinutes: json['intervalMinutes'] as int?,
+    );
+  }
+
+  IOSNotificationScheduleConfig copyWith({
+    int? hour,
+    int? minute,
+    int? weekday,
+    bool? repeats,
+    int? intervalMinutes,
+  }) {
+    return IOSNotificationScheduleConfig(
+      hour: hour ?? this.hour,
+      minute: minute ?? this.minute,
+      weekday: weekday ?? this.weekday,
+      repeats: repeats ?? this.repeats,
+      intervalMinutes: intervalMinutes ?? this.intervalMinutes,
+    );
+  }
+
+  /// Create schedule config from a Duration (for automatic iOS handling)
+  /// This allows unified periodic task definition where frequency is used
+  /// for both Android workmanager and iOS notification scheduling.
+  static IOSNotificationScheduleConfig fromFrequency(Duration frequency) {
+    return IOSNotificationScheduleConfig(
+      intervalMinutes: frequency.inMinutes > 0 ? frequency.inMinutes : 1,
+      repeats: true,
+    );
+  }
+}
+
 /// Represents the execution history of a single task run
 class TaskExecutionRecord {
   final DateTime executedAt;
@@ -65,6 +141,18 @@ class BackgroundTaskStatus {
   final Duration? frequency;
   final bool isRunning;
 
+  /// iOS-specific: List of scheduled notification IDs for this task
+  final List<int> scheduledNotificationIds;
+
+  /// iOS-specific: Number of remaining notifications in the queue
+  final int remainingNotifications;
+
+  /// iOS-specific: Schedule configuration for notification-triggered tasks
+  final IOSNotificationScheduleConfig? scheduleConfig;
+
+  /// iOS-specific: The next notification index to use for scheduling
+  final int nextNotificationIndex;
+
   BackgroundTaskStatus({
     required this.uniqueName,
     required this.name,
@@ -80,6 +168,10 @@ class BackgroundTaskStatus {
     this.isPaused = false,
     this.frequency,
     this.isRunning = false,
+    this.scheduledNotificationIds = const [],
+    this.remainingNotifications = 0,
+    this.scheduleConfig,
+    this.nextNotificationIndex = 0,
   });
 
   /// Create from a BackgroundWorkManagerTask
@@ -107,6 +199,10 @@ class BackgroundTaskStatus {
         'isPaused': isPaused,
         'frequency': frequency?.inMilliseconds,
         'isRunning': isRunning,
+        'scheduledNotificationIds': scheduledNotificationIds,
+        'remainingNotifications': remainingNotifications,
+        'scheduleConfig': scheduleConfig?.toJson(),
+        'nextNotificationIndex': nextNotificationIndex,
       };
 
   factory BackgroundTaskStatus.fromJson(Map<String, dynamic> json) {
@@ -140,6 +236,17 @@ class BackgroundTaskStatus {
           ? Duration(milliseconds: json['frequency'] as int)
           : null,
       isRunning: json['isRunning'] as bool? ?? false,
+      scheduledNotificationIds:
+          (json['scheduledNotificationIds'] as List<dynamic>?)
+                  ?.map((e) => e as int)
+                  .toList() ??
+              [],
+      remainingNotifications: json['remainingNotifications'] as int? ?? 0,
+      scheduleConfig: json['scheduleConfig'] != null
+          ? IOSNotificationScheduleConfig.fromJson(
+              json['scheduleConfig'] as Map<String, dynamic>)
+          : null,
+      nextNotificationIndex: json['nextNotificationIndex'] as int? ?? 0,
     );
   }
 
@@ -158,6 +265,10 @@ class BackgroundTaskStatus {
     bool? isPaused,
     Duration? frequency,
     bool? isRunning,
+    List<int>? scheduledNotificationIds,
+    int? remainingNotifications,
+    IOSNotificationScheduleConfig? scheduleConfig,
+    int? nextNotificationIndex,
   }) {
     return BackgroundTaskStatus(
       uniqueName: uniqueName ?? this.uniqueName,
@@ -174,6 +285,13 @@ class BackgroundTaskStatus {
       isPaused: isPaused ?? this.isPaused,
       frequency: frequency ?? this.frequency,
       isRunning: isRunning ?? this.isRunning,
+      scheduledNotificationIds:
+          scheduledNotificationIds ?? this.scheduledNotificationIds,
+      remainingNotifications:
+          remainingNotifications ?? this.remainingNotifications,
+      scheduleConfig: scheduleConfig ?? this.scheduleConfig,
+      nextNotificationIndex:
+          nextNotificationIndex ?? this.nextNotificationIndex,
     );
   }
 
