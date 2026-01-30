@@ -197,4 +197,13 @@ class BackgroundWorkManagerController extends GetxController {
   BackgroundWorkManagerTask? getTaskDefinition(String uniqueName) {
     return tasks.where((t) => t.uniqueName == uniqueName).firstOrNull;
   }
+
+  /// Run a task immediately in the foreground
+  Future<bool> runTaskNow(String uniqueName) async {
+    var task = getTaskDefinition(uniqueName);
+    if (task == null) return false;
+    final success = await executeTaskNow(task);
+    await refreshStatuses();
+    return success;
+  }
 }

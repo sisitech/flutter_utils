@@ -501,16 +501,77 @@ BackgroundWorkManagerTask({
 
 ## UI Widget
 
-The package includes a ready-to-use task manager widget:
+The package includes ready-to-use widgets for displaying and managing background tasks.
+
+### Available Widgets
+
+| Widget | Description |
+|--------|-------------|
+| `BackgroundTaskManagerWidget` | Main widget displaying task list with controls |
+| `BackgroundTaskManagerPage` | Ready-to-use page wrapper with AppBar |
+
+### Widget Parameters
+
+**BackgroundTaskManagerWidget:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `controllerTag` | `String?` | `null` | Tag for finding specific controller instance |
+| `showRefreshButton` | `bool` | `true` | Show/hide the refresh button in header |
+| `shrinkWrap` | `bool` | `false` | Enable for nested scrolling contexts |
+| `physics` | `ScrollPhysics?` | `null` | Custom scroll physics for the list |
+
+**BackgroundTaskManagerPage:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `controllerTag` | `String?` | `null` | Tag for finding specific controller instance |
+| `title` | `String` | `'Background Tasks'` | AppBar title |
+
+### Task Item Features
+
+Each task item displays:
+- **Status icon**: Animated spinner (running), pause icon (paused), play icon (active), stop icon (cancelled)
+- **Type badge**: "Periodic" or "One-Off"
+- **Subtitle**: Last execution time and next scheduled run
+- **Stats row**: Execution count, success count, failure count
+- **Action buttons**: Pause, Resume, Cancel, History, Clear, Remove
+
+### Usage Examples
 
 ```dart
 import 'package:flutter_utils/sisitech_workmanager/task_manager_widget.dart';
 
-// In your widget tree:
-BackgroundTaskManagerWidget()
-```
+// Option 1: Use as an embedded widget
+Scaffold(
+  body: Column(
+    children: [
+      // Other widgets...
+      const Expanded(
+        child: BackgroundTaskManagerWidget(),
+      ),
+    ],
+  ),
+)
 
-This displays all registered tasks with their status, execution history, and controls for pause/resume/cancel.
+// Option 2: Use as a standalone page
+Navigator.push(
+  context,
+  MaterialPageRoute(
+    builder: (context) => const BackgroundTaskManagerPage(
+      title: 'My Background Tasks',
+    ),
+  ),
+);
+
+// Option 3: With custom controller tag
+const BackgroundTaskManagerWidget(
+  controllerTag: 'myCustomTag',
+  showRefreshButton: true,
+  shrinkWrap: true,
+  physics: NeverScrollableScrollPhysics(),
+)
+```
 
 ## Troubleshooting
 

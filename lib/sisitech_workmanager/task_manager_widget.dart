@@ -81,6 +81,7 @@ class BackgroundTaskManagerWidget extends StatelessWidget {
                   onViewHistory: () =>
                       _showHistoryDialog(context, status),
                   onClearHistory: () => controller.clearHistory(status.uniqueName),
+                  onRunNow: () => controller.runTaskNow(status.uniqueName),
                 );
               },
             );
@@ -137,6 +138,7 @@ class BackgroundTaskItemWidget extends StatelessWidget {
   final VoidCallback? onRemove;
   final VoidCallback? onViewHistory;
   final VoidCallback? onClearHistory;
+  final VoidCallback? onRunNow;
 
   const BackgroundTaskItemWidget({
     super.key,
@@ -147,6 +149,7 @@ class BackgroundTaskItemWidget extends StatelessWidget {
     this.onRemove,
     this.onViewHistory,
     this.onClearHistory,
+    this.onRunNow,
   });
 
   @override
@@ -399,6 +402,16 @@ class BackgroundTaskItemWidget extends StatelessWidget {
       spacing: 8,
       runSpacing: 8,
       children: [
+        // Run Now button - shown when task is not currently running
+        if (!status.isRunning)
+          OutlinedButton.icon(
+            onPressed: onRunNow,
+            icon: const Icon(Icons.rocket_launch, size: 18),
+            label: const Text('Run Now'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.blue,
+            ),
+          ),
         // Pause button - only for periodic tasks that are registered and not paused
         if (isPeriodic && status.isRegistered && !status.isPaused)
           OutlinedButton.icon(

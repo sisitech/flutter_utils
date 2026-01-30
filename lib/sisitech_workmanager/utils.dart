@@ -321,24 +321,17 @@ Future<void> _trackTaskExecution(
   }
 }
 
-/// Execute a one-off task immediately on iOS (fire-and-forget)
-/// This runs the task without using WorkManager since iOS WorkManager is unreliable
-Future<void> _executeOneOffTaskIOS(BackgroundWorkManagerTask task) async {
+/// Execute a task immediately with full status tracking.
+/// Returns true if the task executed successfully, false otherwise.
+Future<bool> executeTaskNow(BackgroundWorkManagerTask task) async {
   final startTime = DateTime.now();
   bool success = false;
   String? errorMessage;
 
   try {
-    // Mark task as running
     await _markTaskRunning(task.uniqueName, true);
-
-    // Execute the task
     success = await task.executeFunction(task, task.inputData);
-
-    // Mark task as finished
     await _markTaskRunning(task.uniqueName, false);
-
-    // Track execution
     await _trackTaskExecution(
       task.uniqueName,
       task.name,
@@ -348,17 +341,11 @@ Future<void> _executeOneOffTaskIOS(BackgroundWorkManagerTask task) async {
       success,
       null,
     );
-
-    dprint("iOS one-off task ${task.name} executed, success: $success");
   } catch (e, stackTrace) {
-    dprint("iOS one-off task execution error: $e");
+    dprint("executeTaskNow error: $e");
     dprint(stackTrace.toString());
     errorMessage = e.toString();
-
-    // Mark task as finished
     await _markTaskRunning(task.uniqueName, false);
-
-    // Track failed execution
     await _trackTaskExecution(
       task.uniqueName,
       task.name,
@@ -369,6 +356,13 @@ Future<void> _executeOneOffTaskIOS(BackgroundWorkManagerTask task) async {
       errorMessage,
     );
   }
+  return success;
+}
+
+/// Execute a one-off task immediately on iOS (fire-and-forget)
+/// This runs the task without using WorkManager since iOS WorkManager is unreliable
+Future<void> _executeOneOffTaskIOS(BackgroundWorkManagerTask task) async {
+  await executeTaskNow(task);
 }
 
 Future<void> registerTask(BackgroundWorkManagerTask task) async {
