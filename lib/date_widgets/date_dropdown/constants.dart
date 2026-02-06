@@ -160,7 +160,7 @@ var defaultDateRanges = [
       return DateTime(now.year, now.month, 1 - 90);
     },
     endDate: () {
-      return DateTime(now.year, now.month, now.day);
+      return tomorrow;
     },
   ),
   TimePeriod(
@@ -171,7 +171,7 @@ var defaultDateRanges = [
       return DateTime(now.year, now.month, 1 - 180);
     },
     endDate: () {
-      return DateTime(now.year, now.month, now.day);
+      return tomorrow;
     },
   ),
   TimePeriod(
