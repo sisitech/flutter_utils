@@ -1,6 +1,7 @@
 import 'package:example/app.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_auth/flutter_auth_controller.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_utils/internalization/language_controller.dart';
@@ -151,6 +152,11 @@ void main() async {
   Get.put(LocalAuthController());
   Get.put(AppStateController());
   await initializeBackgroundWork();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    systemNavigationBarColor: Colors.transparent,
+  ));
   runApp(MyApp());
 }
 

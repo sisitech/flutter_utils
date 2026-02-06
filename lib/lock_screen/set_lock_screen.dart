@@ -28,7 +28,9 @@ class _SetLockScreenState extends State<SetLockScreen> {
         automaticallyImplyLeading: true,
         title: Text('Set a Pass Code', style: textTheme.headlineSmall),
       ),
-      body: Padding(
+      body: SafeArea(
+        top: false,
+        child: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
           key: lockCtrl.codeFormKey,
@@ -154,6 +156,7 @@ class _SetLockScreenState extends State<SetLockScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

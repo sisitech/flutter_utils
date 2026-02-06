@@ -67,7 +67,7 @@ class SistchThemePicker extends StatelessWidget {
 
     if (isPartOfAPage || isOnBoarding) {
       return Scaffold(
-        body: content,
+        body: SafeArea(child: content),
       );
     } else {
       return Scaffold(
@@ -83,7 +83,7 @@ class SistchThemePicker extends StatelessWidget {
             color: Theme.of(context).colorScheme.onPrimary,
           ),
         ),
-        body: content,
+        body: SafeArea(top: false, child: content),
       );
     }
   }

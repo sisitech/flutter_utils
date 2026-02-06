@@ -644,9 +644,12 @@ class BackgroundTaskManagerPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
-      body: BackgroundTaskManagerWidget(
-        controllerTag: controllerTag,
-        showRefreshButton: true,
+      body: SafeArea(
+        top: false,
+        child: BackgroundTaskManagerWidget(
+          controllerTag: controllerTag,
+          showRefreshButton: true,
+        ),
       ),
     );
   }

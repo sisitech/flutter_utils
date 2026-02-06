@@ -148,16 +148,18 @@ Future<dynamic> getBottomSheetScaffold({
         top: Radius.circular(20.0),
       ),
     ),
-    Container(
-      height: Get.size.height * heightFactor,
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: theme.canvasColor,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(20.0),
+    SafeArea(
+      top: false,
+      child: Container(
+        height: Get.size.height * heightFactor,
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: theme.canvasColor,
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(20.0),
+          ),
         ),
-      ),
-      child: SingleChildScrollView(
+        child: SingleChildScrollView(
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
@@ -188,6 +190,7 @@ Future<dynamic> getBottomSheetScaffold({
           ],
         ),
       ),
+    ),
     ),
   );
 }

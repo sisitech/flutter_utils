@@ -96,7 +96,8 @@ class BaseScreenLockPage extends StatelessWidget {
           //   centerTitle: true,
           //   // title: const Text("Screen Lock Setup"),
           // ),
-          body: Center(
+          body: SafeArea(
+            child: Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
@@ -205,6 +206,7 @@ class BaseScreenLockPage extends StatelessWidget {
               ),
             ),
           ),
+          ),
         );
       } else if (!controller.isAuthenticated.value &&
           controller.triggerUnlock.value) {
@@ -217,11 +219,13 @@ class BaseScreenLockPage extends StatelessWidget {
           }
         });
         return Scaffold(
-          body: Center(
-            child: ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.lock),
-                label: const Text("Unlock")),
+          body: SafeArea(
+            child: Center(
+              child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.lock),
+                  label: const Text("Unlock")),
+            ),
           ),
         );
       } else if (!controller.isAuthenticated.value) {
@@ -242,50 +246,52 @@ class BaseScreenLockPage extends StatelessWidget {
             : const Icon(Icons.password);
 
         return Scaffold(
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (controller.biometricAvailable.value &&
-                    !controller.isLocked.value &&
-                    controller.selectedAuthType.value.toLowerCase() ==
-                        "biometric") ...[
+          body: SafeArea(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (controller.biometricAvailable.value &&
+                      !controller.isLocked.value &&
+                      controller.selectedAuthType.value.toLowerCase() ==
+                          "biometric") ...[
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        dprint("CLIECKED AGAIN");
+                        authenticateAndUpdate(controller, context);
+                      },
+                      icon: biometricIcons,
+                      label: Text("Try Again"),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
                   ElevatedButton.icon(
                     onPressed: () async {
-                      dprint("CLIECKED AGAIN");
-                      authenticateAndUpdate(controller, context);
+                      dprint("CLIECKED AUTH MESSAGE");
+                      if (authMessage == unlockAuthmessage) {
+                        controller.isLocked.value = false;
+                      }
+                      // Resets the lockstate so as to see try again and unlock with password
+                      final success = await controller.authenticate(context,
+                          providedAuthType: authType, setOngoing: true);
+                      controller.resetAuthenticationOngoing();
+
+                      if (success) {
+                        controller.setAuthenticated();
+                      } else {
+                        // If authentication fails, show a message or handle accordingly
+                      }
                     },
-                    icon: biometricIcons,
-                    label: Text("Try Again"),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  const SizedBox(
-                    height: 20,
+                    icon: authIcon,
+                    label: Text(authMessage),
                   ),
                 ],
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    dprint("CLIECKED AUTH MESSAGE");
-                    if (authMessage == unlockAuthmessage) {
-                      controller.isLocked.value = false;
-                    }
-                    // Resets the lockstate so as to see try again and unlock with password
-                    final success = await controller.authenticate(context,
-                        providedAuthType: authType, setOngoing: true);
-                    controller.resetAuthenticationOngoing();
-
-                    if (success) {
-                      controller.setAuthenticated();
-                    } else {
-                      // If authentication fails, show a message or handle accordingly
-                    }
-                  },
-                  icon: authIcon,
-                  label: Text(authMessage),
-                ),
-              ],
+              ),
             ),
           ),
         );
