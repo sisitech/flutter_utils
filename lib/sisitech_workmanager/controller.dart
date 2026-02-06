@@ -198,6 +198,23 @@ class BackgroundWorkManagerController extends GetxController {
     return tasks.where((t) => t.uniqueName == uniqueName).firstOrNull;
   }
 
+  /// Force re-register all tasks (ignores paused/registered state)
+  Future<void> forceReregisterAll() async {
+    if (Platform.isIOS) {
+      final scheduler = IOSNotificationScheduler();
+      for (var status in taskStatuses) {
+        await scheduler.cancelAllNotificationsForTask(status.uniqueName);
+      }
+    }
+    await Workmanager().cancelAll();
+
+    for (var task in tasks) {
+      final taskWithCancel = task.copyWith(cancelPrevious: true);
+      await taskWithCancel.register();
+    }
+    await refreshStatuses();
+  }
+
   /// Run a task immediately in the foreground
   Future<bool> runTaskNow(String uniqueName) async {
     var task = getTaskDefinition(uniqueName);

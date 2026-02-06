@@ -403,14 +403,16 @@ Future<void> registerTask(BackgroundWorkManagerTask task) async {
   Map<String, dynamic> allStatuses =
       statusJson != null ? jsonDecode(statusJson) as Map<String, dynamic> : {};
   bool isAlreadyRegistered = false;
+  bool isAlreadyPaused = false;
   if (allStatuses.containsKey(task.uniqueName)) {
     var status = BackgroundTaskStatus.fromJson(
         allStatuses[task.uniqueName] as Map<String, dynamic>);
     isAlreadyRegistered = status.isRegistered;
+    isAlreadyPaused = status.isPaused;
   }
 
-  if (isAlreadyRegistered && !task.cancelPrevious) {
-    dprint("Already registered");
+  if ((isAlreadyRegistered || isAlreadyPaused) && !task.cancelPrevious) {
+    dprint("Already registered or paused, skipping");
     return;
   }
 

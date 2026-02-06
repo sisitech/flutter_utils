@@ -46,10 +46,21 @@ class BackgroundTaskManagerWidget extends StatelessWidget {
                         height: 24,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
-                    : IconButton(
-                        icon: const Icon(Icons.refresh),
-                        onPressed: () => controller.refreshStatuses(),
-                        tooltip: 'Refresh statuses',
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.restart_alt),
+                            onPressed: () =>
+                                _confirmForceReregister(context, controller),
+                            tooltip: 'Force re-register all',
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.refresh),
+                            onPressed: () => controller.refreshStatuses(),
+                            tooltip: 'Refresh statuses',
+                          ),
+                        ],
                       )),
               ],
             ),
@@ -88,6 +99,33 @@ class BackgroundTaskManagerWidget extends StatelessWidget {
           }),
         ),
       ],
+    );
+  }
+
+  void _confirmForceReregister(
+    BuildContext context,
+    BackgroundWorkManagerController controller,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Force Re-register All'),
+        content: const Text(
+            'This will cancel all tasks (including paused ones) and re-register them fresh. Continue?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              controller.forceReregisterAll();
+            },
+            child: const Text('Re-register All'),
+          ),
+        ],
+      ),
     );
   }
 
