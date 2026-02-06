@@ -141,7 +141,6 @@ Future<dynamic> getBottomSheetScaffold({
   double heightFactor = 0.8,
 }) async {
   return Get.bottomSheet(
-    backgroundColor: theme.colorScheme.tertiary,
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
