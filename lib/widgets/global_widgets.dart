@@ -134,12 +134,31 @@ Widget getDropDownFormField({
 }
 
 Future<dynamic> getBottomSheetScaffold({
-  required List<Widget> children,
   required ThemeData theme,
+  List<Widget>? children,
+  Widget Function(BuildContext context, ScrollController scrollController)?
+      childBuilder,
   String? preTitle,
   String? title,
-  double heightFactor = 0.8,
+  Widget? leading,
+  Widget? trailing,
+  Color? bgColor,
+  Color? handleBarColor,
+  double? handleBarWidth,
+  bool showHandle = true,
+  double initialChildSize = 0.5,
+  double minChildSize = 0.25,
+  double maxChildSize = 0.85,
+  double? heightFactor,
+  bool expand = true,
+  bool snap = false,
+  List<double>? snapSizes,
 }) async {
+  final effectiveInitial = heightFactor ?? initialChildSize;
+  final effectiveMax = heightFactor != null
+      ? (heightFactor > maxChildSize ? heightFactor : maxChildSize)
+      : maxChildSize;
+
   return Get.bottomSheet(
     isScrollControlled: true,
     shape: const RoundedRectangleBorder(
@@ -149,47 +168,84 @@ Future<dynamic> getBottomSheetScaffold({
     ),
     SafeArea(
       top: false,
-      child: Container(
-        height: Get.size.height * heightFactor,
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: theme.canvasColor,
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(20.0),
-          ),
-        ),
-        child: SingleChildScrollView(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            Container(
-              width: 40,
-              height: 5,
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.grey[400],
-                borderRadius: BorderRadius.circular(10),
+      child: DraggableScrollableSheet(
+        initialChildSize: effectiveInitial,
+        minChildSize: minChildSize,
+        maxChildSize: effectiveMax,
+        expand: expand,
+        snap: snap,
+        snapSizes: snapSizes,
+        builder: (context, scrollController) {
+          return Container(
+            decoration: BoxDecoration(
+              color: bgColor ?? theme.canvasColor,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20.0),
               ),
             ),
-            if (preTitle != null)
-              Text(
-                preTitle,
-                style: theme.textTheme.bodySmall!
-                    .copyWith(color: theme.primaryColor),
-                textAlign: TextAlign.center,
-              ),
-            if (title != null)
-              Text(
-                title,
-                style: theme.textTheme.titleMedium,
-                textAlign: TextAlign.center,
-              ),
-            if (preTitle != null || title != null) const Divider(),
-            ...children
-          ],
-        ),
+            child: Column(
+              children: [
+                // Handle bar + title (non-scrollable)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: [
+                      if (showHandle)
+                        Container(
+                          width: handleBarWidth ?? 40,
+                          height: 5,
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(
+                            color: handleBarColor ?? Colors.grey[400],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      if (preTitle != null || title != null || leading != null || trailing != null)
+                        Row(
+                          children: [
+                            if (leading != null) leading,
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  if (preTitle != null)
+                                    Text(
+                                      preTitle,
+                                      style: theme.textTheme.bodySmall!
+                                          .copyWith(color: theme.primaryColor),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  if (title != null)
+                                    Text(
+                                      title,
+                                      style: theme.textTheme.titleMedium,
+                                      textAlign: TextAlign.center,
+                                    ),
+                                ],
+                              ),
+                            ),
+                            if (trailing != null) trailing,
+                          ],
+                        ),
+                      if (preTitle != null || title != null)
+                        const Divider(),
+                    ],
+                  ),
+                ),
+                // Scrollable content
+                Expanded(
+                  child: childBuilder != null
+                      ? childBuilder(context, scrollController)
+                      : ListView(
+                          controller: scrollController,
+                          padding: const EdgeInsets.all(16.0),
+                          children: children ?? [],
+                        ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
-    ),
     ),
   );
 }

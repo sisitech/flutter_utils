@@ -47,17 +47,21 @@ class SistchDateRangePicker extends StatelessWidget {
       SelectedDateRange? val = await getBottomSheetScaffold(
         theme: theme,
         heightFactor: 0.92,
-        children: [
-          DatePickerScaffold(
-            chosenFormat: chosenFormat,
-            maxRangeCount: maxRangeCount,
-            lastYrPicker: lastYrPicker,
-            btnLabel: btnLabel,
-            enableMixpanel: enableMixpanel,
-            onShowCustomPicker: onShowCustomPicker,
-            optionsToRemoveByValue: optionsToRemoveByValue,
-          ),
-        ],
+        childBuilder: (context, scrollController) {
+          return SingleChildScrollView(
+            controller: scrollController,
+            padding: const EdgeInsets.all(16.0),
+            child: DatePickerScaffold(
+              chosenFormat: chosenFormat,
+              maxRangeCount: maxRangeCount,
+              lastYrPicker: lastYrPicker,
+              btnLabel: btnLabel,
+              enableMixpanel: enableMixpanel,
+              onShowCustomPicker: onShowCustomPicker,
+              optionsToRemoveByValue: optionsToRemoveByValue,
+            ),
+          );
+        },
       );
       if (val != null) {
         dprint(val.startDate);
