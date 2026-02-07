@@ -24,21 +24,15 @@ class DateOptionsPickerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RxString selectedOption = ''.obs;
-    final scrollCtrl = ScrollController();
     List<TimePeriod> dateRanges = [...defaultDateRanges];
     if (optionsToRemoveByValue != null && optionsToRemoveByValue!.isNotEmpty) {
       dateRanges.removeWhere((e) => optionsToRemoveByValue!.contains(e.value));
     }
 
-    return SizedBox(
-      height: Get.height * 0.62,
-      child: Scrollbar(
-        controller: scrollCtrl,
-        thumbVisibility: true,
-        child: ListView.builder(
-          shrinkWrap: true,
-          controller: scrollCtrl,
-          itemBuilder: (context, index) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
             String dateTxt = dateRanges[index].displayText;
             return Obx(
               () => RadioListTile(
@@ -80,9 +74,7 @@ class DateOptionsPickerWidget extends StatelessWidget {
               ),
             );
           },
-          itemCount: dateRanges.length,
-        ),
-      ),
+      itemCount: dateRanges.length,
     );
   }
 }

@@ -21,7 +21,6 @@ class YearDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final scrollCtrl = ScrollController();
 
     DateTime today = DateTime.now();
     RxInt currentYear = DateTime.now().year.obs;
@@ -30,7 +29,9 @@ class YearDatePicker extends StatelessWidget {
 
     RxBool isNowAddingLastDate = RxBool(false);
     RxList<DateTime> selectedDates = RxList([]);
-    double calendarHeight = Get.height * 0.45;
+    final Map<int, GlobalKey> monthKeys = {
+      for (int i = 1; i <= 12; i++) i: GlobalKey(),
+    };
 
     onCustomDateChosen(DateTime dt) {
       // first date
@@ -66,11 +67,14 @@ class YearDatePicker extends StatelessWidget {
     }
 
     onScrollToMonth(int month) {
-      scrollCtrl.animateTo(
-        calendarHeight * 0.75 * month,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.easeInOut,
-      );
+      final key = monthKeys[month + 1];
+      if (key?.currentContext != null) {
+        Scrollable.ensureVisible(
+          key!.currentContext!,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
     }
 
     return Column(
@@ -134,20 +138,17 @@ class YearDatePicker extends StatelessWidget {
           ),
         ),
         const Divider(),
-        SizedBox(
-          height: calendarHeight,
-          child: Scrollbar(
-            controller: scrollCtrl,
-            thumbVisibility: true,
-            child: Obx(
-              () => ListView.builder(
-                controller: scrollCtrl,
-                itemCount: groupedDates.keys.length,
-                itemBuilder: (context, index) {
-                  int month = groupedDates.keys.elementAt(index);
-                  List<DateTime> dates = groupedDates[month]!;
+        Obx(
+          () => ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: groupedDates.keys.length,
+            itemBuilder: (context, index) {
+              int month = groupedDates.keys.elementAt(index);
+              List<DateTime> dates = groupedDates[month]!;
 
-                  return Column(
+              return Column(
+                key: monthKeys[month],
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
@@ -241,8 +242,6 @@ class YearDatePicker extends StatelessWidget {
                 },
               ),
             ),
-          ),
-        ),
       ],
     );
   }

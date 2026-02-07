@@ -44,6 +44,9 @@ class SistchDateRangePicker extends StatelessWidget {
     DateFormat chosenFormat = dateFormat ?? DateFormat("dd/MM/yy");
 
     onOpenDatePickerBottomSheet() async {
+      final selectedDateRange = Rx<SelectedDateRange?>(null);
+      final showCustomPicker = RxBool(false);
+
       SelectedDateRange? val = await getBottomSheetScaffold(
         theme: theme,
         heightFactor: 0.92,
@@ -55,13 +58,41 @@ class SistchDateRangePicker extends StatelessWidget {
               chosenFormat: chosenFormat,
               maxRangeCount: maxRangeCount,
               lastYrPicker: lastYrPicker,
-              btnLabel: btnLabel,
               enableMixpanel: enableMixpanel,
               onShowCustomPicker: onShowCustomPicker,
               optionsToRemoveByValue: optionsToRemoveByValue,
+              selectedDateRange: selectedDateRange,
+              showCustomPicker: showCustomPicker,
             ),
           );
         },
+        bottomWidget: Obx(() {
+          final val = selectedDateRange.value;
+          final isCustom = showCustomPicker.value;
+          final canApply =
+              isCustom && val?.startDate != null && val?.endDate != null;
+          if (!canApply) return const SizedBox.shrink();
+          return Padding(
+            padding: const EdgeInsets.all(5),
+            child: ElevatedButton(
+              onPressed: () => Get.back(result: selectedDateRange.value),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onPrimary,
+              ),
+              child: Center(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.filter_alt),
+                    const SizedBox(width: 5),
+                    Text(btnLabel),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }),
       );
       if (val != null) {
         dprint(val.startDate);
@@ -114,18 +145,20 @@ class DatePickerScaffold extends StatelessWidget {
   final DateFormat chosenFormat;
   final int lastYrPicker;
   final int maxRangeCount;
-  final String btnLabel;
   final bool enableMixpanel;
   final Function? onShowCustomPicker;
   final List<int>? optionsToRemoveByValue;
+  final Rx<SelectedDateRange?> selectedDateRange;
+  final RxBool showCustomPicker;
   const DatePickerScaffold({
     super.key,
     required this.chosenFormat,
     required this.lastYrPicker,
     required this.maxRangeCount,
-    required this.btnLabel,
     required this.enableMixpanel,
     required this.onShowCustomPicker,
+    required this.selectedDateRange,
+    required this.showCustomPicker,
     this.optionsToRemoveByValue,
   });
 
@@ -133,8 +166,6 @@ class DatePickerScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    Rx<SelectedDateRange?> selectedDateRange = Rx(null);
-    RxBool showCustomPicker = RxBool(false);
 
     onDatePickerClose() => Get.back(result: selectedDateRange.value);
 
@@ -193,36 +224,6 @@ class DatePickerScaffold extends StatelessWidget {
                   onShowCustomPicker: onShowCustomPicker,
                   optionsToRemoveByValue: optionsToRemoveByValue,
                 ),
-        ),
-        const SizedBox(height: 10),
-        Obx(
-          () {
-            final val = selectedDateRange.value;
-            final isCustom = showCustomPicker.value;
-            final canApply =
-                isCustom && val?.startDate != null && val?.endDate != null;
-            if (!canApply) return const SizedBox.shrink();
-            return Padding(
-              padding: const EdgeInsets.all(5),
-              child: ElevatedButton(
-                onPressed: onDatePickerClose,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.primary,
-                  foregroundColor: colorScheme.onPrimary,
-                ),
-                child: Center(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.filter_alt),
-                      const SizedBox(width: 5),
-                      Text(btnLabel),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
         ),
       ],
     );

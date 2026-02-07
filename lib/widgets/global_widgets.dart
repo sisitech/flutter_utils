@@ -153,11 +153,10 @@ Future<dynamic> getBottomSheetScaffold({
   bool expand = true,
   bool snap = false,
   List<double>? snapSizes,
+  Widget? bottomWidget,
 }) async {
   final effectiveInitial = heightFactor ?? initialChildSize;
-  final effectiveMax = heightFactor != null
-      ? (heightFactor > maxChildSize ? heightFactor : maxChildSize)
-      : maxChildSize;
+  final effectiveMax = effectiveInitial > maxChildSize ? effectiveInitial : maxChildSize;
 
   return Get.bottomSheet(
     isScrollControlled: true,
@@ -172,7 +171,7 @@ Future<dynamic> getBottomSheetScaffold({
         initialChildSize: effectiveInitial,
         minChildSize: minChildSize,
         maxChildSize: effectiveMax,
-        expand: expand,
+        expand: false,
         snap: snap,
         snapSizes: snapSizes,
         builder: (context, scrollController) {
@@ -189,6 +188,7 @@ Future<dynamic> getBottomSheetScaffold({
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       if (showHandle)
                         Container(
@@ -237,10 +237,12 @@ Future<dynamic> getBottomSheetScaffold({
                       ? childBuilder(context, scrollController)
                       : ListView(
                           controller: scrollController,
+                          shrinkWrap: true,
                           padding: const EdgeInsets.all(16.0),
                           children: children ?? [],
                         ),
                 ),
+                if (bottomWidget != null) bottomWidget,
               ],
             ),
           );
