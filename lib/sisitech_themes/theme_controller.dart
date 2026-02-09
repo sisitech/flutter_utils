@@ -51,6 +51,7 @@ class CustomFlexThemeData {
 
 class ThemeController extends GetxController {
   var currentScheme = FlexScheme.tealM3.obs; // Track the current scheme
+  var currentThemeMode = ThemeMode.system.obs;
   late Rx<ThemeData?> lightTheme = Rx(null);
   late Rx<ThemeData?> darkTheme = Rx(null);
   late CustomFlexThemeData defaultLightTheme;
@@ -88,6 +89,7 @@ class ThemeController extends GetxController {
     super.onInit();
     getM3Themes();
     _getColorScheme();
+    _getThemeMode();
   }
 
   void getM3Themes() {
@@ -155,5 +157,26 @@ class ThemeController extends GetxController {
 
     // Notify listeners
     update();
+  }
+
+  void changeThemeMode(ThemeMode mode) {
+    currentThemeMode.value = mode;
+    _saveThemeMode(mode);
+    Get.changeThemeMode(mode);
+    update();
+  }
+
+  Future<void> _saveThemeMode(ThemeMode mode) async {
+    await box.write("themeMode", mode.name);
+  }
+
+  Future<void> _getThemeMode() async {
+    var modeStr = box.read("themeMode");
+    if (modeStr != null) {
+      try {
+        final mode = ThemeMode.values.byName(modeStr);
+        changeThemeMode(mode);
+      } catch (_) {}
+    }
   }
 }
