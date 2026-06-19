@@ -9,6 +9,8 @@ import 'package:flutter_utils/internalization/models.dart';
 import 'package:flutter_utils/local_nofitications/local_notification_controller.dart';
 import 'package:flutter_utils/lock_screen/lock_controller.dart';
 import 'package:flutter_utils/mixpanel/mixpanel_controller.dart';
+// import 'package:flutter_utils/firebase_analytics/firebase_analytics_controller.dart';
+// import 'firebase_options.dart'; // run `flutterfire configure` to generate this
 import 'package:flutter_utils/models.dart';
 import 'package:flutter_utils/network_status/network_status_controller.dart';
 import 'package:flutter_utils/offline_http_cache/offline_http_cache.dart';
@@ -79,6 +81,13 @@ void main() async {
           disableInDebug: false,
         )),
   );
+  // Firebase Analytics: uncomment after generating firebase_options.dart with
+  // `flutterfire configure`, then add firebaseAnalyticsCont.observer to
+  // GetMaterialApp.navigatorObservers for automatic screen_view tracking.
+  // var firebaseAnalyticsCont = Get.put(FirebaseAnalyticsController(
+  //   firebaseOptions: DefaultFirebaseOptions.currentPlatform,
+  //   options: const FirebaseAnalyticsOptions(disableInDebug: false),
+  // ));
   Get.put(NetworkStatusController(checkUrl: "https://google.com"));
   var controller = Get.put(
     ScreenLockController(options: screenLockOptions),
