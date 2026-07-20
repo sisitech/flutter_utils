@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_utils/charts/utils.dart';
 import 'package:flutter_utils/utils/functions.dart';
+import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:flutter_utils/widgets/global_widgets.dart';
 import 'package:get/get.dart';
 
 class SistchCardGridView extends StatelessWidget {
   final List<double> dataSeries;
   final List<String> chartLabels;
-  final List<IconData>? cardIcons;
+  final List<MappedIcon>? cardIcons;
   final List<Color>? cardColors;
   final List<Color>? onCardColors;
   final Function(String val)? onCardTap;
@@ -85,7 +86,7 @@ class SistchCardGridView extends StatelessWidget {
     required Color bgColor,
     required Color fgColor,
     double? percentage,
-    IconData? iconPath,
+    MappedIcon? iconPath,
   }) {
     final textTheme = Get.theme.textTheme;
     return GestureDetector(
@@ -114,7 +115,7 @@ class SistchCardGridView extends StatelessWidget {
                   if (iconPath != null)
                     buildGlassContainer(
                       mainColor: fgColor,
-                      child: Icon(
+                      child: buildMappedIcon(
                         iconPath,
                         size: 20,
                         color: fgColor,

@@ -146,7 +146,7 @@ class _ChartWidgetsScreenState extends State<ChartWidgetsScreen> {
                         leadingWidgets: defaultIconMapper.values
                             .toList()
                             .sublist(0, chartData[currentChartIdx].length)
-                            .map((e) => Icon(e))
+                            .map((e) => buildMappedIcon(e))
                             .toList(),
                         trailingWidgets: chartData[currentChartIdx]
                             .map((e) => Text('KES. ${e.toString()}'))

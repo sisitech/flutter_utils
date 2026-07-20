@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_utils/utils/icon_mapper.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
@@ -592,7 +593,7 @@ buildGlassContainer({
 }
 
 buildGlassIcon({
-  required IconData iconPath,
+  required MappedIcon iconPath,
   double? size,
   Color? color,
   EdgeInsets? margin,
@@ -613,7 +614,7 @@ buildGlassIcon({
         width: 1.5,
       ),
     ),
-    child: Icon(
+    child: buildMappedIcon(
       iconPath,
       size: size,
       color: color,

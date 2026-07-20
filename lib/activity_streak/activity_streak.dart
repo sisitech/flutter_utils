@@ -65,7 +65,7 @@ class SistchTagStreakIndicator extends StatelessWidget {
             animation: true,
             animationDuration: 1000,
             percent: percent,
-            center: Icon(
+            center: FaIcon(
               FontAwesomeIcons.fire,
               color: Theme.of(context).colorScheme.primary,
               size: 20,
@@ -174,7 +174,7 @@ class SistchTagStreakDialog extends StatelessWidget {
                 animation: true,
                 animationDuration: 1000,
                 percent: percent,
-                center: Icon(
+                center: FaIcon(
                   FontAwesomeIcons.fire,
                   color: Theme.of(context).colorScheme.primary,
                   size: 60,

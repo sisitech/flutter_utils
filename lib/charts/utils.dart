@@ -23,8 +23,8 @@ Widget chartIndicator({
         mainAxisSize: MainAxisSize.min,
         children: [
           useIcons == true
-              ? Icon(
-                  defaultIconMapper[label] ?? Icons.circle,
+              ? buildMappedIcon(
+                  defaultIconMapper[label],
                   color: color,
                   size: 12,
                 )
@@ -177,8 +177,8 @@ Widget actionChartIndicator({
             mainAxisSize: MainAxisSize.min,
             children: [
               useIcons == true
-                  ? Icon(
-                      defaultIconMapper[label] ?? Icons.circle,
+                  ? buildMappedIcon(
+                      defaultIconMapper[label],
                       color: color,
                       size: 12,
                     )

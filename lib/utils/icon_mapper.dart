@@ -1,7 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-const Map<String, IconData> defaultIconMapper = {
+/// Material [IconData] or Font Awesome [FaIconData].
+typedef MappedIcon = Object;
+
+Widget buildMappedIcon(
+  MappedIcon? icon, {
+  Color? color,
+  double? size,
+  IconData fallback = Icons.circle,
+}) {
+  if (icon == null) {
+    return Icon(fallback, color: color, size: size);
+  }
+  if (icon is FaIconData) {
+    return FaIcon(icon, color: color, size: size);
+  }
+  return Icon(icon as IconData, color: color, size: size);
+}
+
+const Map<String, MappedIcon> defaultIconMapper = {
   // ---------
   'Untagged': Icons.category,
   'Finance': Icons.account_balance,
