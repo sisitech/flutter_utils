@@ -146,8 +146,9 @@ class _TourOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Get.theme;
+    final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final onPanel = colorScheme.onPrimaryContainer;
     double contentWidth = Get.width * 0.82;
 
     return Stack(
@@ -160,18 +161,16 @@ class _TourOverlay extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if (step.icon != null)
-                Icon(step.icon, color: colorScheme.tertiary),
+              if (step.icon != null) Icon(step.icon, color: onPanel),
               Text(
                 stepNoTxt,
-                style: theme.textTheme.labelSmall!
-                    .copyWith(color: colorScheme.tertiary),
+                style: theme.textTheme.labelSmall!.copyWith(color: onPanel),
               ),
               Text(
                 step.title,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: colorScheme.tertiary,
+                  color: onPanel,
                 ),
               ),
               Padding(
@@ -179,13 +178,13 @@ class _TourOverlay extends StatelessWidget {
                     const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                 child: Text(
                   step.description,
-                  style: theme.textTheme.bodySmall,
+                  style: theme.textTheme.bodySmall?.copyWith(color: onPanel),
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
                 ),
               ),
-              Divider(color: theme.colorScheme.onPrimaryContainer),
+              Divider(color: onPanel.withValues(alpha: 0.4)),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(

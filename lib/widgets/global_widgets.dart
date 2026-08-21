@@ -642,7 +642,9 @@ PreferredSizeWidget buildAppBar({
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: theme.textTheme.titleMedium),
+            Text(title,
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold)),
             if (subtitle != null)
               Text(subtitle, style: theme.textTheme.labelSmall),
           ],

@@ -5,6 +5,7 @@ import 'models.dart';
 
 class BottomNavigationController extends GetxController {
   var selectedIndex = 0.obs;
+  final showBottomBar = true.obs;
 
   Widget selectedTab(List<BottomNavigationItem> tabs) {
     if (tabs.isEmpty) {

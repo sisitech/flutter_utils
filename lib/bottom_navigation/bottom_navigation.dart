@@ -97,31 +97,33 @@ class SistchLayoutWithDrawerBottomNavigation extends StatelessWidget {
                   ),
                 ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          type: tabs.length > 3 ? BottomNavigationBarType.fixed : null,
-          items: tabs.map((e) => e.barItem).toList(),
-          onTap: (index) {
-            bottomNavigationController.selectTab(index, onTap);
-          },
-          currentIndex: bottomNavigationController.selectedIndex.value,
-          elevation: elevation,
-          fixedColor: fixedColor,
-          backgroundColor: backgroundColor,
-          iconSize: iconSize,
-          selectedItemColor: selectedItemColor,
-          unselectedItemColor: unselectedItemColor,
-          selectedIconTheme: selectedIconTheme,
-          unselectedIconTheme: unselectedIconTheme,
-          selectedFontSize: selectedFontSize,
-          unselectedFontSize: unselectedFontSize,
-          selectedLabelStyle: selectedLabelStyle,
-          unselectedLabelStyle: unselectedLabelStyle,
-          showSelectedLabels: showSelectedLabels,
-          showUnselectedLabels: showUnselectedLabels,
-          mouseCursor: mouseCursor,
-          enableFeedback: enableFeedback,
-          landscapeLayout: landscapeLayout,
-        ),
+        bottomNavigationBar: bottomNavigationController.showBottomBar.value
+            ? BottomNavigationBar(
+                type: tabs.length > 3 ? BottomNavigationBarType.fixed : null,
+                items: tabs.map((e) => e.barItem).toList(),
+                onTap: (index) {
+                  bottomNavigationController.selectTab(index, onTap);
+                },
+                currentIndex: bottomNavigationController.selectedIndex.value,
+                elevation: elevation,
+                fixedColor: fixedColor,
+                backgroundColor: backgroundColor,
+                iconSize: iconSize,
+                selectedItemColor: selectedItemColor,
+                unselectedItemColor: unselectedItemColor,
+                selectedIconTheme: selectedIconTheme,
+                unselectedIconTheme: unselectedIconTheme,
+                selectedFontSize: selectedFontSize,
+                unselectedFontSize: unselectedFontSize,
+                selectedLabelStyle: selectedLabelStyle,
+                unselectedLabelStyle: unselectedLabelStyle,
+                showSelectedLabels: showSelectedLabels,
+                showUnselectedLabels: showUnselectedLabels,
+                mouseCursor: mouseCursor,
+                enableFeedback: enableFeedback,
+                landscapeLayout: landscapeLayout,
+              )
+            : null,
       ),
     );
   }
