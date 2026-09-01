@@ -42,6 +42,7 @@ class SistchCurrencyListView extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+    final accent = iconColor ?? colorScheme.tertiary;
 
     return Padding(
       padding: const EdgeInsets.all(10),
@@ -65,9 +66,10 @@ class SistchCurrencyListView extends StatelessWidget {
             return buildFadeAnimateWidget(
               child: buildGlassWidget(
                 theme: theme,
-                margin: const EdgeInsets.symmetric(vertical: 4),
+                margin: const EdgeInsets.symmetric(vertical: 5),
+                borderRadius: BorderRadius.circular(14),
                 padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                 mainColor: isSelected
                     ? selectedColor ?? colorScheme.surfaceContainerHighest
                     : null,
@@ -77,74 +79,89 @@ class SistchCurrencyListView extends StatelessWidget {
                       onTileTap!(item.label);
                     }
                   },
-                  child: Row(
+                  behavior: HitTestBehavior.opaque,
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (item.icon != null)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10, top: 2),
-                          child: buildMappedIcon(
-                            item.icon,
-                            size: 16,
-                            color: iconColor ?? colorScheme.tertiary,
-                            fallback: Icons.category,
-                          ),
-                        ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
+                      Row(
+                        children: [
+                          if (item.icon != null) ...[
+                            buildGlassContainer(
+                              mainColor: accent,
+                              padding: const EdgeInsets.all(7),
+                              child: buildMappedIcon(
+                                item.icon,
+                                size: 16,
+                                color: accent,
+                                fallback: Icons.category,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                          ],
+                          Expanded(
+                            child: Text(
                               item.label,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: textTheme.labelMedium!.copyWith(
+                              style: textTheme.titleSmall!.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            // One line per currency, they are never added up
-                            ...item.amounts.map(
-                              (amount) => Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      amount.code,
-                                      style: textTheme.labelSmall!.copyWith(
-                                        color: colorScheme.onSurface
-                                            .withValues(alpha: 0.65),
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Flexible(
-                                      child: Text(
-                                        compactValues
-                                            ? getThousandsNumber(amount.value)
-                                            : addThousandSeparators(
-                                                amount.value),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style:
-                                            textTheme.labelMedium!.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                          ),
+                          if (trailingIcon != null && onTileTap != null)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Icon(
+                                trailingIcon,
+                                size: 18,
+                                color: colorScheme.primary,
                               ),
                             ),
-                          ],
-                        ),
+                        ],
                       ),
-                      if (trailingIcon != null && onTileTap != null)
+                      if (item.amounts.isNotEmpty)
                         Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Icon(
-                            trailingIcon,
-                            color: colorScheme.primary,
+                          padding: const EdgeInsets.symmetric(vertical: 9),
+                          child: Divider(
+                            height: 1,
+                            thickness: 1,
+                            color:
+                                colorScheme.onSurface.withValues(alpha: 0.07),
                           ),
                         ),
+                      // One line per currency, they are never added up
+                      ...item.amounts.map(
+                        (amount) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 3),
+                          child: Row(
+                            children: [
+                              Text(
+                                amount.code,
+                                style: textTheme.labelSmall!.copyWith(
+                                  color: colorScheme.onSurface
+                                      .withValues(alpha: 0.6),
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  compactValues
+                                      ? getThousandsNumber(amount.value)
+                                      : addThousandSeparators(amount.value),
+                                  maxLines: 1,
+                                  textAlign: TextAlign.right,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: textTheme.titleSmall!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
