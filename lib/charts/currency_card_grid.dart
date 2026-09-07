@@ -181,14 +181,13 @@ class SistchCurrencyCardGridView extends StatelessWidget {
                             color: fgColor.withValues(alpha: 0.75),
                           ),
                         ),
-                        const Spacer(),
-                        Flexible(
+                        Expanded(
                           child: Text(
                             compactValues
                                 ? getThousandsNumber(amount.value)
                                 : addThousandSeparators(amount.value),
                             maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.right,
                             style: textTheme.titleMedium!.copyWith(
                               fontWeight: FontWeight.bold,
                               color: fgColor,
