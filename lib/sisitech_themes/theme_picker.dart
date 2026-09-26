@@ -9,13 +9,14 @@ class SistchThemePicker extends StatelessWidget {
   final Function()? onThemeChange;
   static const routeName = "/theme-picker";
   final ThemeController themeController = Get.find<ThemeController>();
-  final String title = "Theme Picker";
+  final String title;
   final bool isPartOfAPage;
   final bool isOnBoarding;
 
   SistchThemePicker({
     Key? key,
     this.onThemeChange,
+    this.title = "Pick Theme",
     this.isPartOfAPage = false,
     this.isOnBoarding = false,
   }) : super(key: key);
@@ -28,6 +29,14 @@ class SistchThemePicker extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
+            if (isPartOfAPage || isOnBoarding)
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: _buildThemeModeSwitcher(context),
+                ),
+              ),
             Text(
               'Choose A Theme',
               style: Get.textTheme.headlineSmall,
@@ -82,9 +91,128 @@ class SistchThemePicker extends StatelessWidget {
           iconTheme: IconThemeData(
             color: Theme.of(context).colorScheme.onPrimary,
           ),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: _buildThemeModeAppBarAction(context),
+            ),
+          ],
         ),
         body: SafeArea(top: false, child: content),
       );
+    }
+  }
+
+  Widget _buildThemeModeAppBarAction(BuildContext context) {
+    final onPrimary = Theme.of(context).colorScheme.onPrimary;
+
+    return Obx(
+      () {
+        final mode = themeController.currentThemeMode.value;
+        return PopupMenuButton<ThemeMode>(
+          tooltip: 'Appearance'.ctr,
+          onSelected: themeController.changeThemeMode,
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: ThemeMode.light,
+              child: _appearanceMenuRow(Icons.light_mode, 'Light'),
+            ),
+            PopupMenuItem(
+              value: ThemeMode.dark,
+              child: _appearanceMenuRow(Icons.dark_mode, 'Dark'),
+            ),
+            PopupMenuItem(
+              value: ThemeMode.system,
+              child: _appearanceMenuRow(Icons.brightness_auto, 'System'),
+            ),
+          ],
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(_themeModeIcon(mode), color: onPrimary, size: 20),
+              const SizedBox(width: 4),
+              Text(
+                _themeModeLabel(mode).ctr,
+                style: TextStyle(color: onPrimary, fontSize: 13),
+              ),
+              Icon(Icons.arrow_drop_down, color: onPrimary, size: 22),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildThemeModeSwitcher(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Obx(
+      () => SegmentedButton<ThemeMode>(
+        showSelectedIcon: false,
+        style: SegmentedButton.styleFrom(
+          visualDensity: VisualDensity.compact,
+          selectedBackgroundColor: colorScheme.primary,
+          selectedForegroundColor: colorScheme.onPrimary,
+          foregroundColor: colorScheme.onSurface,
+          backgroundColor: colorScheme.surfaceContainerHighest,
+        ),
+        segments: [
+          ButtonSegment(
+            value: ThemeMode.light,
+            icon: const Icon(Icons.light_mode, size: 18),
+            label: Text('Light'.ctr),
+          ),
+          ButtonSegment(
+            value: ThemeMode.dark,
+            icon: const Icon(Icons.dark_mode, size: 18),
+            label: Text('Dark'.ctr),
+          ),
+          ButtonSegment(
+            value: ThemeMode.system,
+            icon: const Icon(Icons.brightness_auto, size: 18),
+            label: Text('System'.ctr),
+          ),
+        ],
+        selected: {themeController.currentThemeMode.value},
+        onSelectionChanged: (selected) {
+          if (selected.isNotEmpty) {
+            themeController.changeThemeMode(selected.first);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _appearanceMenuRow(IconData icon, String label) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, size: 20),
+        const SizedBox(width: 12),
+        Text(label.ctr),
+      ],
+    );
+  }
+
+  IconData _themeModeIcon(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.light:
+        return Icons.light_mode;
+      case ThemeMode.dark:
+        return Icons.dark_mode;
+      case ThemeMode.system:
+        return Icons.brightness_auto;
+    }
+  }
+
+  String _themeModeLabel(ThemeMode mode) {
+    switch (mode) {
+      case ThemeMode.light:
+        return 'Light';
+      case ThemeMode.dark:
+        return 'Dark';
+      case ThemeMode.system:
+        return 'System';
     }
   }
 

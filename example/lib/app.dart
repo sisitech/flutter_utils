@@ -154,6 +154,7 @@ class MyApp extends StatelessWidget {
           translations: Get.find<LocaleController>().getCustomAppTranslations(),
           theme: themeController.lightTheme.value,
           darkTheme: themeController.darkTheme.value,
+          themeMode: themeController.currentThemeMode.value,
           home: BaseScreenLockPage(
             child: Obx(
               () => showMainApp.value
@@ -233,7 +234,7 @@ class MyApp extends StatelessWidget {
           // headerImage: "https://avatars.githubusercontent.com/u/9420130?v=4",
           items: [
             SisitechDrawerItem(
-              title: 'Theme Picker',
+              title: 'Pick Theme',
               onTap: () {
                 Get.to(() => SistchThemePicker());
               },

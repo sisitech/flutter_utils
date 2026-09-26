@@ -33,8 +33,8 @@ class IOSNotificationScheduler {
   static Future<void> _ensureTimezoneInitialized() async {
     if (!_timezoneInitialized) {
       tz_data.initializeTimeZones();
-      final timezoneName = await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(timezoneName));
+      final timezoneInfo = await FlutterTimezone.getLocalTimezone();
+      tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
       _timezoneInitialized = true;
     }
   }
