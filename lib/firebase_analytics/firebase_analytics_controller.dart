@@ -1,4 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_auth/flutter_auth_controller.dart';
 import 'package:flutter_utils/firebase_analytics/firebase_analytics.dart';
@@ -28,13 +29,15 @@ class FirebaseAnalyticsOptions {
 /// [logEvent] passthrough and intent-revealing helpers for the predefined
 /// Firebase events plus app-specific (e.g. M-Pesa) custom events.
 class FirebaseAnalyticsController extends GetxController {
-  late FirebaseOptions firebaseOptions;
+  // Null initializes from the native config files (google-services.json /
+  // GoogleService-Info.plist).
+  FirebaseOptions? firebaseOptions;
   late FirebaseAnalyticsOptions options;
   FirebaseAnalytics? _analytics;
   AuthController authController = Get.find<AuthController>();
 
   FirebaseAnalyticsController({
-    required this.firebaseOptions,
+    this.firebaseOptions,
     this.options = const FirebaseAnalyticsOptions(),
   });
 
@@ -56,27 +59,18 @@ class FirebaseAnalyticsController extends GetxController {
   FirebaseAnalyticsObserver get observer =>
       FirebaseAnalyticsObserver(analytics: _analytics!);
 
-  get isDisAbled {
-    if (options.disableInDebug) {
-      return false;
-    }
-    return !options.enabled;
-  }
+  bool get isDisAbled =>
+      !options.enabled || (options.disableInDebug && kDebugMode);
 
-  getUser() {
-    var anymousProfile = {"username": "Anonymous"};
-    Map<String, dynamic> profile;
-    if (authController.isAuthenticated$.value != null) {
-      profile = authController.profile.value ?? anymousProfile;
-    } else {
-      profile = anymousProfile;
-    }
-
+  // A copy: hashing the username must not rewrite AuthController's own profile.
+  Map<String, dynamic> getUser() {
+    final profile = <String, dynamic>{
+      ...(authController.profile.value ?? {"username": "Anonymous"})
+    };
     if (options.enableAnonymous) {
       profile["username"] = generateMd5(profile["email"] ?? "");
     }
     dprint("Username: ${profile["username"]}");
-
     return profile;
   }
 
@@ -85,20 +79,29 @@ class FirebaseAnalyticsController extends GetxController {
       dprint("No initialized _analytics instance found");
       return;
     }
+    // Signed out: clear the id rather than send md5("") for everyone.
+    if (!authController.isAuthenticated$.value ||
+        authController.profile.value == null) {
+      _analytics?.setUserId(id: null);
+      return;
+    }
     var profile = getUser();
     _analytics?.setUserId(id: profile["username"]);
-    if (profile["email"] != null) {
+    // An anonymous id is pointless beside the raw email, and GA forbids PII.
+    if (!options.enableAnonymous && profile["email"] != null) {
       _analytics?.setUserProperty(name: "email", value: profile["email"]);
     }
     if (profile["subscription_tier"] != null) {
       _analytics?.setUserProperty(
           name: "subscription_tier", value: "${profile["subscription_tier"]}");
     }
-    dprint(profile);
   }
 
-  logoutUser() {
-    _analytics?.resetAnalyticsData();
+  // GA4 has no predefined logout event, so this logs a custom `logout` before
+  // clearing the user id and the app-instance id.
+  logoutUser() async {
+    await _analytics?.logEvent(name: "logout");
+    await _analytics?.resetAnalyticsData();
   }
 
   initialize() async {
