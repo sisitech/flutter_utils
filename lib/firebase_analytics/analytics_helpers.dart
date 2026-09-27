@@ -53,8 +53,10 @@ analyticsSignUp({required String method}) => _withAnalytics((a) {
 /// Logs `logout` and clears the user id. Call it before the auth state is reset.
 analyticsLogout() => _withAnalytics((a) => a.logoutUser());
 
-analyticsScreen(String name, {String? screenClass}) =>
-    _withAnalytics((a) => a.logScreen(name, screenClass: screenClass));
+/// `screen_class` defaults to the screen name too: left unset, Firebase fills it with the
+/// native host (`MainActivity`, `FlutterViewController`), the same for every screen.
+analyticsScreen(String name, {String? screenClass}) => _withAnalytics(
+    (a) => a.logScreen(name, screenClass: screenClass ?? name));
 
 analyticsSearch(String term) =>
     _withAnalytics((a) => a.searchesTransactions(term));
