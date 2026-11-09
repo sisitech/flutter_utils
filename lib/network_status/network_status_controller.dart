@@ -11,9 +11,9 @@ import '../flutter_utils.dart';
 /// [disconnectionThreshold] consecutive failures.
 class NetworkStatusController extends SuperController {
   static const defaultCheckUrls = [
-    "https://clients3.google.com/generate_204",
-    "https://www.gstatic.com/generate_204",
-    "https://cp.cloudflare.com/generate_204",
+    "https://www.google.com/generate_204",
+    "https://connectivitycheck.gstatic.com/generate_204",
+    "https://captive.apple.com/hotspot-detect.html",
   ];
 
   Rx<ConnectivityResult> connectionStatus = Rx(ConnectivityResult.none);
