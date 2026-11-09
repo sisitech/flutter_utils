@@ -30,7 +30,7 @@ class NetworkStatusController extends SuperController {
 
   NetworkStatusController({
     this.checkTimeoutSeconds = 8,
-    this.connectedCheckIntervalSeconds = 6,
+    this.connectedCheckIntervalSeconds = 120,
     this.disconnectedCheckIntervalSeconds = 2,
     this.checkUrl,
     this.checkUrls = defaultCheckUrls,
@@ -104,8 +104,9 @@ class NetworkStatusController extends SuperController {
       isDeviceConnected.value = false;
     }
     dprint("Network check ok=$ok failures=$_failureCount");
+    // Healthy: check rarely. Any failure: re-check fast to confirm or recover.
     _schedule(Duration(
-        seconds: isDeviceConnected.value
+        seconds: _failureCount == 0
             ? connectedCheckIntervalSeconds
             : disconnectedCheckIntervalSeconds));
     return ok;
