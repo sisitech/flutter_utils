@@ -21,7 +21,8 @@ class SelectedDateRange {
 /// Constants
 enum DateRangeDefaults { thisWeek, thisMonth, thisYear }
 
-Map<DateRangeDefaults, SelectedDateRange> defaultRanges = {
+/// Worked out on each read so the ranges never go stale, see constants.dart.
+Map<DateRangeDefaults, SelectedDateRange> get defaultRanges => {
   DateRangeDefaults.thisWeek: SelectedDateRange(
     startDate: thisWeek,
     endDate: tomorrow,

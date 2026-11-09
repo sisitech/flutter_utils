@@ -1,19 +1,34 @@
 import 'package:flutter_utils/date_widgets/date_dropdown/models.dart';
 import 'package:intl/intl.dart';
 
-var now = DateTime.now();
-DateTime today = DateTime(now.year, now.month, now.day);
-DateTime tomorrow = DateTime(now.year, now.month, now.day + 1);
-DateTime yesterday = today.subtract(const Duration(days: 1));
-DateTime thisWeek = getFirstDayOfCurrentWeek(today);
-DateTime lastWeek =
-    getFirstDayOfCurrentWeek(today).subtract(const Duration(days: 7));
-DateTime thisMonth = DateTime(now.year, now.month, 1);
-DateTime lastMonth = DateTime(now.year, now.month - 1, 1);
-DateTime thisYear = DateTime(now.year, 1, 1);
-DateTime lastYear = DateTime(now.year - 1, 1, 1);
+// Getters, not variables: each read is worked out afresh, so the ranges follow
+// the clock past midnight and the device zone when the phone changes zone. As
+// variables they were fixed once at startup and Today/Yesterday went stale.
+DateTime get now => DateTime.now();
+DateTime get today {
+  final n = now;
+  return DateTime(n.year, n.month, n.day);
+}
 
-Map<DateRangeTypes, Map<DateTime, String>> dateToLabelMap = {
+DateTime get tomorrow {
+  final n = now;
+  return DateTime(n.year, n.month, n.day + 1);
+}
+
+DateTime get yesterday {
+  final n = now;
+  return DateTime(n.year, n.month, n.day - 1);
+}
+
+DateTime get thisWeek => getFirstDayOfCurrentWeek(today);
+DateTime get lastWeek =>
+    getFirstDayOfCurrentWeek(today).subtract(const Duration(days: 7));
+DateTime get thisMonth => DateTime(now.year, now.month, 1);
+DateTime get lastMonth => DateTime(now.year, now.month - 1, 1);
+DateTime get thisYear => DateTime(now.year, 1, 1);
+DateTime get lastYear => DateTime(now.year - 1, 1, 1);
+
+Map<DateRangeTypes, Map<DateTime, String>> get dateToLabelMap => {
   DateRangeTypes.day: {
     today: "Today",
     tomorrow: "Tomorrow",
