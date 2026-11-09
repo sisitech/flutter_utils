@@ -1,133 +1,163 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:http/http.dart' as http;
 
 import '../flutter_utils.dart';
 
+/// Optimistic network status: any Wi-Fi/mobile transport is treated as online
+/// right away, and background probes only downgrade to offline after
+/// [disconnectionThreshold] consecutive failures.
 class NetworkStatusController extends SuperController {
+  static const defaultCheckUrls = [
+    "https://clients3.google.com/generate_204",
+    "https://www.gstatic.com/generate_204",
+    "https://cp.cloudflare.com/generate_204",
+  ];
+
   Rx<ConnectivityResult> connectionStatus = Rx(ConnectivityResult.none);
-  final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
   var isDeviceConnected = false.obs;
   var isCheckingConnection = false.obs;
-
   var connectionSource = "".obs;
 
   int checkTimeoutSeconds;
   int connectedCheckIntervalSeconds;
   int disconnectedCheckIntervalSeconds;
   String? checkUrl;
+  List<String> checkUrls;
   int disconnectionThreshold;
-  int _disconnectionCount = 0;
-  int _currentCheckIntervalSeconds;
 
   NetworkStatusController({
-    this.checkTimeoutSeconds = 6,
+    this.checkTimeoutSeconds = 8,
     this.connectedCheckIntervalSeconds = 6,
     this.disconnectedCheckIntervalSeconds = 2,
     this.checkUrl,
+    this.checkUrls = defaultCheckUrls,
     this.disconnectionThreshold = 2,
-  }) : _currentCheckIntervalSeconds = 6;
-  late InternetConnectionChecker internetCheckerInstance;
-  late StreamSubscription<InternetConnectionStatus> listener;
+  });
+
+  final Connectivity _connectivity = Connectivity();
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
+  // Long-lived client so keep-alive reuses the TLS connection between checks.
+  http.Client _client = http.Client();
+  Timer? _timer;
+  Future<bool>? _inflight;
+  int _generation = 0;
+  int _failureCount = 0;
+  bool _hasTransport = false;
+  bool _paused = false;
 
   @override
   void onInit() {
     super.onInit();
-    _currentCheckIntervalSeconds = connectedCheckIntervalSeconds;
-    internetCheckerInstance = createCustomInternetChecker();
     setupCheckInterntet();
   }
 
-  InternetConnectionChecker createCustomInternetChecker({int? intervalSeconds}) {
-    final int checkInterval = intervalSeconds ?? _currentCheckIntervalSeconds;
+  setupCheckInterntet() async {
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_onConnectivityChanged);
+    _onConnectivityChanged(await _connectivity.checkConnectivity(),
+        debounce: false);
+  }
 
-    if (checkUrl != null) {
-      final uri = Uri.parse(checkUrl!);
-      return InternetConnectionChecker.createInstance(
-        checkTimeout: Duration(seconds: checkTimeoutSeconds),
-        checkInterval: Duration(seconds: checkInterval),
-        addresses: [AddressCheckOption(uri: uri)],
-      );
+  void _onConnectivityChanged(List<ConnectivityResult> result,
+      {bool debounce = true}) {
+    dprint("Connectivity changed $result");
+    connectionSource.value = getConnectivityName(result);
+    _hasTransport = !result.contains(ConnectivityResult.none);
+    _failureCount = 0;
+    // Sockets bound to the previous interface would hang until timeout.
+    _generation++;
+    _client.close();
+    _client = http.Client();
+    if (!_hasTransport) {
+      _timer?.cancel();
+      return;
     }
-
-    return InternetConnectionChecker.createInstance(
-      checkTimeout: Duration(seconds: checkTimeoutSeconds),
-      checkInterval: Duration(seconds: checkInterval),
-    );
+    isDeviceConnected.value = true;
+    // Android emits a burst of events during a handover.
+    _schedule(debounce ? const Duration(milliseconds: 500) : Duration.zero);
   }
 
-  void _updateCheckInterval(int seconds) {
-    if (_currentCheckIntervalSeconds == seconds) return;
-    _currentCheckIntervalSeconds = seconds;
-    listener.cancel();
-    internetCheckerInstance = createCustomInternetChecker(intervalSeconds: seconds);
-    _setupStatusListener();
+  void _schedule(Duration delay) {
+    _timer?.cancel();
+    if (_paused || !_hasTransport) return;
+    _timer = Timer(delay, _check);
   }
 
-  void _setupStatusListener() {
-    listener = internetCheckerInstance.onStatusChange.listen(
-      (InternetConnectionStatus status) {
-        switch (status) {
-          case InternetConnectionStatus.connected:
-            dprint('Data connection is available.');
-            _disconnectionCount = 0;
-            isDeviceConnected.value = true;
-            _updateCheckInterval(connectedCheckIntervalSeconds);
-            break;
-          case InternetConnectionStatus.slow:
-            dprint('Slow connection detected.');
-            _disconnectionCount = 0;
-            isDeviceConnected.value = true;
-            _updateCheckInterval(connectedCheckIntervalSeconds);
-            break;
-          case InternetConnectionStatus.disconnected:
-            _disconnectionCount++;
-            dprint('Disconnection count: $_disconnectionCount / $disconnectionThreshold');
-            _updateCheckInterval(disconnectedCheckIntervalSeconds);
-            if (_disconnectionCount >= disconnectionThreshold) {
-              isDeviceConnected.value = false;
-              dprint('You are disconnected from the internet.');
-            }
-            break;
+  Future<bool> _check() =>
+      _inflight ??= _runCheck().whenComplete(() => _inflight = null);
+
+  Future<bool> _runCheck() async {
+    _timer?.cancel();
+    final generation = _generation;
+    final ok = await _probeAll();
+    if (generation != _generation) {
+      _schedule(const Duration(milliseconds: 500));
+      return ok;
+    }
+    if (ok) {
+      _failureCount = 0;
+      isDeviceConnected.value = true;
+    } else if (++_failureCount >= disconnectionThreshold) {
+      isDeviceConnected.value = false;
+    }
+    dprint("Network check ok=$ok failures=$_failureCount");
+    _schedule(Duration(
+        seconds: isDeviceConnected.value
+            ? connectedCheckIntervalSeconds
+            : disconnectedCheckIntervalSeconds));
+    return ok;
+  }
+
+  /// Completes true on the first successful probe, false once all fail.
+  Future<bool> _probeAll() {
+    final urls = [if (checkUrl != null) checkUrl!, ...checkUrls];
+    if (urls.isEmpty) return Future.value(false);
+    final done = Completer<bool>();
+    final watch = Stopwatch()..start();
+    var pending = urls.length;
+    for (final url in urls) {
+      _probe(Uri.parse(url)).then((ok) {
+        if (done.isCompleted) return;
+        if (ok) {
+          dprint("Network check via $url in ${watch.elapsedMilliseconds}ms");
+          done.complete(true);
+        } else if (--pending == 0) {
+          done.complete(false);
         }
-      },
-    );
+      });
+    }
+    return done.future;
+  }
+
+  Future<bool> _probe(Uri uri) async {
+    try {
+      final request = http.Request('HEAD', uri)..followRedirects = false;
+      final response = await _client
+          .send(request)
+          .timeout(Duration(seconds: checkTimeoutSeconds));
+      response.stream.listen(null).cancel();
+      // Captive portals answer generate_204 with 200/302, not 204.
+      if (uri.path.endsWith("generate_204")) return response.statusCode == 204;
+      return response.statusCode >= 200 && response.statusCode < 300;
+    } catch (_) {
+      return false;
+    }
   }
 
   Future<bool> checkIntenetConnection() async {
     isCheckingConnection.value = true;
-    var result = await internetCheckerInstance.hasConnection;
+    final ok = await _check();
     isCheckingConnection.value = false;
-    return result;
+    return ok;
   }
 
   checkUpdateNetworkStatus() async {
-    final connectivityResult = await Connectivity().checkConnectivity();
-    connectionSource.value = getConnectivityName(connectivityResult);
-    isDeviceConnected.value = await checkIntenetConnection();
-    dprint("Connection1 ${connectivityResult}");
-  }
-
-  setupCheckInterntet() async {
-    _connectivitySubscription = Connectivity()
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> result) async {
-      dprint(result);
-      connectionSource.value = getConnectivityName(result);
-    });
-
-    _setupStatusListener();
-
-    final connectivityResult = await Connectivity().checkConnectivity();
-    connectionSource.value = getConnectivityName(connectivityResult);
-    isDeviceConnected.value = await checkIntenetConnection();
-    dprint("Connection1 ${connectivityResult}");
+    connectionSource.value =
+        getConnectivityName(await _connectivity.checkConnectivity());
+    await checkIntenetConnection();
   }
 
   getConnectivityName(List<ConnectivityResult> connectivityResult) {
@@ -147,33 +177,30 @@ class NetworkStatusController extends SuperController {
 
   @override
   void onClose() {
-    // scroll.removeListener(_listener);
     _connectivitySubscription?.cancel();
-    listener?.cancel();
+    _timer?.cancel();
+    _client.close();
     super.onClose();
   }
 
   @override
-  void onDetached() {
-    // TODO: implement onDetached
-  }
+  void onDetached() {}
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 
   @override
   void onPaused() {
-    // TODO: implement onPaused
+    _paused = true;
+    _timer?.cancel();
   }
 
   @override
   void onResumed() {
-    // TODO: implement onResumed
+    _paused = false;
+    _schedule(Duration.zero);
   }
+
   @override
-  void onHidden() {
-    // TODO: implement onHidden
-  }
+  void onHidden() {}
 }
